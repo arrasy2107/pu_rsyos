@@ -9,15 +9,20 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simplex Solver</title>
+  <title>Laporan Pengawas Umum Rumah Sakit Yos Sudarso Padang</title>
  <!-- logo -->
- <link rel="shortcut icon" type="image/x-icon" href="{{asset('teeto/images/icon.png')}}" />
+ <link rel="icon" href="{{asset('sb-admin/img/rsyos.png')}}">
   <!-- Custom fonts for this template-->
   <link href="{{asset('sb-admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-  <link href="{{asset('sb-admin/css/datatable.css')}}" rel="stylesheet">
+  
+  <!-- Custom styles for this template-->
+<link href="{{asset('sb-admin/css/datatable.css')}}" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="{{asset('sb-admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
+
+  
+
   @yield('custom_style')
 </head>
 
@@ -32,9 +37,10 @@
       <!-- Sidebar - Brand -->
      
      
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboardadmin')}}">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
         <div class="sidebar-brand-icon">
-        DSS AFR Optimization
+        <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
+            
         </div>
         <!-- <div class="sidebar-brand-text mx-3">teeto.id</div> -->
       </a>
@@ -43,39 +49,29 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="{{route('dashboardadmin')}}">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Summary Report</span></a>
+        <a class="nav-link" href="{{route('dashboard')}}">
+          <i class="far fa-file-alt	"></i>
+          <span>Laporan Terbaru</span></a>
       </li>
 
       <!-- Divider -->
-      <hr class="sidebar-divider">
+      <hr class="sidebar-divider my-0">
 
       <!-- Heading -->
-      <div class="sidebar-heading">
-        Optimization
-      </div>
+      <!-- <div class="sidebar-heading">
+        Laporan
+      </div> -->
       <li class="nav-item">
         <a class="nav-link" href="#">
-          <i class="fas fa-truck fa-blog"></i>
-          <span>AR Storage & Solver</span></a>
+          <i class="fas fa-history"></i>
+          <span>Riwayat Laporan</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fa fa-truck fa-comment-alt"></i>
-          <span>Crusher Limestone</span></a>
+        <a class="nav-link" href="{{route('data-pengawas-umum')}}">
+          <i class="fa fa-users"></i>
+          <span>Data Pengawas Umum</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-truck fa-comments"></i>
-          <span>Crusher Clay</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-truck fa-comments"></i>
-          <span>Quality</span></a>
-      </li>
-     
+      
 
      
       <!-- Divider -->
@@ -86,30 +82,21 @@
        <div class="sidebar-heading">
         Data Master
       </div>
+      
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-building fa-blog"></i>
-          <span>Departemen</span></a>
+        <a class="nav-link" href="{{route('data-ruangan')}}">
+          <i class="fas fa-procedures	"></i>
+          <span>Ruangan</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fa fa-industry fa-comment-alt"></i>
-          <span>Material</span></a>
+        <a class="nav-link" href="{{route('data-dokter')}}">
+          <i class="fas fa-user-md	"></i>
+          <span>Dokter Jaga</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-vial fa-comments"></i>
-          <span>Kandungan</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-prescription-bottle"></i>
-          <span>Kapasitas</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-users"></i>
-          <span>Users</span></a>
+        <a class="nav-link" href="{{route('data-pengguna')}}">
+          <i class="fas fa-user-friends	"></i>
+          <span>Pengguna</span></a>
       </li>
      
 
@@ -151,19 +138,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-search fa-fw"></i>
               </a>
-              <!-- Dropdown - Messages -->
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              
             </li>
 
             <!-- Nav Item - Alerts -->
@@ -176,7 +151,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ \Auth::user()->username }}</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ \Auth::user()->nama }}</span>
                 <img class="img-profile rounded-circle" src="{{asset('sb-admin/img/user.png')}}">
               </a>
               <!-- Dropdown - User Information -->
@@ -219,7 +194,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; teeto.id 2021</span>
+            <span>Copyright &copy; Rumah Sakit Yos Sudarso Padang 2021</span>
           </div>
         </div>
       </footer>
@@ -292,6 +267,8 @@
   </div>
  
   <!-- Bootstrap core JavaScript-->
+
+ 
   <script src="{{asset('sb-admin/vendor/jquery/jquery.min.js')}}"></script>
   <script src="{{asset('sb-admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
@@ -311,7 +288,10 @@
   <script src="{{asset('sb-admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
   <script src="{{asset('sb-admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
+
+
   
+
   <script>
     var id, email, nama;
     $(".btn-edit").click(function() {

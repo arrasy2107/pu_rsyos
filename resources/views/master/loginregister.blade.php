@@ -11,7 +11,8 @@
 
   <title>Login</title>
   <!-- logo -->
-  
+  <link rel="icon" href="{{asset('sb-admin/img/rsyos.png')}}">
+
   <!-- Custom fonts for this template-->
   <link href="{{asset('sb-admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
   
@@ -22,7 +23,7 @@
   <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,700,900" rel="stylesheet">
 </head>
 
-<body class="bg-gradient-primary" style="background-color: #fff">
+<body class="" style="background-color: #fff">
   @yield('content')
 
 

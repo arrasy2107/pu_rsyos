@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 use Illuminate\Http\Request;
 
 class Direktur
@@ -27,7 +28,7 @@ class Direktur
     
             if($user->id_role == 1)
             {
-                return redirect('dashboarddirektur');
+                return redirect('dashboard');
             }
             else if($user->id_role == 2){
                 return redirect('dashboardpengawas');

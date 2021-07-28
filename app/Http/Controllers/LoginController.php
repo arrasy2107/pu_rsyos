@@ -40,7 +40,7 @@ class LoginController extends Controller
    
 
     if (\Auth::attempt($direktur)) {
-      return redirect()->to('/dashboarddirektur');
+      return redirect()->to('/dashboard');
     } else if (\Auth::attempt($pengawas)) {
       return redirect()->to('/dashboardpengawas');
     } else {
