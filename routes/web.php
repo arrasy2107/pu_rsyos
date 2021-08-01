@@ -55,21 +55,28 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::get('/data-ruangan', function () {
         return view('admin.konten.ruangan');
     })->name('data-ruangan');
+    Route::post('/tambahruangan', 'DirekturController@tambahruangan')->name('tambahruangan');
+    Route::put('/editruangan', 'DirekturController@editruangan')->name('editruangan');
+    Route::get('/deleteruangan/{id}', 'DirekturController@deleteruangan')->name('deleteruangan');
 
     //Dokter Jaga
     Route::get('/data-dokter', function () {
         return view('admin.konten.dokter');
     })->name('data-dokter');
+    Route::post('/tambahdokter', 'DirekturController@tambahdokter')->name('tambahdokter');
+    Route::put('/editdokter', 'DirekturController@editdokter')->name('editdokter');
+    Route::get('/deletedokter/{id}', 'DirekturController@deletedokter')->name('deletedokter');
 
     //Pengguna
     Route::get('/data-pengguna', function () {
         return view('admin.konten.pengguna');
     })->name('data-pengguna');
+    Route::post('/tambahpengguna', 'DirekturController@tambahpengguna')->name('tambahpengguna');
+    Route::put('/editpengguna', 'DirekturController@editpengguna')->name('editpengguna');
+    Route::get('/deletepengguna/{id}', 'DirekturController@deletepengguna')->name('deletepengguna');
 
     //FAQ
-    Route::post('/tambahfaq', 'KontenController@tambahfaq')->name('tambahfaq');
-    Route::put('/editfaq', 'KontenController@editfaq')->name('editfaq');
-    Route::get('/deletefaq/{id}', 'KontenController@deletefaq')->name('deletefaq');
+    
 
 
 });

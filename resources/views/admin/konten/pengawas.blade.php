@@ -54,7 +54,7 @@
                     $no = 1;
                     ?>
                     <tbody>
-                        @foreach(\App\Models\User::where('id_role',2)->get() as $data)
+                        @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $data)
                         <tr>
                             <td>{{ $no }}</td>
                             <td>{{ $data->nama }}</td>
