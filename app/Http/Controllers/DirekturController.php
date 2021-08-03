@@ -12,7 +12,7 @@ class DirekturController extends Controller
   public function tambahpengguna(Request $r)
   {
 
-    $sp = \App\Models\User::where('email', $r->username)->first();
+    $sp = \App\Models\User::where('username', $r->username)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Username ' . $r->username . ' sudah pernah diinputkan sebelumnya, silahkan input dengan username lain');
@@ -34,10 +34,10 @@ class DirekturController extends Controller
 
   public function editpengguna(Request $r)
   {
-    $sp = \App\Models\User::where('email', $r->email)->where('id', '<>', $r->id)->first();
+    $sp = \App\Models\User::where('username', $r->username)->where('id', '<>', $r->id)->first();
 
     if ($sp) {
-      return redirect()->back()->with('fail-delete', 'Email ' . $r->email . ' sudah pernah diinputkan sebelumnya, silahkan input dengan username lain');
+      return redirect()->back()->with('fail-delete', 'Username ' . $r->username . ' sudah pernah diinputkan sebelumnya, silahkan input dengan username lain');
     } else {
       $sup = \App\Models\User::where('id', $r->id)->first();
       $sup->nama = $r->nama;

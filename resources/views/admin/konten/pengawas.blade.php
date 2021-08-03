@@ -60,8 +60,8 @@
                             <td>{{ $data->nama }}</td>
                             <td>{{ $data->username }}</td>
                             <td>******</td>
-                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-judul="{{$data->judul}}" data-subjudul="{{ $data->subjudul }}" data-ringkasan="{{$data->text_preview}}" data-penulis="{{ $data->penulis }}" data-tanggal="{{ $data->tanggal }}" data-teks="{{ $data->teks }}" data-toggle="modal" data-target="#edit">Ubah</button>
-                                <a href="" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
+                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->nama}}" data-username="{{ $data->username }}"  data-toggle="modal" data-target="#edit">Ubah</button>
+                                   <a href="{{ route('deletepengguna',$data->id) }}" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
                             </td>
 
                         </tr>
@@ -83,41 +83,22 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Add Blog
+                Tanbah Pengawas Umum
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="#" enctype="multipart/form-data">
+                <form method="post" action="{{ route('tambahpengguna') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Judul: </label>
-                        <input type="text" class="form-control" name="judul" required />
+                        <label>Nama: </label>
+                        <input type="text" class="form-control" name="nama" required />
                     </div>
+                    <div class="form-group">
+                        <label>Username: </label>
+                        <input type="text" class="form-control" name="username" required />
+                    </div>
+                    <input type="hidden" class="txt-role" name="role" value="2">
 
-                    <div class="form-group">
-                        <label>Gambar: </label>
-                        <div>
-                            <input type="file" name="image" classs="form-control" accept="image/*" required />
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ringkasan: </label>
-                        <textarea type="text" rows="4" class="form-control" name="text_preview" required></textarea>
-                    </div>
-                    <!-- <div class="form-group">
-                        <label>Penulis: </label>
-                        <input type="text" class="form-control" name="penulis" required />
-                    </div> -->
-                    <div class="form-group">
-                        <label>Tanggal: </label>
-                        <input type="date" class="form-control" name="tanggal" required />
-                    </div>
-                    <div class="form-group">
-                        <label>Teks: </label>
-                        <textarea type="text" rows="10" class="form-control" id="editor1" name="teks" required></textarea>
-                    </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
@@ -132,43 +113,23 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Edit Blog
+                Ubah Data Pengawas Umum
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="#" enctype="multipart/form-data">
+                <form method="post" action="{{ route('editpengguna') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" class="txtid" name="id">
                     <div class="form-group">
-                        <label>Judul: </label>
-                        <input type="text" class="form-control txt-judul" name="judul" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Gambar: </label>
-                        <div>
-                            <input type="file" name="image" classs="form-control txt-gambar" accept="image/*" />
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ringkasan: </label>
-                        <textarea type="text" rows="4" class="form-control txt-ringkasan" name="text_preview" required></textarea>
-                    </div>
-                    <!-- <div class="form-group">
-                        <label>Penulis: </label>
-                        <input type="text" class="form-control txt-penulis" name="penulis" required />
-                    </div> -->
-                    <div class="form-group">
-                        <label>Tanggal: </label>
-                        <input type="date" class="form-control txt-tanggal" name="tanggal" required />
+                        <label>Nama: </label>
+                        <input type="text" class="form-control txt-nama" name="nama" required />
                     </div>
                     <div class="form-group">
-                        <label>Teks: </label>
-                        <textarea type="text" rows="10" class="form-control txt-teks" id="editor" name="teks" required></textarea>
+                        <label>Username: </label>
+                        <input type="text" class="form-control txt-username" name="username" required />
                     </div>
+                    <input type="hidden" class="txt-role" name="role" value="2">
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
@@ -181,7 +142,7 @@
 @section('custom_script')
 <script>
     $("#dataTable").DataTable({
-       
+
     });
 
 
@@ -194,24 +155,18 @@
 
 
 
-    var idanggota, username, kuota, reset, idd, usern, namanya, namanya2;
     $("#dataTable").on('click', '.btn-edit', function() {
         id = $(this).val();
-        judul = $(this).data('judul');
+        nama = $(this).data('nama');
+        username = $(this).data('username');
 
-        ringkasan = $(this).data('ringkasan');
-        penulis = $(this).data('penulis');
-        tanggal = $(this).data('tanggal');
-        teks = $(this).data('teks');
+        
     });
 
     $('#edit').on('show.bs.modal', function() {
         $(".txtid").val(id);
-        $(".txt-judul").val(judul);
-        $(".txt-ringkasan").val(ringkasan);
-        $(".txt-penulis").val(penulis);
-        $(".txt-tanggal").val(tanggal);
-       
+        $(".txt-nama").val(nama);
+        $(".txt-username").val(username);
 
 
     });

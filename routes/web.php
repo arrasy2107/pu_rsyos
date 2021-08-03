@@ -28,14 +28,14 @@ Route::group(['middleware' => ['auth']],  function () {
 });
 
 //PENGAWAS
-// Route::group(['middleware' => ['auth', 'pengawas']],  function () {
+Route::group(['middleware' => ['auth', 'pengawas']],  function () {
 
-//     //member
-//     Route::get('/dashboard', function () {
-//         return view('staf.dashboardstaf');
-//     })->name('dashboardstaf');
+    //member
+    Route::get('/laporan', function () {
+        return view('pengawas.laporan');
+    })->name('laporan');
  
-// });
+});
 
 //DIREKTUR
 Route::group(['middleware' => ['auth', 'direktur']],  function () {

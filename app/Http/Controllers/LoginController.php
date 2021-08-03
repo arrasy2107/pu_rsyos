@@ -42,7 +42,7 @@ class LoginController extends Controller
     if (\Auth::attempt($direktur)) {
       return redirect()->to('/dashboard');
     } else if (\Auth::attempt($pengawas)) {
-      return redirect()->to('/dashboardpengawas');
+      return redirect()->to('/laporan');
     } else {
       return redirect()->back()->withErrors(['Username dan password tidak cocok']);
     }

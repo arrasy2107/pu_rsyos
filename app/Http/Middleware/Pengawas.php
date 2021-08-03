@@ -31,7 +31,7 @@ class Pengawas
                 return redirect('dashboard');
             }
             else if($user->id_role == 2){
-                return redirect('dashboardpengawas');
+                return redirect('laporan');
             }
     }
 }
