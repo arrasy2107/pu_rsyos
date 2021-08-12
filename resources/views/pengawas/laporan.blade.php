@@ -1,5 +1,14 @@
 @extends('master.masterpengawas')
 @section('content')
+
+<?php 
+use Carbon\Carbon;
+
+setlocale(LC_TIME, 'id_ID');
+\Carbon\Carbon::setLocale('id');
+\Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
+$today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+?>
 <style>
     .shadow-textarea textarea.form-control::placeholder {
         font-weight: 300;
@@ -14,7 +23,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Laporan Pengawas Umum</h1>
-        Tanggal : 27 July 2021 | Dinas : PAGI
+        {{$today}}
     </div>
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
@@ -30,18 +39,15 @@
                     {{ csrf_field() }}
                     <div class="row ">
                         <!-- Pending Requests Card Example -->
-
-
-                        <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-
+                            <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1"> Jumlah Pasien</div>
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
+                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien" autocomplete="off" required />
+
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -51,6 +57,8 @@
                                 </div>
                             </div>
                         </div>
+
+                 
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-4 col-md-6 mb-4">
@@ -219,7 +227,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +247,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +268,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +289,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -302,7 +310,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -342,7 +350,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -362,7 +370,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -383,7 +391,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -404,7 +412,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -425,7 +433,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -446,7 +454,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -467,7 +475,7 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-procedures	 fa-2x text-gray-300"></i>
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
