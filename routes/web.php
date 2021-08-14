@@ -34,6 +34,16 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::get('/laporan', function () {
         return view('pengawas.laporan');
     })->name('laporan');
+    Route::get('/draf-laporan', function () {
+        return view('pengawas.draf-laporan');
+    })->name('draf-laporan');
+    Route::get('/riwayat-laporan', function () {
+        return view('pengawas.riwayat');
+    })->name('riwayat-laporan');
+    
+    //laporan
+    Route::post('/draftlaporanIGD', 'PengawasController@draftlaporanIGD')->name('draftlaporanIGD');
+    Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
  
 });
 

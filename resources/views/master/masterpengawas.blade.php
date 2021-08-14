@@ -62,12 +62,12 @@
         Laporan
       </div> -->
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{route('draf-laporan')}}">
           <i class="fas fa-edit"></i>
           <span>Draf Laporan</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{route('riwayat-laporan')}}">
           <i class="fas fa-history"></i>
           <span>Riwayat Laporan</span></a>
       </li>

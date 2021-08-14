@@ -26,29 +26,26 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Laporan Pengawas Umum</h1>
+        <h1 class="h3 mb-0 text-gray-800">Draf Laporan Pengawas Umum</h1>
         {{$today}}
     </div>
 
-    @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
-    <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseIGD2" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIGD2">
-            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
-        </a>
-    </div>
-    @else
+   
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <a href="#collapseIGD" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIGD">
-            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD)</h6>
+        @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+        <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
+        @else
+        <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD)</h6>
+        @endif
         </a>
         <!-- Card Content - Collapse -->
         <div class="collapse " id="collapseIGD">
             <div class="card-body">
                 <!-- Content Row -->
-                <form method="post" action="{{ route('draftlaporanIGD') }}" enctype="multipart/form-data">
+                <form method="post" action="#" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="row ">
                         <!-- Pending Requests Card Example -->
@@ -59,7 +56,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -81,7 +78,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien rawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_rawat" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_rawat')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -102,7 +99,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien emergency</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_emergency" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_emergency" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_emergency')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -123,7 +120,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Tidak bisa dirawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_tidak_bisa_rawat')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -144,7 +141,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Death on arrival (DOA)</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_doa" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_doa" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_doa')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -162,27 +159,31 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
-                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3" placeholder="Tulis disini..."></textarea>
+                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3" placeholder="Tulis disini..."  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan</label>
-                                <textarea class="form-control" name="igd_permasalahan" rows="3" placeholder="Tulis disini..."></textarea>
+                                <textarea class="form-control" name="igd_permasalahan" rows="3" placeholder="Tulis disini..." readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('permasalahan')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Lain - lain</label>
-                                <textarea class="form-control" name="igd_lainlain" rows="3" placeholder="Tulis disini..."></textarea>
+                                <textarea class="form-control" name="igd_lainlain" rows="3" placeholder="Tulis disini..." readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('lain_lain')->first()}}</textarea>
                             </div>
                             <div class="form-group">
                                 <label style="color:#000;font-weight:600">Dokter Jaga: </label>
-                                <select class="form-control select2" name="igd_dokterjaga" required>
+                                <select class="form-control" name="igd_dokterjaga" disabled>
                                     <option value="" selected disabled hidden>Pilih Dokter</option>
                                     @foreach(\App\Models\Dokter::where('status',1)->get() as $dk)
-                                    <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
+                                        @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id_dokter')->first() == $dk->id)
+                                        <option value="{{ $dk->id }}" selected>{{ $dk->nama_dokter }}</option>
+                                        @else
+                                        <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group">
-                                <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3">Simpan ke Draf Laporan</button>
+                                <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3" disabled>Simpan Laporan</button>
 
                             </div>
                         </div>
@@ -195,7 +196,6 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         </div>
     </div>
 
-    @endif
 
     
  
@@ -219,11 +219,11 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label style="color:#000;font-weight:600"> Ruangan yang belum dikunjungi: </label>
+                                <label style="color:#000;font-weight:600"> Ruangan yang sudah dikunjungi: </label>
                                 <select class="form-control select2" name="inap_ruangan" required>
                                     <option value="" selected disabled hidden>Pilih Ruangan</option>
                                     @foreach(\App\Models\Ruangan::where('status',1)->get() as $dk)
-                                        @if(!\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
+                                        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
                                         <option value="{{ $dk->id }}">{{ $dk->nama_ruangan }}</option>
                                         @endif
                                     @endforeach
