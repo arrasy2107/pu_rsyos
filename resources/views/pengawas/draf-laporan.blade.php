@@ -5,7 +5,8 @@
     <p>{{ Session::get('success-add') }}</p>
 </div>
 @endif
-<?php 
+<?php
+
 use Carbon\Carbon;
 
 setlocale(LC_TIME, 'id_ID');
@@ -30,16 +31,16 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         {{$today}}
     </div>
 
-   
+
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <a href="#collapseIGD" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIGD">
-        @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
-        <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
-        @else
-        <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD)</h6>
-        @endif
+            @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
+            @else
+            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD)</h6>
+            @endif
         </a>
         <!-- Card Content - Collapse -->
         <div class="collapse " id="collapseIGD">
@@ -61,14 +62,14 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px" onmouseover="igd1a(this);" onmouseout="igd1b(this);">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                 
+
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-4 col-md-6 mb-4">
@@ -83,7 +84,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" height="64px" width="64px" onmouseover="igd2a(this);" onmouseout="igd2b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -104,7 +105,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" height="64px" width="64px" onmouseover="igd3a(this);" onmouseout="igd3b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +126,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" height="64px" width="64px" onmouseover="igd4a(this);" onmouseout="igd4b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +147,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" height="64px" width="64px" onmouseover="igd5a(this);" onmouseout="igd5b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -159,7 +160,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
-                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3" placeholder="Tulis disini..."  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
+                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3" placeholder="Tulis disini..." readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan</label>
@@ -174,11 +175,11 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                 <select class="form-control" name="igd_dokterjaga" disabled>
                                     <option value="" selected disabled hidden>Pilih Dokter</option>
                                     @foreach(\App\Models\Dokter::where('status',1)->get() as $dk)
-                                        @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id_dokter')->first() == $dk->id)
-                                        <option value="{{ $dk->id }}" selected>{{ $dk->nama_dokter }}</option>
-                                        @else
-                                        <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
-                                        @endif
+                                    @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id_dokter')->first() == $dk->id)
+                                    <option value="{{ $dk->id }}" selected>{{ $dk->nama_dokter }}</option>
+                                    @else
+                                    <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -197,17 +198,17 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
     </div>
 
 
-    
- 
+
+
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <form method="post" action="{{ route('draftlaporanUmum') }}" enctype="multipart/form-data">
             {{ csrf_field() }}
             <a href="#collapseRanap" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseRanap">
-            @if(\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
-            <h6 class="m-0 font-weight-bold ">Rawat Inap <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span></h6>
-            @else
+                @if(\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+                <h6 class="m-0 font-weight-bold ">Rawat Inap <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span></h6>
+                @else
                 <h6 class="m-0 font-weight-bold ">Rawat Inap</h6>
                 @endif
             </a>
@@ -223,9 +224,9 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                 <select class="form-control select2" name="inap_ruangan" required>
                                     <option value="" selected disabled hidden>Pilih Ruangan</option>
                                     @foreach(\App\Models\Ruangan::where('status',1)->get() as $dk)
-                                        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
-                                        <option value="{{ $dk->id }}">{{ $dk->nama_ruangan }}</option>
-                                        @endif
+                                    @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
+                                    <option value="{{ $dk->id }}">{{ $dk->nama_ruangan }}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -248,7 +249,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px" onmouseover="ranap1a(this);" onmouseout="ranap1b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -268,7 +269,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" height="64px" width="64px" onmouseover="ranap2a(this);" onmouseout="ranap2b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -289,7 +290,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" height="64px" width="64px" onmouseover="ranap3a(this);" onmouseout="ranap3b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +311,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" height="64px" width="64px" onmouseover="ranap4a(this);" onmouseout="ranap4b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -331,7 +332,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" height="64px" width="64px" onmouseover="ranap5a(this);" onmouseout="ranap5b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -371,7 +372,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" height="64px" width="64px" onmouseover="ranap6a(this);" onmouseout="ranap6b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -391,7 +392,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" height="64px" width="64px" onmouseover="ranap7a(this);" onmouseout="ranap7b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -412,7 +413,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" height="64px" width="64px" onmouseover="ranap8a(this);" onmouseout="ranap8b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -433,7 +434,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" height="64px" width="64px" onmouseover="ranap9a(this);" onmouseout="ranap9b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -454,15 +455,15 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" height="64px" width="64px" onmouseover="ranap10a(this);" onmouseout="ranap10b(this);">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                         <!-- Earnings (Monthly) Card Example -->
-                         <div class="col-xl-4 col-md-6 mb-4">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -475,15 +476,15 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" height="64px" width="64px" onmouseover="ranap11a(this);" onmouseout="ranap11b(this);">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                         <!-- Earnings (Monthly) Card Example -->
-                         <div class="col-xl-4 col-md-6 mb-4">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -496,7 +497,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" height="64px" width="64px">
+                                            <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" height="64px" width="64px" onmouseover="ranap12a(this);" onmouseout="ranap12b(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -524,12 +525,152 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
             </div>
         </form>
     </div>
-    
+
 
 
 </div>
 <!-- /.container-fluid -->
 @stop
 @section('custom_script')
+<script>
+    // IGD
 
+    function igd1a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
+    }
+
+    function igd1b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
+    }
+    
+    function igd2a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-dirawat.png')}}');
+    }
+
+    function igd2b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}');
+    }
+    
+    function igd3a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-emergency.png')}}');
+    }
+
+    function igd3b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-emergency.png')}}');
+    }
+    
+    function igd4a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+
+    function igd4b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+    
+    function igd5a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-doa.png')}}');
+    }
+
+    function igd5b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-doa.png')}}');
+    }
+
+    //RAWAT INAP
+
+    function ranap1a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
+    }
+
+    function ranap1b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
+    }
+    
+    function ranap2a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap2b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap3a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap3b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap4a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap4b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap5a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap5b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap6a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap6b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap7a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap7b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap8a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap8b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap9a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap9b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap10a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap10b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap11a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap11b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap12a(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-difabel.png')}}');
+    }
+
+    function ranap12b(element) {
+        element.setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
+    }
+</script>
 @stop
