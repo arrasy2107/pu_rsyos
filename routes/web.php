@@ -40,6 +40,9 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::get('/riwayat-laporan', function () {
         return view('pengawas.riwayat');
     })->name('riwayat-laporan');
+    Route::get('/refresh-laporan-umum/{ruangan}',function($ruangan){
+        return view('pengawas.ajax.refresh-laporan-umum',compact('ruangan'));
+    });
     
     //laporan
     Route::post('/draftlaporanIGD', 'PengawasController@draftlaporanIGD')->name('draftlaporanIGD');

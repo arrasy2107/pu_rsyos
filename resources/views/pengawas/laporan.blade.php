@@ -34,7 +34,8 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <a href="#collapseIGD2" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIGD2">
-            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
+            <h6 class="m-0 font-weight-bold ">Instalasi Gawat Darurat (IGD) <span style="color:green;font-size:14px">(sudah dikunjungi) </span> <span style="font-size:14px;color:#858796;font-weight:400;float: right;">ubah data di Draf Laporan ...</span> </h6>
+            
         </a>
     </div>
     @else
@@ -59,12 +60,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien" onfocus="igd1a();" onfocusout="igd1b();" autocomplete="off" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" id="gbr_igd_pasien" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -81,12 +82,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien rawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_rawat" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_rawat" onfocus="igd2a();" onfocusout="igd2b();"  autocomplete="off" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" id="gbr_igd_pasien_rawat" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -102,12 +103,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien emergency</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_emergency" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_emergency" onfocus="igd3a();" onfocusout="igd3b();"  autocomplete="off" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" id="gbr_igd_pasien_emergency" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -123,12 +124,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Tidak bisa dirawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" onfocus="igd4a();" onfocusout="igd4b();"  autocomplete="off" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" id="gbr_igd_pasien_tidak_rawat" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -144,12 +145,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Death on arrival (DOA)</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_doa" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="igd_pasien_doa" onfocus="igd5a();" onfocusout="igd5b();"  autocomplete="off" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" id="gbr_igd_pasien_doa" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -244,11 +245,11 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1"> Jumlah Pasien lama</div>
                                             <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_lama" autocomplete="off" required />
+                                                <input type="number" class="form-control" id="inap_pasien_lama" name="inap_pasien_lama" onfocus="ranap1a();" onfocusout="ranap1b();" autocomplete="off" required />
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" id="gbr_inap_pasien_lama" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -263,12 +264,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien baru</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_baru" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_baru" autocomplete="off" onfocus="ranap2a();" onfocusout="ranap2b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" id="gbr_inap_pasien_baru" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -284,12 +285,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien pindah</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_pindah" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_pindah" autocomplete="off" onfocus="ranap3a();" onfocusout="ranap3b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" id="gbr_inap_pasien_pindah" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -305,12 +306,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien pindahan</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_pindahan" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_pindahan" autocomplete="off" onfocus="ranap4a();" onfocusout="ranap4b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" id="gbr_inap_pasien_pindahan" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -326,12 +327,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Meninggal</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_meninggal" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_meninggal" autocomplete="off" onfocus="ranap5a();" onfocusout="ranap5b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" id="gbr_inap_pasien_meninggal" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -367,11 +368,11 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1"> Jumlah Pasien Covid19</div>
                                             <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_covid" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_covid" autocomplete="off" onfocus="ranap6a();" onfocusout="ranap6b();" required />
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" id="gbr_inap_pasien_covid" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -386,12 +387,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Suspect Covid19</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_suspect" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_suspect" autocomplete="off" onfocus="ranap7a();" onfocusout="ranap7b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" id="gbr_inap_pasien_suspek_covid" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -407,12 +408,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien restrain</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_restrain" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_restrain" autocomplete="off" onfocus="ranap8a();" onfocusout="ranap8b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" id="gbr_inap_pasien_restrain" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -428,12 +429,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien perilaku kekerasan</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_kekerasan" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_kekerasan" autocomplete="off" onfocus="ranap9a();" onfocusout="ranap9b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" id="gbr_inap_pasien_perilaku_kekerasan" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -449,12 +450,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien keracunan</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_keracunan" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_keracunan" autocomplete="off" onfocus="ranap10a();" onfocusout="ranap10b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" id="gbr_inap_pasien_keracunan" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -470,12 +471,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Keterbatasan bahasa</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_bahasa" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_bahasa" autocomplete="off" onfocus="ranap11a();" onfocusout="ranap11b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" id="gbr_inap_pasien_keterbatasan_bahasa" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -491,12 +492,12 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien difabel</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_difabel" autocomplete="off" required />
+                                                <input type="number" class="form-control" name="inap_pasien_difabel" autocomplete="off" onfocus="ranap12a();" onfocusout="ranap12b();" required />
 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" height="64px" width="64px">
+                                        <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" id="gbr_inap_pasien_difabel" height="64px" width="64px">
                                         </div>
                                     </div>
                                 </div>
@@ -531,5 +532,145 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 <!-- /.container-fluid -->
 @stop
 @section('custom_script')
+<script>
+    //IGD
+    
+    function igd1a() {
+        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
+    }
 
+    function igd1b() {
+        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
+    }
+    
+    function igd2a() {
+        document.getElementById("gbr_igd_pasien_rawat").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-dirawat.png')}}');
+    }
+
+    function igd2b() {
+        document.getElementById("gbr_igd_pasien_rawat").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}');
+    }
+    
+    function igd3a() {
+        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-emergency.png')}}');
+    }
+
+    function igd3b() {
+        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-emergency.png')}}');
+    }
+    
+    function igd4a() {
+        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+
+    function igd4b() {
+        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+    
+    function igd5a() {
+        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-doa.png')}}');
+    }
+
+    function igd5b() {
+        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-doa.png')}}');
+    }
+
+
+    //Rawat Inap
+    function ranap1a() {
+        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
+    }
+
+    function ranap1b() {
+        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
+    }
+
+    function ranap2a() {
+        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap2b() {
+        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap3a() {
+        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap3b() {
+        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap4a() {
+        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap4b() {
+        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap5a() {
+        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap5b() {
+        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap6a() {
+        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap6b() {
+        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap7a() {
+        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap7b() {
+        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap8a() {
+        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap8b() {
+        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap9a() {
+        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap9b() {
+        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap10a() {
+        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap10b() {
+        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap11a() {
+        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap11b() {
+        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap12a() {
+        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-difabel.png')}}');
+    }
+
+    function ranap12b() {
+        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
+    }
+</script>
 @stop
