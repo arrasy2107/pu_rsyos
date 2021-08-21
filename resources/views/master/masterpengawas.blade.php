@@ -21,7 +21,12 @@
   <!-- Custom styles for this template-->
   <link href="{{asset('sb-admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
 
-  
+  <style>
+  .sidebar-dark .nav-item.active .nav-link {
+    
+    background-color: midnightblue;
+}
+  </style>
 
   @yield('custom_style')
 </head>
@@ -39,7 +44,7 @@
      
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
         <div class="sidebar-brand-icon">
-        <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
+        <img src="{{asset('sb-admin/img/rsyos.png')}}" style="width:100%;height:100%; display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
             
         </div>
         <!-- <div class="sidebar-brand-text mx-3">teeto.id</div> -->
@@ -48,25 +53,37 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
+      @if(Route::current()->getName() == 'laporan')
       <li class="nav-item active">
-        <a class="nav-link" href="{{route('dashboard')}}">
+        @else
+        <li class="nav-item">
+        @endif
+        <a class="nav-link" href="{{route('laporan')}}">
           <i class="far fa-file-alt	"></i>
           <span>Laporan Pengawas Umum</span></a>
       </li>
 
       <!-- Divider -->
-      <hr class="sidebar-divider my-0">
+      <!-- <hr class="sidebar-divider my-0"> -->
 
       <!-- Heading -->
       <!-- <div class="sidebar-heading">
         Laporan
       </div> -->
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'draf-laporan')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('draf-laporan')}}">
           <i class="fas fa-edit"></i>
           <span>Draf Laporan</span></a>
       </li>
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'riwayat-laporan')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('riwayat-laporan')}}">
           <i class="fas fa-history"></i>
           <span>Riwayat Laporan</span></a>

@@ -143,4 +143,42 @@ class PengawasController extends Controller
         $sup->save();
         return redirect()->back()->with('success-delete', 'Berhasil menghapus data draf Laporan Umum');
     }
+
+    public function kirimLaporan(Request $r)
+    {   
+
+
+        $folderPath = public_path('signature/');
+        $image_parts = explode(";base64,", $r->signed);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $namafile = uniqid() . '.'.$image_type;
+        $file = $folderPath . $namafile;
+        
+        file_put_contents($file, $image_base64);
+        
+        $date = date_default_timezone_set('Asia/Jakarta');
+        $sup = new \App\Models\Laporan;
+        $sup->id_pengawas = \Auth::user()->id;
+        $sup->id_dinas = $r->dinas;
+        $sup->signature = $namafile;
+        $sup->created_at = date('Y-m-d H:i:s');
+        $sup->updated_at = date('Y-m-d H:i:s');
+        $sup->save();
+
+        //Update Laporan IGD
+        $igd = \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first();
+        $igd->id_laporan = \App\Models\Laporan::pluck('id')->last();
+        $igd->status = 1;
+        
+        $igd->updated_at = date('Y-m-d H:i:s');
+        $igd->save();
+
+        //Update Laporan Umum
+        $umum = \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
+
+
+        return redirect()->back()->with('success-add', 'Berhasil Submit Laporan Pengawas Umum');
+    }
 }

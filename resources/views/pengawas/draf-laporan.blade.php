@@ -25,6 +25,11 @@
     <p>{{ Session::get('success-add') }}</p>
 </div>
 @endif
+@if (Session::has('fail-add'))
+<div class="alert alert-danger alert-call">
+    <p>{{ Session::get('fail-add') }}</p>
+</div>
+@endif
 <?php
 
 use Carbon\Carbon;
@@ -217,8 +222,9 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                                 </select>
                             </div>
                             <div class="form-group">
-                                <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3" disabled>Simpan Laporan</button>
-
+                                <button type="submit" style="float:right" class="btn btn-sm btn-delete-igd btn-danger my-3 ml-2" >Batalkan Laporan</button>
+                                <button type="submit" style="float:right" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
+                                
                             </div>
                         </div>
                     </div>
@@ -274,15 +280,55 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
             </div>
         </form>
     </div>
-    <div class="card shadow mb-4">
-
+    <div class="card shadow mb-4 ">
+        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0)
         <div class="card-body">
+            <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
             <div class="row">
-                <form method="post" action="#" class="col-lg-6" enctype="multipart/form-data">
+                <form method="post" action="#" class="col-lg-4" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Dinas: </label>
+                            <label style="color:#000;font-weight:600"> Dinas </label>
+                            <select class="form-control select2" disabled>
+                                <option value="" selected disabled hidden>Pilih Dinas</option>
+                                @foreach(\App\Models\Dinas::all() as $dk)
+                                <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
+
+                                @endforeach
+                            </select>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
+                            <br />
+                            <div style="  background-color: #eaecf4;width: 100%;height: 200px;border-radius:.35rem"></div>
+                            <br />
+                            <button id="clear" class="btn btn-danger btn-sm" disabled>Hapus Tanda Tangan</button>
+                            <textarea id="" style="display: none" required></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" disabled>
+                            <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
+                        </div>
+                        <div class="form-group">
+                                <button type="submit" class="btn btn-lg btn-primary my-3" disabled>Kirim Laporan</button>
+                        </div>
+                    </div>
+                  
+                    
+                </form>
+                
+            </div>
+        </div>
+        @else
+        <div class="card-body">
+            <div class="row">
+                <form method="post" action="{{ route('kirimLaporan') }}" class="col-lg-4" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label style="color:#000;font-weight:600"> Dinas </label>
                             <select class="form-control select2" name="dinas" id="dinas" required>
                                 <option value="" selected disabled hidden>Pilih Dinas</option>
                                 @foreach(\App\Models\Dinas::all() as $dk)
@@ -293,7 +339,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                         </div>
                        
                         <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Tanda Tangan </label>
+                            <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
                             <br />
                             <div id="sig"></div>
                             <br />
@@ -305,7 +351,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                             <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
                         </div>
                         <div class="form-group">
-                                <button type="submit" style="float:right" class="btn btn-lg btn-kirim btn-primary my-3" >Kirim Laporan</button>
+                                <button type="submit" class="btn btn-lg btn-kirim btn-primary my-3" >Kirim Laporan</button>
                         </div>
                     </div>
                   
@@ -314,6 +360,9 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
                 
             </div>
         </div>
+
+        @endif
+
     </div>
 
 
@@ -393,6 +442,19 @@ $("#inap_ruangan").change(function(){
      });
    
 
+});
+
+$(".btn-kirim").click(function(){
+    // var conf = confirm('Apakah anda yakin ingin setujui laporan ini ?');
+    //     if (conf == false) {
+    //         e.preventDefault();
+    //     }
+    // });
+    if(document.getElementById("signature64").value == '')
+    {
+        alert("Tanda tangan tidak boleh kosong");
+       
+    }
 });
 </script>
 

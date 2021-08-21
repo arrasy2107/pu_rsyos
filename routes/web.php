@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     //laporan
     Route::post('/draftlaporanIGD', 'PengawasController@draftlaporanIGD')->name('draftlaporanIGD');
     Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
+    Route::post('/kirimLaporan', 'PengawasController@kirimLaporan')->name('kirimLaporan');
  
 });
 
@@ -57,7 +58,9 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     })->name('dashboard');
  
     //Riwayat Laporan
-
+    Route::get('/riwayat-laporan-pengawas-umum', function () {
+        return view('admin.konten.riwayat');
+    })->name('riwayat-laporan-pengawas-umum');
     
     //Data Pengawas Umum
     Route::get('/data-pengawas-umum', function () {
@@ -88,7 +91,10 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::put('/editpengguna', 'DirekturController@editpengguna')->name('editpengguna');
     Route::get('/deletepengguna/{id}', 'DirekturController@deletepengguna')->name('deletepengguna');
 
-    //FAQ
+    //Laporan
+    Route::get('/refresh-laporan-umum-pu/{ruangan}',function($ruangan){
+        return view('admin.ajax.refresh-laporan-umum',compact('ruangan'));
+    });
     
 
 

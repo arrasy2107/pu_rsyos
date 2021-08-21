@@ -24,46 +24,43 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Data Pengguna</h1>
+    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
 
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Pengguna</button>
-                    <br>
-                </div>
-            </div>
-            <br>
-            <div class="table-responsive">
+                        <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Username</th>
-                            <th>Password</th>
-                            <th>Role</th>
-                            <th>Aksi</th>
+                            <th width="10%">No</th>
+                            <th width="20%">Tanggal</th>
+                            <th>Dinas</th>
+                            <th>Pengawas Umum</th>
+                            <th >Tanda Tangan</th>
+                            <th width="20%">Laporan</th>
 
                         </tr>
                     </thead>
-
+                    
                     <?php
                     $no = 1;
                     ?>
+                    
                     <tbody>
-                        @foreach(\App\Models\User::where('status',1)->where('id','<>',\Auth::user()->id )->get() as $data)
+                        @foreach(\App\Models\Laporan::orderBy('updated_at','DESC')->get() as $data)
                         <tr>
                             <td>{{ $no }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td>{{ $data->username }}</td>
-                            <td>******</td>
-                            <td>{{App\Models\Role::where('id',$data->id_role)->pluck('role')->first()}}</td>
-                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->nama}}" data-username="{{ $data->username }}" data-role="{{$data->id_role}}"  data-toggle="modal" data-target="#edit">Ubah</button>
-                                <a href="{{ route('deletepengguna',$data->id) }}" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
+                            <td>{{ $data->updated_at }}</td>
+                            <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
+                            <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
+                            <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                            
+                            <td>
+                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IGD</button>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">Umum</button>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IRJ</button>
                             </td>
 
                         </tr>
@@ -85,29 +82,18 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Tanbah Pengguna
+                Tambah Ruangan
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('tambahpengguna') }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route('tambahruangan') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Nama: </label>
-                        <input type="text" class="form-control" name="nama" required />
-                    </div>
-                    <div class="form-group">
-                        <label>Username: </label>
-                        <input type="text" class="form-control" name="username" required />
-                    </div>
-                    <div class="form-group">
-                        <label>Role: </label>
-                        <select class="form-control" name="role" required>
-                            @foreach(\App\Models\Role::orderBy('id','DESC')->get() as $mb)
-                            <option value="{{ $mb->id }}">{{ $mb->role }}</option>
-                            @endforeach
-                        </select>
+                        <label>Nama Ruangan: </label>
+                        <input type="text" class="form-control" name="nama_ruangan" required />
                     </div>
 
+                   
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
@@ -122,30 +108,20 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Ubah Data Pengguna
+                Ubah Nama Ruangan
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('editpengguna') }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route('editruangan') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" class="txtid" name="id">
                     <div class="form-group">
-                        <label>Nama: </label>
-                        <input type="text" class="form-control txt-nama" name="nama" required />
+                        <label>Nama Ruangan: </label>
+                        <input type="text" class="form-control txt-nama" name="nama_ruangan" required />
                     </div>
-                    <div class="form-group">
-                        <label>Username: </label>
-                        <input type="text" class="form-control txt-username" name="username" required />
-                    </div>
-                    <div class="form-group">
-                        <label>Role: </label>
-                        <select class="form-control txt-role" name="role" required>
-                            @foreach(\App\Models\Role::all() as $mb)
-                            <option value="{{ $mb->id }}">{{ $mb->role }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
+                    
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
@@ -158,7 +134,7 @@
 @section('custom_script')
 <script>
     $("#dataTable").DataTable({
-
+       
     });
 
 
@@ -171,19 +147,18 @@
 
 
 
+
     $("#dataTable").on('click', '.btn-edit', function() {
         id = $(this).val();
         nama = $(this).data('nama');
-        username = $(this).data('username');
-        role = $(this).data('role');
-        
+
     });
 
     $('#edit').on('show.bs.modal', function() {
         $(".txtid").val(id);
         $(".txt-nama").val(nama);
-        $(".txt-username").val(username);
-        $(".txt-role").val(role);
+       
+
 
     });
 

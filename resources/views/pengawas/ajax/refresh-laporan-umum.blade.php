@@ -283,8 +283,9 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3">Simpan ke Draf Laporan</button>
-
+            <button type="submit" style="float:right" class="btn btn-sm btn-delete-igd btn-danger my-3 ml-2" >Batalkan Laporan</button>
+            <button type="submit" style="float:right" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
+                                
         </div>
     </div>
 </div>

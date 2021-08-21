@@ -21,7 +21,13 @@
   <!-- Custom styles for this template-->
   <link href="{{asset('sb-admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
 
-  
+  <style>
+  .sidebar-dark .nav-item.active .nav-link {
+    
+    background-color: midnightblue;
+}
+  </style>
+
 
   @yield('custom_style')
 </head>
@@ -39,7 +45,7 @@
      
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
         <div class="sidebar-brand-icon">
-        <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
+        <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" width:100%;height:100%;display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
             
         </div>
         <!-- <div class="sidebar-brand-text mx-3">teeto.id</div> -->
@@ -48,7 +54,11 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
+      @if(Route::current()->getName() == 'dashboard')
       <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('dashboard')}}">
           <i class="far fa-file-alt	"></i>
           <span>Laporan Terbaru</span></a>
@@ -61,12 +71,20 @@
       <!-- <div class="sidebar-heading">
         Laporan
       </div> -->
-      <li class="nav-item">
-        <a class="nav-link" href="#">
+      @if(Route::current()->getName() == 'riwayat-laporan-pengawas-umum')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
+        <a class="nav-link" href="{{route('riwayat-laporan-pengawas-umum')}}">
           <i class="fas fa-history"></i>
           <span>Riwayat Laporan</span></a>
       </li>
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'data-pengawas-umum')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('data-pengawas-umum')}}">
           <i class="fa fa-users"></i>
           <span>Data Pengawas Umum</span></a>
@@ -83,17 +101,29 @@
         Data Master
       </div>
       
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'data-ruangan')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('data-ruangan')}}">
           <i class="fas fa-procedures	"></i>
           <span>Ruangan</span></a>
       </li>
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'data-dokter')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('data-dokter')}}">
           <i class="fas fa-user-md	"></i>
           <span>Dokter Jaga</span></a>
       </li>
-      <li class="nav-item">
+      @if(Route::current()->getName() == 'data-pengguna')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
         <a class="nav-link" href="{{route('data-pengguna')}}">
           <i class="fas fa-user-friends	"></i>
           <span>Pengguna</span></a>

@@ -35,9 +35,10 @@
                     <thead>
                         <tr>
                             <th width="10%">No</th>
-                            <th>Tanggal</th>
+                            <th width="20%">Tanggal</th>
                             <th>Dinas</th>
-                            <th width="20%">Aksi</th>
+                            <th width="20%">Tanda Tangan</th>
+                            <th width="20%">Laporan</th>
 
                         </tr>
                     </thead>
@@ -45,14 +46,19 @@
                     <?php
                     $no = 1;
                     ?>
+                    
                     <tbody>
-                        @foreach(\App\Models\Laporanigd::where('status',1)->orderBy('updated_at','DESC')->get() as $data)
+                        @foreach(\App\Models\Laporan::orderBy('updated_at','DESC')->get() as $data)
                         <tr>
                             <td>{{ $no }}</td>
                             <td>{{ $data->updated_at }}</td>
-                            <td>{{ \App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->fisrt() }}</td>
-                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">Ubah</button>
-                                <a href="#" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
+                            <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
+                            <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                            
+                            <td>
+                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IGD</button>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">Umum</button>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IRJ</button>
                             </td>
 
                         </tr>

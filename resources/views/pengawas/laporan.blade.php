@@ -5,6 +5,11 @@
     <p>{{ Session::get('success-add') }}</p>
 </div>
 @endif
+@if (Session::has('fail-add'))
+<div class="alert alert-danger alert-call">
+    <p>{{ Session::get('fail-add') }}</p>
+</div>
+@endif
 <?php 
 use Carbon\Carbon;
 
@@ -199,7 +204,15 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
     @endif
 
     
- 
+    @if(\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == \App\Models\Ruangan::where('status',1)->count())
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseRanap2" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseRanap2">
+            <h6 class="m-0 font-weight-bold ">Rawat Inap <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span> <span style="font-size:14px;color:#858796;font-weight:400;float: right;">ubah data di Draf Laporan ...</span> </h6>
+            
+        </a>
+    </div>
+    @else
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
@@ -525,7 +538,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
             </div>
         </form>
     </div>
-    
+    @endif
 
 
 </div>
