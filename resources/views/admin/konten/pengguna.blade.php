@@ -102,7 +102,7 @@
                     <div class="form-group">
                         <label>Role: </label>
                         <select class="form-control" name="role" required>
-                            @foreach(\App\Models\Role::orderBy('id','DESC')->get() as $mb)
+                            @foreach(\App\Models\Role::where('id','<>',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->role }}</option>
                             @endforeach
                         </select>
@@ -141,7 +141,7 @@
                     <div class="form-group">
                         <label>Role: </label>
                         <select class="form-control txt-role" name="role" required>
-                            @foreach(\App\Models\Role::all() as $mb)
+                            @foreach(\App\Models\Role::where('id','<>',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->role }}</option>
                             @endforeach
                         </select>

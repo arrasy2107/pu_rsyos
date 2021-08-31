@@ -145,7 +145,7 @@
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
              
-                <a class="dropdown-item btn-edit" href="#" data-toggle="modal" data-target="#gantipassword" data-id="{{\Auth::user()->id }}" data-email="{{ \Auth::user()->email }}" data-nama="{{ \Auth::user()->name }}">
+                <a class="dropdown-item btn-edit" href="#" data-toggle="modal" data-target="#gantipassword" data-id="{{\Auth::user()->id }}" data-email="{{ \Auth::user()->username }}" data-nama="{{ \Auth::user()->name }}">
                   <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>
                   Change Password
                 </a>

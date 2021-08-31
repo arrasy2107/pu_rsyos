@@ -24,6 +24,11 @@
                                     {{ $errors->first() }}
                                 </div>
                                 @endif
+                                @if (Session::has('success-change'))
+                                <div class="alert alert-success alert-call">
+                                    <p>{{ Session::get('success-change') }}</p>
+                                </div>
+                                @endif
                                 <form method="POST" action="{{ route('dologin') }}" autocomplete="off">
                                     @csrf
                                     <div class="form-group">

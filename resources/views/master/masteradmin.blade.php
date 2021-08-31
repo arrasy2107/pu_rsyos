@@ -65,7 +65,7 @@
       </li>
 
       <!-- Divider -->
-      <hr class="sidebar-divider my-0">
+      <!-- <hr class="sidebar-divider my-0"> -->
 
       <!-- Heading -->
       <!-- <div class="sidebar-heading">
@@ -80,6 +80,18 @@
           <i class="fas fa-history"></i>
           <span>Riwayat Laporan</span></a>
       </li>
+      @if(\Auth::user()->id_role == 3)
+      @if(Route::current()->getName() == 'jadwal-dinas')
+      <li class="nav-item active">
+        @else
+        <li class="nav-item">
+        @endif
+        <a class="nav-link" href="{{route('jadwal-dinas')}}">
+          <i class="far fa-calendar-alt"></i>
+          <span>Jadwal Dinas</span></a>
+      </li>
+      @endif
+
       @if(Route::current()->getName() == 'data-pengawas-umum')
       <li class="nav-item active">
         @else
@@ -119,6 +131,7 @@
           <i class="fas fa-user-md	"></i>
           <span>Dokter Jaga</span></a>
       </li>
+      @if(\Auth::user()->id_role == 1)
       @if(Route::current()->getName() == 'data-pengguna')
       <li class="nav-item active">
         @else
@@ -128,7 +141,7 @@
           <i class="fas fa-user-friends	"></i>
           <span>Pengguna</span></a>
       </li>
-     
+     @endif
 
      
       <!-- Divider -->
@@ -187,7 +200,7 @@
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
              
-                <a class="dropdown-item btn-edit" href="#" data-toggle="modal" data-target="#gantipassword" data-id="{{\Auth::user()->id }}" data-email="{{ \Auth::user()->email }}" data-nama="{{ \Auth::user()->name }}">
+                <a class="dropdown-item btn-edit" href="#" data-toggle="modal" data-target="#gantipassword" data-id="{{\Auth::user()->id }}" data-email="{{ \Auth::user()->username }}" data-nama="{{ \Auth::user()->name }}">
                   <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>
                   Change Password
                 </a>

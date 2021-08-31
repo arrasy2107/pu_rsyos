@@ -91,7 +91,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru + $r->inap_pasien_pindah + $r->inap_pasien_pindahan + $r->inap_pasien_meninggal + $r->inap_pasien_covid + $r->inap_pasien_suspect + $r->inap_pasien_restrain + $r->inap_pasien_kekerasan + $r->inap_pasien_keracunan + $r->inap_pasien_bahasa + $r->inap_pasien_difabel;///
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru ;///
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');
@@ -125,7 +125,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru + $r->inap_pasien_pindah + $r->inap_pasien_pindahan + $r->inap_pasien_meninggal + $r->inap_pasien_covid + $r->inap_pasien_suspect + $r->inap_pasien_restrain + $r->inap_pasien_kekerasan + $r->inap_pasien_keracunan + $r->inap_pasien_bahasa + $r->inap_pasien_difabel;///
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru ;///
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');

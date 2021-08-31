@@ -30,16 +30,24 @@ class LoginController extends Controller
       'username' => $r->username,
       'password' => $r->password,
       'id_role' => 1,
+      'status' => 1,
     );
     $pengawas = array(
       'username' => $r->username,
       'password' => $r->password,
       'id_role' => 2,
+      'status' => 1,
+    );
+    $keperawatan = array(
+      'username' => $r->username,
+      'password' => $r->password,
+      'id_role' => 3,
+      'status' => 1,
     );
 
    
 
-    if (\Auth::attempt($direktur)) {
+    if (\Auth::attempt($direktur) || \Auth::attempt($keperawatan)) {
       return redirect()->to('/dashboard');
     } else if (\Auth::attempt($pengawas)) {
       return redirect()->to('/laporan');

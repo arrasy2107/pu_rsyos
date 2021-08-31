@@ -6,7 +6,7 @@ use Closure;
 use Auth;
 use Illuminate\Http\Request;
 
-class Direktur
+class Keperawatan
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,13 @@ class Direktur
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    { 
+    {
         if (!Auth::check()) // I included this check because you have it, but it really should be part of your 'auth' middleware, most likely added as part of a route group.
         return redirect('login');
 
         $user = Auth::user();
 
-        if($user->id_role == 1 || $user->id_role == 3)
+        if($user->id_role == 3)
         return $next($request);
         
     

@@ -26,7 +26,7 @@ class Pengawas
         return $next($request);
         
     
-            if($user->id_role == 1)
+            if($user->id_role == 1 || $user->id_role == 3)
             {
                 return redirect('dashboard');
             }

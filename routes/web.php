@@ -62,6 +62,14 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
         return view('admin.konten.riwayat');
     })->name('riwayat-laporan-pengawas-umum');
     
+    //Jadwal Dinas
+    Route::get('/jadwal-dinas', function () {
+        return view('admin.konten.jadwal');
+    })->name('jadwal-dinas');
+    Route::post('/tambahpiket', 'KeperawatanController@tambahpiket')->name('tambahpiket');
+    Route::put('/editpiket', 'KeperawatanController@editpiket')->name('editpiket');
+    Route::get('/deletepiket/{id}', 'KeperawatanController@deletepiket')->name('deletepiket');
+
     //Data Pengawas Umum
     Route::get('/data-pengawas-umum', function () {
         return view('admin.konten.pengawas');
@@ -99,4 +107,5 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
 
 
 });
+
 

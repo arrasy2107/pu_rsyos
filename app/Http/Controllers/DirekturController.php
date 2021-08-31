@@ -12,7 +12,7 @@ class DirekturController extends Controller
   public function tambahpengguna(Request $r)
   {
 
-    $sp = \App\Models\User::where('username', $r->username)->first();
+    $sp = \App\Models\User::where('username', $r->username)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Username ' . $r->username . ' sudah pernah diinputkan sebelumnya, silahkan input dengan username lain');
@@ -20,7 +20,7 @@ class DirekturController extends Controller
       $sup = new \App\Models\User;
       $sup->nama = $r->nama;
       $sup->username = $r->username;
-      $password = 12345678;
+      $password = '12345678';
       $sup->password = bcrypt($password);
       $sup->id_role = $r->role;
       $date = date_default_timezone_set('Asia/Jakarta');
@@ -34,7 +34,7 @@ class DirekturController extends Controller
 
   public function editpengguna(Request $r)
   {
-    $sp = \App\Models\User::where('username', $r->username)->where('id', '<>', $r->id)->first();
+    $sp = \App\Models\User::where('username', $r->username)->where('id', '<>', $r->id)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Username ' . $r->username . ' sudah pernah diinputkan sebelumnya, silahkan input dengan username lain');
@@ -65,7 +65,7 @@ class DirekturController extends Controller
   public function tambahruangan(Request $r)
   {
 
-    $sp = \App\Models\Ruangan::where('nama_ruangan', $r->nama_ruangan)->first();
+    $sp = \App\Models\Ruangan::where('nama_ruangan', $r->nama_ruangan)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Nama Ruangan  ' . $r->nama_ruangan . ' sudah pernah diinputkan sebelumnya, silahkan input dengan nama lain');
@@ -80,7 +80,7 @@ class DirekturController extends Controller
 
   public function editruangan(Request $r)
   {
-    $sp = \App\Models\Ruangan::where('nama_ruangan', $r->nama_ruangan)->where('id', '<>', $r->id)->first();
+    $sp = \App\Models\Ruangan::where('nama_ruangan', $r->nama_ruangan)->where('id', '<>', $r->id)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Nama Ruangan  ' . $r->nama_ruangan . ' sudah pernah diinputkan sebelumnya, silahkan input dengan nama lain');
@@ -108,7 +108,7 @@ class DirekturController extends Controller
   public function tambahdokter(Request $r)
   {
 
-    $sp = \App\Models\Dokter::where('nama_dokter', $r->nama_dokter)->first();
+    $sp = \App\Models\Dokter::where('nama_dokter', $r->nama_dokter)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Nama Dokter  ' . $r->nama_dokter . ' sudah pernah diinputkan sebelumnya, silahkan input dengan nama lain');
@@ -123,7 +123,7 @@ class DirekturController extends Controller
 
   public function editdokter(Request $r)
   {
-    $sp = \App\Models\Dokter::where('nama_dokter', $r->nama_dokter)->where('id', '<>', $r->id)->first();
+    $sp = \App\Models\Dokter::where('nama_dokter', $r->nama_dokter)->where('id', '<>', $r->id)->where('status',1)->first();
 
     if ($sp) {
       return redirect()->back()->with('fail-delete', 'Nama Dokter  ' . $r->nama_dokter . ' sudah pernah diinputkan sebelumnya, silahkan input dengan nama lain');
