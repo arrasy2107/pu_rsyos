@@ -10,22 +10,22 @@
   <meta name="author" content="">
 
   <title>Laporan Pengawas Umum Rumah Sakit Yos Sudarso Padang</title>
- <!-- logo -->
- <link rel="icon" href="{{asset('sb-admin/img/rsyos.png')}}">
+  <!-- logo -->
+  <link rel="icon" href="{{asset('sb-admin/img/rsyos.png')}}">
   <!-- Custom fonts for this template-->
   <link href="{{asset('sb-admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-  
+
   <!-- Custom styles for this template-->
-<link href="{{asset('sb-admin/css/datatable.css')}}" rel="stylesheet">
+  <link href="{{asset('sb-admin/css/datatable.css')}}" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="{{asset('sb-admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
 
   <style>
-  .sidebar-dark .nav-item.active .nav-link {
-    
-    background-color: midnightblue;
-}
+    .sidebar-dark .nav-item.active .nav-link {
+
+      background-color: midnightblue;
+    }
   </style>
 
 
@@ -41,12 +41,12 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-     
-     
+
+
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
         <div class="sidebar-brand-icon">
-        <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" width:100%;height:100%;display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
-            
+          <img src="{{asset('sb-admin/img/rsyos.png')}}" style=" width:100%;height:100%;display: block;margin-top:auto;margin-left: auto;margin-right: auto;">
+
         </div>
         <!-- <div class="sidebar-brand-text mx-3">teeto.id</div> -->
       </a>
@@ -57,7 +57,7 @@
       @if(Route::current()->getName() == 'dashboard')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('dashboard')}}">
           <i class="far fa-file-alt	"></i>
@@ -74,7 +74,7 @@
       @if(Route::current()->getName() == 'riwayat-laporan-pengawas-umum')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('riwayat-laporan-pengawas-umum')}}">
           <i class="fas fa-history"></i>
@@ -84,7 +84,7 @@
       @if(Route::current()->getName() == 'jadwal-dinas')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('jadwal-dinas')}}">
           <i class="far fa-calendar-alt"></i>
@@ -95,55 +95,85 @@
       @if(Route::current()->getName() == 'data-pengawas-umum')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('data-pengawas-umum')}}">
           <i class="fa fa-users"></i>
           <span>Data Pengawas Umum</span></a>
       </li>
-      
 
-     
+
+
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
 
-       <!-- Heading -->
-       <div class="sidebar-heading">
+      <!-- Heading -->
+      <div class="sidebar-heading">
         Data Master
       </div>
-      
+
       @if(Route::current()->getName() == 'data-ruangan')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('data-ruangan')}}">
           <i class="fas fa-procedures	"></i>
           <span>Ruangan</span></a>
       </li>
-      @if(Route::current()->getName() == 'data-dokter')
+
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      @if(Route::current()->getName() == 'data-subrumpun-sdmk' || Route::current()->getName() == 'data-jenis-sdmk')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
-        <a class="nav-link" href="{{route('data-dokter')}}">
-          <i class="fas fa-user-md	"></i>
-          <span>Dokter Jaga</span></a>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <i class="fas fa-users	"></i>
+          <span>SDMK</span>
+        </a>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header" style="white-space: normal;">Sumber Daya Manusia Kesehatan (SDMK):</h6>
+            <a class="collapse-item" href="{{route('data-subrumpun-sdmk')}}">Subrumpun SDMK</a>
+            <a class="collapse-item" href="{{route('data-jenis-sdmk')}}">Jenis SDMK</a>
+          </div>
+        </div>
+      </li>
+
+
+      @if(Route::current()->getName() == 'data-dokter' || Route::current()->getName() == 'data-dokter-irj')
+      <li class="nav-item active">
+        @else
+      <li class="nav-item">
+        @endif
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-user-md"></i>
+          <span>Dokter</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+
+            <a class="collapse-item" href="{{route('data-dokter')}}">Dokter Jaga (IGD)</a>
+            <a class="collapse-item" href="{{route('data-dokter-irj')}}">Dokter IRJ</a>
+          </div>
+        </div>
       </li>
       @if(\Auth::user()->id_role == 1)
       @if(Route::current()->getName() == 'data-pengguna')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
         <a class="nav-link" href="{{route('data-pengguna')}}">
           <i class="fas fa-user-friends	"></i>
           <span>Pengguna</span></a>
       </li>
-     @endif
+      @endif
 
-     
+
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
@@ -171,7 +201,7 @@
             <i class="fa fa-bars"></i>
           </button>
 
-         
+
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -181,13 +211,13 @@
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-search fa-fw"></i>
               </a>
-              
+
             </li>
 
             <!-- Nav Item - Alerts -->
-            
 
-            
+
+
 
             <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -199,7 +229,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-             
+
                 <a class="dropdown-item btn-edit" href="#" data-toggle="modal" data-target="#gantipassword" data-id="{{\Auth::user()->id }}" data-email="{{ \Auth::user()->username }}" data-nama="{{ \Auth::user()->name }}">
                   <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>
                   Change Password
@@ -228,7 +258,7 @@
         @endif
         @yield('content')
         <!-- Begin Page Content -->
-        
+
 
       </div>
       <!-- End of Main Content -->
@@ -308,10 +338,10 @@
       </div>
     </div>
   </div>
- 
+
   <!-- Bootstrap core JavaScript-->
 
- 
+
   <script src="{{asset('sb-admin/vendor/jquery/jquery.min.js')}}"></script>
   <script src="{{asset('sb-admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
@@ -333,7 +363,7 @@
 
 
 
-  
+
 
   <script>
     var id, email, nama;

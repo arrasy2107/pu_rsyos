@@ -66,9 +66,14 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::get('/jadwal-dinas', function () {
         return view('admin.konten.jadwal');
     })->name('jadwal-dinas');
-    Route::post('/tambahpiket', 'KeperawatanController@tambahpiket')->name('tambahpiket');
-    Route::put('/editpiket', 'KeperawatanController@editpiket')->name('editpiket');
-    Route::get('/deletepiket/{id}', 'KeperawatanController@deletepiket')->name('deletepiket');
+    //ajax piket
+    //Route::get('tambahpiket', 'KeperawatanController@showpiket');
+    Route::post('tambahpiket', 'KeperawatanController@tambahpiket')->name('tambahpiket');
+    Route::put('editpiket', 'KeperawatanController@editpiket')->name('editpiket');
+    Route::get('deletepiket/{id}', 'KeperawatanController@deletepiket')->name('deletepiket');
+    Route::get('/refresh-jadwal-dinas/{tahun}/{bulan}',function($tahun, $bulan){
+        return view('admin.ajax.refresh-jadwal-dinas',compact('tahun','bulan'));
+    });
 
     //Data Pengawas Umum
     Route::get('/data-pengawas-umum', function () {
@@ -83,8 +88,8 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::put('/editruangan', 'DirekturController@editruangan')->name('editruangan');
     Route::get('/deleteruangan/{id}', 'DirekturController@deleteruangan')->name('deleteruangan');
 
-    //Dokter Jaga
-    Route::get('/data-dokter', function () {
+    //Dokter Jaga (IGD)
+    Route::get('/data-dokter-jaga', function () {
         return view('admin.konten.dokter');
     })->name('data-dokter');
     Route::post('/tambahdokter', 'DirekturController@tambahdokter')->name('tambahdokter');
@@ -104,6 +109,29 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
         return view('admin.ajax.refresh-laporan-umum',compact('ruangan'));
     });
     
+    //Dokter IRJ
+    Route::get('/data-dokter-irj', function () {
+        return view('admin.konten.dokter-irj');
+    })->name('data-dokter-irj');
+    Route::post('/tambahdokterirj', 'DirekturController@tambahdokterirj')->name('tambahdokterirj');
+    Route::put('/editdokterirj', 'DirekturController@editdokterirj')->name('editdokterirj');
+    Route::get('/deletedokterirj/{id}', 'DirekturController@deletedokterirj')->name('deletedokterirj');
+
+    //SDMK SUBRUMPUN
+    Route::get('/data-subrumpun-sdmk', function () {
+        return view('admin.konten.subrumpun-sdmk');
+    })->name('data-subrumpun-sdmk');
+    Route::post('/tambahsubrumpunsdmk', 'DirekturController@tambahsubrumpunsdmk')->name('tambahsubrumpunsdmk');
+    Route::put('/editsubrumpunsdmk', 'DirekturController@editsubrumpunsdmk')->name('editsubrumpunsdmk');
+    Route::get('/deletesubrumpunsdmk/{id}', 'DirekturController@deletesubrumpunsdmk')->name('deletesubrumpunsdmk');
+    
+    //SDMK JENIS
+    Route::get('/data-jenis-sdmk', function () {
+        return view('admin.konten.jenis-sdmk');
+    })->name('data-jenis-sdmk');
+    Route::post('/tambahjenissdmk', 'DirekturController@tambahjenissdmk')->name('tambahjenissdmk');
+    Route::put('/editjenissdmk', 'DirekturController@editjenissdmk')->name('editjenissdmk');
+    Route::get('/deletejenissdmk/{id}', 'DirekturController@deletejenissdmk')->name('deletejenissdmk');
 
 
 });

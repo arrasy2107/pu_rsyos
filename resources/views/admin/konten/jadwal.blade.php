@@ -4,17 +4,20 @@
 <link href="https://cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css" rel="stylesheet">
 
 <style>
-/* Ensure that the demo table scrolls */
-th, td { white-space: nowrap; overflow-y:hidden}
+    /* Ensure that the demo table scrolls */
+    th,
+    td {
+        white-space: nowrap;
+        overflow-y: hidden
+    }
+
     div.dataTables_wrapper {
         margin: 0 auto;
     }
- 
+
     div.container {
         width: 80%;
     }
-
-  
 </style>
 
 @stop
@@ -40,7 +43,8 @@ th, td { white-space: nowrap; overflow-y:hidden}
 </div>
 @endif
 
-<?php 
+<?php
+
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -56,6 +60,12 @@ $from = \Carbon\Carbon::createFromFormat('Y-m-d', '2021-09-01');
 $to = \Carbon\Carbon::createFromFormat('Y-m-d', '2021-09-30');
 
 $period = new CarbonPeriod($from, '1 day', $to);
+
+
+// Years range setup
+$currentDateTime = Carbon::now();
+$newDateTime = Carbon::now()->addYears(5);
+
 ?>
 <div class="container-fluid">
 
@@ -66,52 +76,57 @@ $period = new CarbonPeriod($from, '1 day', $to);
     <div class="card shadow mb-4">
 
         <div class="card-body">
-         
-            <div class="table-responsive">
-                <table id="example" class="table table-bordered" style="width:100%">
-                    <thead>
-                   
-                        <tr>
-                            
-                            <th >DINAS</th>
-                            @foreach($period as $date)
-                            <th>{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
-                            @endforeach
-                            
-                        </tr>
-                    </thead>
-                    
-                    <?php
-                    $no = 1;
-                    ?>
-                    <tbody>
-                        @foreach(\App\Models\Dinas::orderBy('id')->get() as $data)
-                        <tr>
 
-                            @if($data->id == 1)
-                            <td><span style="color:transparent;margin-left:-10px">{{$data->id}}. </span> <img src="{{asset('sb-admin/icon/piket/morning.png')}}" height="30px" width="30px">  {{ strtoupper($data->dinas) }}</td>
-                            @elseif($data->id == 2)
-                            <td><span style="color:transparent;margin-left:-10px">{{$data->id}}. </span> <img src="{{asset('sb-admin/icon/piket/ocean.png')}}" height="30px" width="30px">  {{ strtoupper($data->dinas) }}</td>
-                            @else
-                            <td><span style="color:transparent;margin-left:-10px">{{$data->id}}. </span> <img src="{{asset('sb-admin/icon/piket/half-moon.png')}}" height="30px" width="30px">  {{ strtoupper($data->dinas) }}</td>
-                            @endif
-                            @foreach($period as $tgl)
-                                @if(\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->first())
-                                    <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-ganti " style="display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-pengawas="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first()}}"  data-toggle="modal" data-target="#edit"><span class="badge badge-primary">{{\App\Models\User::where('id',\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first())->pluck('nama')->first()}}</span></button></td>
-                                @else
-                                <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-jadwal " style="background-color: #f8f9fc;display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}"  data-toggle="modal" data-target="#jadwal"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
-                                @endif
-                            @endforeach
-                        </tr>
-                        <?php
-                        $no++;
-                        ?>
-                        @endforeach
+            <div class="row">
 
-                    </tbody>
-                </table>
-                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="tahun"><b>Tahun</b></label>
+                        <select id="tahun" name="tahun" class="form-control select2">
+                            <option value="0">Pilih Tahun</option>
+                            @foreach (range($currentDateTime->year, $newDateTime->year) as $year)
+                            <option value="{{$year}}">{{$year}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="bulan">Bulan</label>
+                        <select id="bulan" name="bulan" class="form-control select2">
+                            <option value="0">Pilih Bulan</option>
+
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label style="color:transparent">cari</label><br>
+                        <button class="btn btn-primary btn-lihat-jadwal" type="submit">Lihat Jadwal</button>
+                    </div>
+                </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 tablejadwal">
+                    
+                </div>
+            </div>
+
+
         </div>
     </div>
 
@@ -127,25 +142,25 @@ $period = new CarbonPeriod($from, '1 day', $to);
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('tambahpiket') }}" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    <input type="hidden" class="txtiddinas" name="id_dinas" >
+                <form method="post" action="" enctype="multipart/form-data">
+                    
+                    <input type="hidden" class="txtiddinas" name="id_dinas">
                     <input type="hidden" class="txttanggal" name="tanggal">
-                   
+
                     <div class="form-group">
                         <label>Pengawas Umum : </label>
-                        <select class="form-control" name="id_pengawas" required>
+                        <select class="form-control" name="id_pengawas" id="id_pengawas" required>
                             <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
                             @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
-                    
+
 
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-selesai btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-sm btn-primary btn-tambah">Simpan</button>
             </div>
             </form>
         </div>
@@ -161,15 +176,16 @@ $period = new CarbonPeriod($from, '1 day', $to);
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('editpiket') }}" enctype="multipart/form-data">
+                <form method="post" action="" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
-                    <input type="hidden" class="txtiddinas2" name="id_dinas" >
-                    <input type="hidden" class="txttanggal2" name="tanggal">
-                   
+                    <input type="hidden" class="txtid" name="idpiket">
+                    <input type="hidden" class="txtiddinas2" name="id_dinas2">
+                    <input type="hidden" class="txttanggal2" name="tanggal2">
+
                     <div class="form-group">
                         <label>Pengawas Umum : </label>
-                        <select class="form-control txtpengawas" name="id_pengawas" required>
+                        <select class="form-control txtpengawas" id="id_pengawas2" name="id_pengawas" required>
                             <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
                             @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -177,10 +193,12 @@ $period = new CarbonPeriod($from, '1 day', $to);
                         </select>
                     </div>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
-            </div>
+            
             </form>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-hapus btn-danger float-left">Hapus</button>
+                <button type="submit" class="btn btn-sm btn-edit btn-primary">Simpan</button>
+            </div>
         </div>
     </div>
 </div>
@@ -189,51 +207,37 @@ $period = new CarbonPeriod($from, '1 day', $to);
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
 <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
-<script>
-    // $("#dataTable").DataTable({
 
+<script>
+    // $.ajaxSetup({
+    //     headers: {
+    //         'X-CSRF-TOKEN': '{{ csrf_token() }}',
+    //     }
     // });
-    $(document).ready(function() {
-        var table = $('#example').removeAttr('width').DataTable( {
-            scrollX:        true,
-            scrollCollapse: true,
-            ordering : false,
-            paging:         false,
-            searching : false,
-            info:false,
-            columnDefs: [
-                { width: 300, targets: 0 }
-            ],
-            fixedColumns: true
-        } );
-    } );
 
-</script>
-<script>
 
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
-
-    var id,dinas,tanggal;
+    var id, dinas, tanggal, idpiket;
     $("#example").on('click', '.btn-jadwal', function() {
         id = $(this).val(); //dinas
         dinas = $(this).data('dinas');
         tanggal = $(this).data('tanggal');
         console.log(tanggal)
-        
+
     });
 
     $("#example").on('click', '.btn-ganti', function() {
         id = $(this).val(); //dinas
+        idpiket = $(this).data('idpiket');
         dinas = $(this).data('dinas');
         tanggal = $(this).data('tanggal');
         pengawas = $(this).data('pengawas');
-        console.log(tanggal)
-        
+        console.log(idpiket)
+
     });
 
     $('#jadwal').on('show.bs.modal', function() {
@@ -246,15 +250,171 @@ $period = new CarbonPeriod($from, '1 day', $to);
         $(".txtiddinas2").val(id);
         $(".txttanggal2").val(tanggal);
         $(".txtpengawas").val(pengawas);
-
+        $(".txtid").val(idpiket);
     });
 
-    $("#dataTable").on('click', '.btn-delete', function(e) {
-        var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
+
+    $(".btn-tambah").click(function(e){
+
+        $("#jadwal").modal('hide');
+
+        e.preventDefault();
+
+        var id_pengawas = $("#id_pengawas :selected").val();
+        var id_dinas = $("input[name=id_dinas]").val();
+        var tanggal = $("input[name=tanggal]").val();
+
+        $("#id_pengawas").val("");
+        
+       
+        console.log(id_pengawas+' '+ id_dinas + ' '+ tanggal);
+        var url = 'tambahpiket';
+
+        $.ajax({
+        url:url,
+        method:'POST',
+        data:{
+            id_pengawas:id_pengawas,
+            id_dinas:id_dinas,
+            tanggal : tanggal
+        },
+        success:function(response){
+            if(response.success){
+                
+                alert(response.message) //Message come from controller
+                $.ajax({
+                    type : "get",
+                    url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                    data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                    success : function(data){
+                    console.log(data);
+                    $(".tablejadwal").html(data);
+                    }   
+             });
+            }else{
+                alert("Error")
+            }
+        },
+        error:function(error){
+            console.log(error)
+        }
+        });
+    });
+
+    $(".btn-edit").click(function(e){
+
+        $("#edit").modal('hide');
+
+        e.preventDefault();
+
+        var id_pengawas = $("#id_pengawas2 :selected").val();
+        var id_dinas = $("input[name=id_dinas2]").val();
+        var tanggal = $("input[name=tanggal2]").val();
+
+
+        console.log(id_pengawas+' - '+ id_dinas + ' - '+ tanggal);
+        var url = 'editpiket';
+
+        $.ajax({
+        url:url,
+        method:'PUT',
+        data:{
+            id_pengawas:id_pengawas,
+            id_dinas:id_dinas,
+            tanggal : tanggal
+        },
+        success:function(response){
+            if(response.success){
+                
+                alert(response.message) //Message come from controller
+                $.ajax({
+                    type : "get",
+                    url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                    data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                    success : function(data){
+                    console.log(data);
+                    $(".tablejadwal").html(data);
+                    }   
+            });
+            }else{
+                alert("Error")
+            }
+        },
+        error:function(error){
+            console.log(error)
+        }
+        });
+    });
+
+    $(".btn-hapus").click(function(e){
+        var conf = confirm('apakah anda yakin ingin menghapus jadwal ini ?');
         if (conf == false) {
             e.preventDefault();
+            $("#edit").modal('hide');
+        }
+        else{
+            $("#edit").modal('hide');
+            var id = $("input[name=idpiket]").val();
+
+            console.log(id);
+            var url = 'deletepiket/'+id;
+
+            $.ajax({
+            url:url,
+            method:'GET',
+            data:{
+                id:id,
+               
+            },
+            success:function(response){
+                if(response.success){
+                    
+                    alert(response.message) //Message come from controller
+                    $.ajax({
+                        type : "get",
+                        url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                        data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                        success : function(data){
+                        console.log(data);
+                        $(".tablejadwal").html(data);
+                        }   
+                });
+                }else{
+                    alert("Error")
+                }
+            },
+            error:function(error){
+                console.log(error)
+            }
+            });
         }
     });
+
+    $(".btn-lihat-jadwal").click(function(){
+        if($("#tahun").val() == 0 || $("#bulan").val() == 0)
+        {
+            alert("Lengkapi pilihan tahun dan bulan dahulu.")
+        }
+        else{
+            $(".tablejadwal").html("<h1>Mohon Tunggu...</h1>")
+            $.ajax({
+            type : "get",
+            url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+            data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+            success : function(data){
+            console.log(data);
+            $(".tablejadwal").html(data);
+            }
+        });
+        }
+        
+
+
+    });
+
+    
+
+
 
     (function($) {
         $(".alert-call").fadeOut(2500);

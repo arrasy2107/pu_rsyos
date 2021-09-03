@@ -8,6 +8,10 @@ class KeperawatanController extends Controller
 {
 
     //PIKET
+    public function showpiket()
+    {
+        return view('admin.konten.jadwal');
+    }
 
     public function tambahpiket(Request $r)
   {
@@ -18,7 +22,13 @@ class KeperawatanController extends Controller
       $sup->tanggal = $r->tanggal;
       $sup->save();
 
-      return redirect()->back()->with('success-add', 'Berhasil menambah data');
+      //return redirect()->back()->with('success-add', 'Berhasil menambah data');
+      return response()->json(
+        [
+          'success' => true,
+          'message' => 'Berhasil menambah data jadwal'
+        ]
+   );
 
   }
 
@@ -33,8 +43,13 @@ class KeperawatanController extends Controller
         $sup->tanggal = $r->tanggal;
         $sup->save();
   
-        return redirect()->back()->with('success-add', 'Berhasil mengubah data');
-    
+        //return redirect()->back()->with('success-add', 'Berhasil mengubah data');
+        return response()->json(
+          [
+            'success' => true,
+            'message' => 'Berhasil mengubah data jadwal'
+          ]
+     );
       
     
   }
@@ -43,6 +58,13 @@ class KeperawatanController extends Controller
   {
 
     $sup = \App\Models\Piket::where('id', $id)->first()->delete();
-    return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
+    //return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
+    return response()->json(
+      [
+        'success' => true,
+        'message' => 'Berhasil menghapus data jadwal'
+      ]
+ );
+  
   }
 }

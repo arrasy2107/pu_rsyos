@@ -24,7 +24,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Data Dokter Jaga (IGD)</h1>
+    <h1 class="h3 mb-2 text-gray-800">Data Subrumpun SDMK (Sumber Daya Manusia Kesehatan)</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -32,7 +32,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Dokter</button>
+                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Subrumpun</button>
                     <br>
                 </div>
             </div>
@@ -42,9 +42,7 @@
                     <thead>
                         <tr>
                             <th width="10%">No</th>
-                            <th>Nama Dokter</th>
-                            <td>Subrumpun SDMK</td>
-                            <td>Jenis SDMK</td>
+                            <th>Nama Subrumpun</th>
                             <th width="20%">Aksi</th>
 
                         </tr>
@@ -54,14 +52,13 @@
                     $no = 1;
                     ?>
                     <tbody>
-                        @foreach(\App\Models\Dokter::where('status',1)->get() as $data)
+                        @foreach(\App\Models\sdmk_subrumpun::where('status',1)->get() as $data)
                         <tr>
                             <td>{{ $no }}</td>
-                            <td>{{ $data->nama_dokter }}</td>
-                            <td>{{ \App\Models\sdmk_subrumpun::where('id',\App\Models\sdmk_jenis::where('id',$data->id_sdmk_jenis)->pluck('id_subrumpun')->first())->pluck('subrumpun')->first() }}</td>
-                            <td>{{ \App\Models\sdmk_jenis::where('id',$data->id_sdmk_jenis)->pluck('jenis')->first() }}</td>
-                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->nama_dokter}}" data-toggle="modal" data-target="#edit">Ubah</button>
-                                <a href="{{ route('deletedokter',$data->id) }}" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
+                            <td>{{ $data->subrumpun }}</td>
+                            
+                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->subrumpun}}" data-toggle="modal" data-target="#edit">Ubah</button>
+                                <a href="{{ route('deletesubrumpunsdmk',$data->id) }}" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
                             </td>
 
                         </tr>
@@ -83,15 +80,15 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Tambah Dokter
+                Tambah Subrumpun
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('tambahdokter') }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route('tambahsubrumpunsdmk') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Nama Dokter: </label>
-                        <input type="text" class="form-control" name="nama_dokter" required />
+                        <label>Nama Subrumpun: </label>
+                        <input type="text" class="form-control" name="subrumpun" required />
                     </div>
 
                    
@@ -109,17 +106,17 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Ubah Nama Dokter
+                Ubah Nama Subrumpun
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('editdokter') }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route('editsubrumpunsdmk') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" class="txtid" name="id">
                     <div class="form-group">
-                        <label>Nama Dokter: </label>
-                        <input type="text" class="form-control txt-nama" name="nama_dokter" required />
+                        <label>Nama Subrumpun: </label>
+                        <input type="text" class="form-control txt-nama" name="subrumpun" required />
                     </div>
 
                     
