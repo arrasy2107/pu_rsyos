@@ -32,14 +32,14 @@
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd1a()" onmouseout="igd1b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Dirawat</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_rawat')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-dirawat.png')}}" height="64px" width="64px">
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" id="gbr_igd_pasien"  height="64px" width="64px">
                                        </div>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd2a()" onmouseout="igd2b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
 
@@ -57,7 +57,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pulang')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}" height="64px" width="64px">    
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_igd_pasien_pulang"  height="64px" width="64px">    
                                   
                                     </div>
                                 </div>
@@ -68,7 +68,7 @@
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd3a()" onmouseout="igd3b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
 
@@ -76,7 +76,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_emergency')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-emergency.png')}}" height="64px" width="64px">
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" id="gbr_igd_pasien_emergency"  height="64px" width="64px">
                                        
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd4a()" onmouseout="igd4b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
 
@@ -94,7 +94,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_non_emergency')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-non-emergency.png')}}" height="64px" width="64px">
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}" id="gbr_igd_pasien_non_emergency"  height="64px" width="64px">
                                        
                                     </div>
                                 </div>
@@ -105,14 +105,14 @@
                     <!-- Pending Requests Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd5a()" onmouseout="igd5b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-uppercase mb-1"> Pasien tidak bisa Dirawat</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_tidak_bisa_rawat')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-tidak-bisa-dirawat.png')}}" height="64px" width="64px">
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" id="gbr_igd_pasien_tidak_rawat" height="64px" width="64px">
                                         
                                     </div>
                                 </div>
@@ -123,14 +123,14 @@
                     <!-- Pending Requests Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body">
+                            <div class="card-body" onmouseover="igd6a()" onmouseout="igd6b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien death on arrival (DOA)</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_doa')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/warna/igd/pasien-doa.png')}}" height="64px" width="64px">
+                                    <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" id="gbr_igd_pasien_doa" height="64px" width="64px">
                                         
                                     </div>
                                 </div>
@@ -144,15 +144,15 @@
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
-                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3" placeholder="Tulis disini..." readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('alasan_tidak_bisa_rawat')->first() }}</textarea>
+                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('alasan_tidak_bisa_rawat')->first() }}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan</label>
-                                <textarea class="form-control" name="igd_permasalahan" rows="3" placeholder="Tulis disini..." readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('permasalahan')->first() }}</textarea>
+                                <textarea class="form-control" name="igd_permasalahan" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('permasalahan')->first() }}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Lain - lain</label>
-                                <textarea class="form-control" name="igd_lainlain" rows="3" placeholder="Tulis disini..." readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('lain_lain')->first() }}</textarea>
+                                <textarea class="form-control" name="igd_lainlain" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('lain_lain')->first() }}</textarea>
                             </div>
                             <div class="form-group">
                                 <label style="color:#000;font-weight:600">Dokter Jaga: </label>
@@ -182,7 +182,7 @@
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <a href="#collapseCardExample2" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample2">
-            <h6 class="m-0 font-weight-bold ">Laporan Umum</h6>
+            <h6 class="m-0 font-weight-bold ">Laporan Umum / Ruangan</h6>
         </a>
         <!-- Card Content - Collapse -->
         <div class="collapse show" id="collapseCardExample2">
@@ -289,7 +289,81 @@
         </div>
     </div>
 
-    
+    <!-- Collapsable Card Example -->
+<div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseIRJ" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIRJ">
+            <h6 class="m-0 font-weight-bold ">Instalasi Rawat Jalan (IRJ)</h6>
+        </a>
+        <!-- Card Content - Collapse -->
+        <div class="collapse " id="collapseIRJ">
+            <div class="card-body">
+                <!-- Content Row -->
+                
+                    <div class="row ">
+                        <div class="col-lg-12 tableketerangan">
+                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">No</th>
+                                            <th>SDMK Jenis</th>
+                                            <th>Nama Dokter</th>
+                                            <th>Pasien Lama</th>
+                                            <th>Pasien Baru</th>
+                                            <th>Total</th>
+                                           
+                                        </tr>
+                                    </thead>
+                                    
+                                    <?php
+                                    $no = 1;
+                                    ?>
+                                    <tbody>
+                                        @foreach(\App\Models\Laporanirjdetail::where('status',1)->where('id_laporan_irj',\App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('id')->first())->get() as $data)
+                                        <tr>
+                                            <td>{{ $no }}</td>
+                                            <td>{{ \App\Models\sdmk_jenis::where('id',\App\Models\Dokterirj::where('id',$data->id_dokter_irj)->pluck('id_sdmk_jenis')->first())->pluck('jenis')->first() }}</td>
+                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_irj)->pluck('nama')->first() }}</td>
+                                            <td>{{ $data->pasien_lama }}</td>
+                                            <td>{{ $data->pasien_baru }}</td>
+                                            <td>{{ $data->pasien_total }}</td>
+                                         
+
+                                        </tr>
+                                        <?php
+                                        $no++;
+                                        ?>
+                                        @endforeach
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <div class="form-group shadow-textarea">
+                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Masalah</label>
+                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}"></textarea>
+                            </div>
+                            <div class="form-group shadow-textarea">
+                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Langkah atasi masalah</label>
+                                <textarea class="form-control" name="irj_langkah" rows="3" value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}"></textarea>
+                            </div>
+                            
+                          
+                        </div>
+                    </div>
+
+
+
+            </div>
+        </div>
+    </div>
 
 
 </div>
@@ -316,5 +390,156 @@ $("#inap_ruangan").change(function(){
 
 });
 
+</script>
+<script>
+    //IGD
+    
+
+    
+    function igd1a() {
+        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-dirawat.png')}}');
+    }
+
+    function igd1b() {
+        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}');
+    }
+
+    function igd2a() {
+        document.getElementById("gbr_igd_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}');
+    }
+
+    function igd2b() {
+        document.getElementById("gbr_igd_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-pulang.png')}}');
+    }
+    
+    function igd3a() {
+        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-emergency.png')}}');
+    }
+
+    function igd3b() {
+        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-emergency.png')}}');
+    }
+    
+    function igd4a() {
+        document.getElementById("gbr_igd_pasien_non_emergency").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-non-emergency.png')}}');
+    }
+
+    function igd4b() {
+        document.getElementById("gbr_igd_pasien_non_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}');
+    }
+
+    function igd5a() {
+        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+
+    function igd5b() {
+        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}');
+    }
+    
+    function igd6a() {
+        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-doa.png')}}');
+    }
+
+    function igd6b() {
+        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-doa.png')}}');
+    }
+
+
+    //Rawat Inap
+    function ranap1a() {
+        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
+    }
+
+    function ranap1b() {
+        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
+    }
+
+    function ranap2a() {
+        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap2b() {
+        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-baru.png')}}');
+    }
+
+    function ranap3a() {
+        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap3b() {
+        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}');
+    }
+
+    function ranap4a() {
+        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap4b() {
+        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}');
+    }
+
+    function ranap5a() {
+        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap5b() {
+        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}');
+    }
+
+    function ranap6a() {
+        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap6b() {
+        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-covid.png')}}');
+    }
+
+    function ranap7a() {
+        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap7b() {
+        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}');
+    }
+
+    function ranap8a() {
+        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap8b() {
+        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}');
+    }
+
+    function ranap9a() {
+        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap9b() {
+        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}');
+    }
+
+    function ranap10a() {
+        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap10b() {
+        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}');
+    }
+
+    function ranap11a() {
+        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap11b() {
+        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}');
+    }
+
+    function ranap12a() {
+        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-difabel.png')}}');
+    }
+
+    function ranap12b() {
+        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
+    }
 </script>
 @stop

@@ -46,8 +46,16 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     
     //laporan
     Route::post('/draftlaporanIGD', 'PengawasController@draftlaporanIGD')->name('draftlaporanIGD');
+    Route::post('/draftlaporanIRJ', 'PengawasController@draftlaporanIRJ')->name('draftlaporanIRJ');
     Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
     Route::post('/kirimLaporan', 'PengawasController@kirimLaporan')->name('kirimLaporan');
+
+    Route::post('tambahirjdetail', 'PengawasController@tambahirjdetail')->name('tambahirjdetail');
+    Route::put('editirjdetail', 'PengawasController@editirjdetail')->name('editirjdetail');
+    Route::get('deleteirjdetail', 'PengawasController@deleteirjdetail')->name('deleteirjdetail');
+    Route::get('/refresh-irj-detail',function(){
+        return view('pengawas.ajax.refresh-irj-detail');
+    });
  
 });
 
@@ -61,11 +69,20 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::get('/riwayat-laporan-pengawas-umum', function () {
         return view('admin.konten.riwayat');
     })->name('riwayat-laporan-pengawas-umum');
+
+    //Grafik Laporan
+    Route::get('/grafik-laporan', function () {
+        return view('admin.laporan.grafik');
+    })->name('grafik-laporan');
+    Route::get('/refresh-grafik/{tahun}/{bulan}',function($tahun, $bulan){
+        return view('admin.ajax.refresh-grafik',compact('tahun','bulan'));
+    });
     
     //Jadwal Dinas
     Route::get('/jadwal-dinas', function () {
         return view('admin.konten.jadwal');
     })->name('jadwal-dinas');
+
     //ajax piket
     //Route::get('tambahpiket', 'KeperawatanController@showpiket');
     Route::post('tambahpiket', 'KeperawatanController@tambahpiket')->name('tambahpiket');

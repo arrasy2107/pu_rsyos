@@ -174,7 +174,7 @@ class DirekturController extends Controller
       return redirect()->back()->with('fail-delete', 'Nama Dokter  ' . $r->nama_dokter . ' sudah pernah diinputkan sebelumnya, silahkan input dengan nama lain');
     } else {
       $sup = \App\Models\Dokterirj::where('id', $r->id)->first();
-      $sup->nama_dokter = $r->nama_dokter;
+      $sup->nama = $r->nama_dokter;
       $sup->id_sdmk_jenis = $r->id_sdmk_jenis;
       $sup->save();
 

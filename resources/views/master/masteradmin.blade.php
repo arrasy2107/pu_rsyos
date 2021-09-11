@@ -80,6 +80,16 @@
           <i class="fas fa-history"></i>
           <span>Riwayat Laporan</span></a>
       </li>
+      @if(Route::current()->getName() == 'grafik-laporan')
+      <li class="nav-item active">
+        @else
+      <li class="nav-item">
+        @endif
+        <a class="nav-link" href="{{route('grafik-laporan')}}">
+          <i class="fas fa-chart-bar"></i>
+          <span>Grafik Laporan</span></a>
+      </li>
+      
       @if(\Auth::user()->id_role == 3)
       @if(Route::current()->getName() == 'jadwal-dinas')
       <li class="nav-item active">

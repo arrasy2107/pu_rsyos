@@ -144,6 +144,101 @@ class PengawasController extends Controller
         return redirect()->back()->with('success-delete', 'Berhasil menghapus data draf Laporan Umum');
     }
 
+
+
+    //IRJ
+    public function tambahirjdetail(Request $r)
+    {
+  
+        $sup = new \App\Models\Laporanirjdetail();
+        $sup->id_dokter_irj = $r->id_dokter_irj;
+        $sup->id_pengawas =\Auth::user()->id;
+        $sup->pasien_lama = $r->pasien_lama;
+        $sup->pasien_baru = $r->pasien_baru;
+        $sup->pasien_total = $r->pasien_lama + $r->pasien_baru;
+        $sup->save();
+  
+        return response()->json(
+            [
+              'success' => true,
+              'message' => 'Berhasil menambah data keterangan pasien menurut dokter'
+            ]
+       );
+      
+    }
+  
+    public function editirjdetail(Request $r)
+    {
+ 
+        $sup = \App\Models\Laporanirjdetail::where('id', $r->id)->first();
+        $sup->id_dokter_irj = $r->id_dokter_irj;
+        $sup->id_pengawas =\Auth::user()->id;
+        $sup->pasien_lama = $r->pasien_lama;
+        $sup->pasien_baru = $r->pasien_baru;
+        $sup->pasien_total = $r->pasien_lama + $r->pasien_baru;
+        $sup->save();
+  
+        return response()->json(
+            [
+              'success' => true,
+              'message' => 'Berhasil mengubah data keterangan pasien menurut dokter'
+            ]
+       );
+      
+    }
+  
+    public function deleteirjdetail(Request $r)
+    {
+  
+      $sup = \App\Models\Laporanirjdetail::where('id', $r->id)->first()->delete();
+      return response()->json(
+        [
+          'success' => true,
+          'message' => 'Berhasil menghapus data keterangan pasien menurut dokter'
+        ]
+   );
+    }
+  
+
+
+    public function draftlaporanIRJ(Request $r){
+        $sp = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
+ 
+        if (!$sp) {
+          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter masih kosong, silahkan isi terlebih dahulu');
+        } else {
+            $sup = new \App\Models\Laporanirj;
+            $sup->id_pengawas = \Auth::user()->id;
+            $sup->masalah = $r->irj_masalah;
+            $sup->langkah_atasi_masalah = $r->irj_langkah;
+            $date = date_default_timezone_set('Asia/Jakarta');
+            $sup->created_at = date('Y-m-d H:i:s');
+            $sup->updated_at =  date('Y-m-d H:i:s');
+            $sup->save();
+
+        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+        }
+
+    }
+    public function editDraftlaporanIRJ(Request $r){
+        $sup = \App\Models\Laporanirj::where('id',$r->id)->first();
+        $sup->id_pengawas = \Auth::user()->id;
+        $sup->masalah = $r->irj_masalah;
+        $sup->langkah_atasi_masalah = $r->irj_langkah;
+        
+        $date = date_default_timezone_set('Asia/Jakarta');
+        $sup->updated_at =  date('Y-m-d H:i:s');
+        $sup->save();
+
+        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+    }
+    public function deleteaftlaporanIRJ($id){
+        $sup = \App\Models\Laporanirj::where('id',$id)->first();
+        $sup->status = 2; //Delete Laporan
+        $sup->save();
+        return redirect()->back()->with('success-delete', 'Berhasil menghapus data draf Laporan IRJ');
+    }
+
     public function kirimLaporan(Request $r)
     {   
 
@@ -177,6 +272,10 @@ class PengawasController extends Controller
 
         //Update Laporan Umum
         $umum = \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
+
+        //Update Laporan IRJ
+        $irj = \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
+        $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::pluck('id')->last(), 'status' => 1]);
 
 
         return redirect()->back()->with('success-add', 'Berhasil Submit Laporan Pengawas Umum');
