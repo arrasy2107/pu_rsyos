@@ -4,6 +4,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
 
+$t = new Grei\TanggalMerah();
+
 
 setlocale(LC_TIME, 'id_ID');
 \Carbon\Carbon::setLocale('id');
@@ -35,12 +37,20 @@ $period = new CarbonPeriod($from, '1 day', $to);
 <h3>{{$monthName}} {{$tahun}}</h3>
     <table id="example" class="table table-bordered" style="width:100%; overflow-x: scroll !important;">
         <thead>
-
+<!-- warna merah #f3574e -->
             <tr>
 
-                <th style="background-color:#f3574e;color:white">DINAS</th>
+                <th style="background-color:midnightblue;color:white">DINAS</th>
                 @foreach($period as $date)
-                <th style="background-color:#f3574e;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
+                    <?php
+                        $t->set_date($date->format('Ymd'));
+                    ?>
+                    @if($date->isoFormat('dddd') == 'Minggu' || $t->is_holiday() == true)
+                    <th style="background-color:#f3574e;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
+                    @else
+                    <th style="background-color:midnightblue;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
+                    
+                    @endif
                 @endforeach
 
             </tr>

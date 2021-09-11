@@ -1,4 +1,21 @@
 @extends('master.masteradmin')
+@section('custom_style')
+<link href="https://cdn.datatables.net/1.11.0/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css" rel="stylesheet">
+<style>
+ th{
+        background-color:midnightblue;
+        color:white;
+        white-space: nowrap;
+    }
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+  overflow-x: scroll !important;
+}
+.dataTables_scrollBody {
+    overflow-x: scroll !important;
+}
+</style>
+@stop 
 @section('content')
 <?php
     $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
@@ -140,7 +157,7 @@
 
 
                 </div>
-                <div class="row">
+                    <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
@@ -169,7 +186,7 @@
                             </div>
                           
                         </div>
-                    </div>
+                    </div>  
             </div>
         </div>
     </div>
@@ -219,10 +236,11 @@
                                         <th >Ruangan</th>
                                         <th> Lama</th>
                                         <th> Baru</th>
+                                        <th><b>Total Pasien</b></th>
                                         <th> Pindah</th>
                                         <th> Pindahan</th>
                                         <th>Meninggal</th>
-                                        <th><b>Total Pasien</b></th>
+                                        
                                         <th>Catatan Pasien Istimewa</th>
                                         <th>Catatan Pasien Baru</th>
                                         <th>Covid</th>
@@ -243,34 +261,35 @@
                                     @foreach(\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->get() as $data)
                                     <tr>
                                         
-                                        <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first()  }}</td>
-                                        <th> {{$data->jumlah_pasien_lama}}</th>
-                                        <th> {{$data->jumlah_pasien_baru}}</th>
-                                        <th> {{$data->jumlah_pasien_pindah}}</th>
-                                        <th> {{$data->jumlah_pasien_pindahan}}</th>
-                                        <th>{{$data->jumlah_pasien_meninggal}}</th>
-                                        <th><b>{{$data->jumlah_total_pasien}}</b></th>
+                                        <td style="white-space: nowrap;word-wrap: break-word;">{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first()  }}</td>
+                                        <td> {{$data->jumlah_pasien_lama}}</td>
+                                        <td> {{$data->jumlah_pasien_baru}}</td>
+                                        <td><b>{{$data->jumlah_total_pasien}}</b></td>
+                                        <td> {{$data->jumlah_pasien_pindah}}</td>
+                                        <td> {{$data->jumlah_pasien_pindahan}}</td>
+                                        <td>{{$data->jumlah_pasien_meninggal}}</td>
+                                        
                                         @if($data->catatan_pasien_istimewa)
-                                        <th>{{$data->catatan_pasien_istimewa}}</th>
+                                        <td>{{$data->catatan_pasien_istimewa}}</td>
                                         @else
-                                        <th>-</th>
+                                        <td>-</td>
                                         @endif
                                         @if($data->catatan_pasien_baru)
-                                        <th>{{$data->catatan_pasien_baru}}</th>
+                                        <td>{{$data->catatan_pasien_baru}}</td>
                                         @else
-                                        <th>-</th>
+                                        <td>-</td>
                                         @endif
-                                        <th>{{$data->jumlah_pasien_covid}}</th>
-                                        <th>{{$data->jumlah_pasien_suspek_covid}}</th>
-                                        <th>{{$data->jumlah_pasien_restrain}}</th>
-                                        <th>{{$data->jumlah_pasien_perilaku_kekerasan}}</th>
-                                        <th>{{$data->jumlah_pasien_keracunan}}</th>
-                                        <th>{{$data->jumlah_pasien_keterbatasan_bahasa}}</th>
-                                        <th>{{$data->jumlah_pasien_difabel}}</th>
+                                        <td>{{$data->jumlah_pasien_covid}}</td>
+                                        <td>{{$data->jumlah_pasien_suspek_covid}}</td>
+                                        <td>{{$data->jumlah_pasien_restrain}}</td>
+                                        <td>{{$data->jumlah_pasien_perilaku_kekerasan}}</td>
+                                        <td>{{$data->jumlah_pasien_keracunan}}</td>
+                                        <td>{{$data->jumlah_pasien_keterbatasan_bahasa}}</td>
+                                        <td>{{$data->jumlah_pasien_difabel}}</td>
                                         @if($data->permasalahan_umum)
-                                        <th>{{$data->permasalahan_umum}}</th>
+                                        <td>{{$data->permasalahan_umum}}</td>
                                         @else
-                                        <th>-</th>
+                                        <td>-</td>
                                         @endif
 
                                     </tr>
@@ -304,7 +323,7 @@
                         <div class="col-lg-12 tableketerangan">
                             <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th width="10%">No</th>
@@ -373,6 +392,8 @@
 
 @stop
 @section('custom_script')
+<script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
 <script>
 $("#inap_ruangan").change(function(){
   
@@ -541,5 +562,28 @@ $("#inap_ruangan").change(function(){
     function ranap12b() {
         document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
     }
+</script>
+
+<script>
+    // $("#dataTable").DataTable({
+
+    // });
+    $(document).ready(function() {
+        var table = $('#dataTable').removeAttr('width').DataTable({
+            scrollX: true,
+            
+            ordering: false,
+            paging: false,
+            searching: false,
+            info: false,
+            columnDefs: [{
+                width: 150,
+                targets: 0
+            }],
+            fixedColumns: true
+        });
+    });
+
+
 </script>
 @stop

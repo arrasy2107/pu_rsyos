@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7759431e303e2d722a264a8a991a9e84",
+    "content-hash": "c683024321a2b2815528f6e1b799d660",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -622,6 +622,50 @@
                 }
             ],
             "time": "2020-04-13T13:17:36+00:00"
+        },
+        {
+            "name": "grei/tanggalmerah",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guangrei/phptanggalmerah.git",
+                "reference": "55437fb471f84d6bb24af6b6e7db6a73afbe6ecf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guangrei/phptanggalmerah/zipball/55437fb471f84d6bb24af6b6e7db6a73afbe6ecf",
+                "reference": "55437fb471f84d6bb24af6b6e7db6a73afbe6ecf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.1@dev|~6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grei\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "guangrei",
+                    "email": "grei@tuta.io"
+                }
+            ],
+            "description": "indonesia holiday checker (include sunday)",
+            "homepage": "https://ipynb.wordpress.com",
+            "support": {
+                "issues": "https://github.com/guangrei/phptanggalmerah/issues",
+                "source": "https://github.com/guangrei/phptanggalmerah/tree/1.0"
+            },
+            "time": "2019-01-22T12:33:34+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

@@ -24,7 +24,17 @@ Route::get('logout', 'LoginController@logout')->name('logout');
 //ALL USERS
 Route::group(['middleware' => ['auth']],  function () {
     Route::put('/gantipassword', 'UserController@gantipassword')->name('gantipassword');
-    
+
+    //RIWAYAT LAPORAN 
+    Route::get('/refresh-detail-laporan-igd/{idlaporan}',function($idlaporan){
+        return view('admin.ajax.refresh-detail-laporan-igd',compact('idlaporan'));
+    });
+    Route::get('/refresh-detail-laporan-umum/{idlaporan}',function($idlaporan){
+        return view('admin.ajax.refresh-detail-laporan-umum',compact('idlaporan'));
+    });
+    Route::get('/refresh-detail-laporan-irj/{idlaporan}',function($idlaporan){
+        return view('admin.ajax.refresh-detail-laporan-irj',compact('idlaporan'));
+    });
 });
 
 //PENGAWAS

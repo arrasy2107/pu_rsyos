@@ -34,7 +34,9 @@
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
-
+text.highcharts-credits {
+    display : none;
+}
 </style>
 <div id="container" style="margin-top:30px"></div>
 
@@ -101,7 +103,7 @@ Highcharts.chart('container', {
     subtitle: {
         text: 'Bulan Januari 2021'
     },
-
+    colors: [ '#ED561B', '#50B432','#058DC7'],
     xAxis: {
         tickInterval: 7 * 24 * 3600 * 1000, // one week
         tickWidth: 0,

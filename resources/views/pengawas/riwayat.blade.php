@@ -20,11 +20,17 @@
     <p>{{ Session::get('fail-delete') }}</p>
 </div>
 @endif
+<?php 
 
+$t = new Grei\TanggalMerah();
+
+
+
+?>
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan Anda</h1>
+    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -49,6 +55,9 @@
                     
                     <tbody>
                         @foreach(\App\Models\Laporan::orderBy('updated_at','DESC')->get() as $data)
+                        <?php
+                        $t->set_date( date('Ymd', strtotime($data->created_at)));
+                        ?>
                         <tr>
                             <td>{{ $no }}</td>
                             <td>{{ $data->updated_at }}</td>
@@ -56,9 +65,11 @@
                             <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
                             
                             <td>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IGD</button>
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">Umum</button>
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-nama="{{$data->nama_ruangan}}" data-toggle="modal" data-target="#edit">IRJ</button>
+                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
+                                @if($data->id_dinas == 1 || $t->check() == true)
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
+                                @endif
                             </td>
 
                         </tr>
@@ -74,57 +85,66 @@
     </div>
 
 </div>
-<div id="tambah" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+<div id="igd" class="modal fade" role="dialog">
+    
+    <div class="modal-dialog modal-xl">
 
         <!-- Modal content-->
         <div class="modal-content">
-            <div class="modal-header">
-                Tambah Ruangan
+        <div class="modal-header">
+                <h4>Instalasi Gawat Darurat (IGD)</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('tambahruangan') }}" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    <div class="form-group">
-                        <label>Nama Ruangan: </label>
-                        <input type="text" class="form-control" name="nama_ruangan" required />
-                    </div>
-
-                   
+            <div class="row ">
+                <div class="col-lg-12 tableigd">
+                
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
             </div>
-            </form>
+          
+           
         </div>
     </div>
 </div>
-<div id="edit" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+<div id="umum" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl" >
 
         <!-- Modal content-->
         <div class="modal-content">
-            <div class="modal-header">
-                Ubah Nama Ruangan
+
+        <div class="modal-header">
+                <h4>Umum / Ruangan</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="{{ route('editruangan') }}" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    {{ method_field('PUT') }}
-                    <input type="hidden" class="txtid" name="id">
-                    <div class="form-group">
-                        <label>Nama Ruangan: </label>
-                        <input type="text" class="form-control txt-nama" name="nama_ruangan" required />
-                    </div>
+            <div class="row ">
+                <div class="col-lg-12 tableumum">
+                
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+<div id="irj" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
 
-                    
+        <!-- Modal content-->
+        <div class="modal-content">
+        <div class="modal-header">
+                <h4>Instalasi Rawat Jalan (IRJ)</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-selesai btn-primary">Submit</button>
+            <div class="modal-body" style="padding:30px">
+            <div class="row ">
+                <div class="col-lg-12 tableirj">
+                
+                </div>
             </div>
-            </form>
+            </div>
+           
         </div>
     </div>
 </div>
@@ -146,26 +166,64 @@
 
 
 
-    $("#dataTable").on('click', '.btn-edit', function() {
-        id = $(this).val();
-        nama = $(this).data('nama');
+    $("#dataTable").on('click', '.btn-igd', function() {
+        id1 = $(this).val();
+     
+
+    });
+    $("#dataTable").on('click', '.btn-umum', function() {
+        id2 = $(this).val();
+   
+
+    });
+    $("#dataTable").on('click', '.btn-irj', function() {
+        id3 = $(this).val();
 
     });
 
-    $('#edit').on('show.bs.modal', function() {
-        $(".txtid").val(id);
-        $(".txt-nama").val(nama);
-       
+    $('#igd').on('show.bs.modal', function() {
+           $.ajax({
+                            type : "get",
+                            url : 'refresh-detail-laporan-igd/'+id1,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : id1},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableigd").html(data);
+                            }   
+                    });
 
 
     });
 
-    $("#dataTable").on('click', '.btn-delete', function(e) {
-        var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
-        if (conf == false) {
-            e.preventDefault();
-        }
+    $('#umum').on('show.bs.modal', function() {
+           $.ajax({
+                            type : "get",
+                            url : 'refresh-detail-laporan-umum/'+id2,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : id2},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableumum").html(data);
+                            }   
+                    });
+
+
     });
+
+    $('#irj').on('show.bs.modal', function() {
+           $.ajax({
+                            type : "get",
+                            url : 'refresh-detail-laporan-irj/'+id3,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : id3},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableirj").html(data);
+                            }   
+                    });
+
+
+    });
+
+
 
     (function($) {
         $(".alert-call").fadeOut(2500);
