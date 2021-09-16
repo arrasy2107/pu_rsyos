@@ -38,6 +38,70 @@ text.highcharts-credits {
     display : none;
 }
 </style>
+
+
+<?php
+
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+
+setlocale(LC_TIME, 'id_ID');
+\Carbon\Carbon::setLocale('id');
+\Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
+
+
+$dateObj   = \Carbon\Carbon::createFromFormat('!m', $bulan);
+$monthName = $dateObj->isoFormat('MMMM'); // March
+$ts = strtotime($monthName.' '.$tahun);
+$lastdate = date('t', $ts); 
+
+
+//$period = CarbonPeriod::create('2021-09-01', '2021-09-30');
+$from = \Carbon\Carbon::createFromFormat('Y-m-d', $tahun.'-'.$bulan.'-01');
+
+$tanggalsekarang = date("Y-m-t", strtotime($tahun.'-'.$bulan.'-01'));
+$to = \Carbon\Carbon::createFromFormat('Y-m-d', $tanggalsekarang);
+$period = new CarbonPeriod($from, '1 day', $to);
+
+
+ $tgl = [];
+ $datas1 = [];
+ $datas2 = [];
+ $datas3 = [];
+
+ foreach($period as $date){
+     $tgl[] = $date->format('d F');
+
+     //IGD
+     if(  \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->pluck('jumlah_pasien')->last()   ){
+         $datas1[] = \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->pluck('jumlah_pasien')->last();
+     }
+     else{
+         $datas1[] = 0;
+     }
+
+      //Ruangan Umum
+      if( \App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('jumlah_total_pasien')->sum()  ){
+         $datas2[] =\App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('jumlah_total_pasien')->sum();
+     }
+     else{
+         $datas2[] = 0;
+     }
+
+      //IRJ
+      if(  \App\Models\Laporanirjdetail::where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('pasien_total')->sum() ) {
+         $datas3[] = \App\Models\Laporanirjdetail::where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('pasien_total')->sum();
+     }
+     else{
+         $datas3[] = 0;
+     }
+
+ }
+?>
+
+
+
+
 <div id="container" style="margin-top:30px"></div>
 
 
@@ -45,40 +109,40 @@ text.highcharts-credits {
 <script>
     // A point click event that uses the Renderer to draw a label next to the point
 // On subsequent clicks, move the existing label instead of creating a new one.
-Highcharts.addEvent(Highcharts.Point, 'click', function () {
-    if (this.series.options.className.indexOf('popup-on-click') !== -1) {
-        const chart = this.series.chart;
-        const date = Highcharts.dateFormat('%A, %b %e, %Y', this.x);
-        const text = `<b>${date}</b><br/>${this.y} ${this.series.name}`;
+// Highcharts.addEvent(Highcharts.Point, 'click', function () {
+//     if (this.series.options.className.indexOf('popup-on-click') !== -1) {
+//         const chart = this.series.chart;
+//         const date = Highcharts.dateFormat('%A, %b %e, %Y', this.x);
+//         const text = `<b>${this.series.name}</b> : ${this.y} pasien`;
 
-        const anchorX = this.plotX + this.series.xAxis.pos;
-        const anchorY = this.plotY + this.series.yAxis.pos;
-        const align = anchorX < chart.chartWidth - 200 ? 'left' : 'right';
-        const x = align === 'left' ? anchorX + 10 : anchorX - 10;
-        const y = anchorY - 30;
-        if (!chart.sticky) {
-            chart.sticky = chart.renderer
-                .label(text, x, y, 'callout',  anchorX, anchorY)
-                .attr({
-                    align,
-                    fill: 'rgba(0, 0, 0, 0.75)',
-                    padding: 10,
-                    zIndex: 7 // Above series, below tooltip
-                })
-                .css({
-                    color: 'white'
-                })
-                .on('click', function () {
-                    chart.sticky = chart.sticky.destroy();
-                })
-                .add();
-        } else {
-            chart.sticky
-                .attr({ align, text })
-                .animate({ anchorX, anchorY, x, y }, { duration: 250 });
-        }
-    }
-});
+//         const anchorX = this.plotX + this.series.xAxis.pos;
+//         const anchorY = this.plotY + this.series.yAxis.pos;
+//         const align = anchorX < chart.chartWidth - 200 ? 'left' : 'right';
+//         const x = align === 'left' ? anchorX + 10 : anchorX - 10;
+//         const y = anchorY - 30;
+//         if (!chart.sticky) {
+//             chart.sticky = chart.renderer
+//                 .label(text, x, y, 'callout',  anchorX, anchorY)
+//                 .attr({
+//                     align,
+//                     fill: 'rgba(0, 0, 0, 0.75)',
+//                     padding: 10,
+//                     zIndex: 7 // Above series, below tooltip
+//                 })
+//                 .css({
+//                     color: 'white'
+//                 })
+//                 .on('click', function () {
+//                     chart.sticky = chart.sticky.destroy();
+//                 })
+//                 .add();
+//         } else {
+//             chart.sticky
+//                 .attr({ align, text })
+//                 .animate({ anchorX, anchorY, x, y }, { duration: 250 });
+//         }
+//     }
+// });
 
 
 Highcharts.chart('container', {
@@ -89,29 +153,30 @@ Highcharts.chart('container', {
         }
     },
 
-    data: {
-        csvURL: '{{asset('dummy/dummy.csv')}}',
-        beforeParse: function (csv) {
-            return csv.replace(/\n\n/g, '\n');
-        }
-    },
+    // data: {
+    //     csvURL: '{{asset('dummy/dummy.csv')}}',
+    //     beforeParse: function (csv) {
+    //         return csv.replace(/\n\n/g, '\n');
+    //     }
+    // },
 
     title: {
         text: 'Laporan Total Pasien'
     },
 
     subtitle: {
-        text: 'Bulan Januari 2021'
+        text:{!! json_encode($monthName) !!} +' '+ {{ $tahun }},
     },
     colors: [ '#ED561B', '#50B432','#058DC7'],
     xAxis: {
-        tickInterval: 7 * 24 * 3600 * 1000, // one week
+        categories: {!! json_encode($tgl) !!},
+        tickInterval: 7, // one week
         tickWidth: 0,
         gridLineWidth: 1,
         labels: {
-            align: 'left',
-            x: 3,
-            y: -3
+            align: 'center',
+            x: 0,
+            y: 20
         }
     },
 
@@ -164,13 +229,17 @@ Highcharts.chart('container', {
     },
 
     series: [{
-        name: 'All sessions',
-        lineWidth: 4,
-        marker: {
-            radius: 4
-        }
+        name: 'IGD',
+        data: {!! json_encode($datas1) !!},
+        
     }, {
-        name: 'New users'
+        name: 'Ruangan Umum',
+        data: {!! json_encode($datas2) !!},
+      
+    }, {
+        name: 'IRJ',
+        data: {!! json_encode($datas3) !!},
+        
     }]
 });
 

@@ -31,13 +31,29 @@
 </div>
 @endif
 <?php
-
+date_default_timezone_set('Asia/Jakarta');
 use Carbon\Carbon;
 
 setlocale(LC_TIME, 'id_ID');
 \Carbon\Carbon::setLocale('id');
 \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
 $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+
+
+
+$cekhariini = \Carbon\Carbon::now()->format('Ymd');
+$t = new Grei\TanggalMerah();
+$t->set_date($cekhariini);
+
+$now = \Carbon\Carbon::now();
+$ltime = date('H:i:s');
+$nowTime = $now->hour.':'.$now->minute.':'.$now->second;
+$start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',3)->pluck('jam_masuk')->first());
+$end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first())->addDay();
+
+ 
+
+
 ?>
 <style>
     .shadow-textarea textarea.form-control::placeholder {
@@ -317,6 +333,9 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
             </div>
         </form>
     </div>
+
+    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  && $t->check() != true)
+    <!-- IRJ -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
         <a href="#collapseIRJ" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIRJ">
@@ -414,88 +433,93 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
             </div>
         </div>
     </div>
+    @endif
+
     
     <div class="card shadow mb-4 ">
-        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0)
-        <div class="card-body">
-            <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
-            <div class="row">
-                <form method="post" action="#" class="col-lg-4" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Dinas </label>
-                            <select class="form-control select2" disabled>
-                                <option value="" selected disabled hidden>Pilih Dinas</option>
-                                @foreach(\App\Models\Dinas::all() as $dk)
-                                <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
+        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0)
+            
+            <div class="card-body">
+                <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
+                <div class="row">
+                    <form method="post" action="#" class="col-lg-4" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label style="color:#000;font-weight:600"> Dinas </label>
+                                <select class="form-control select2" disabled>
+                                    <option value="" selected disabled hidden>Pilih Dinas</option>
+                                    @foreach(\App\Models\Dinas::all() as $dk)
+                                    <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
 
-                                @endforeach
-                            </select>
+                                    @endforeach
+                                </select>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
+                                <br />
+                                <div style="  background-color: #eaecf4;width: 100%;height: 200px;border-radius:.35rem"></div>
+                                <br />
+                                <button id="clear" class="btn btn-danger btn-sm" disabled>Hapus Tanda Tangan</button>
+                                <textarea id="" style="display: none" required></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" disabled>
+                                <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
+                            </div>
+                            <div class="form-group">
+                                    <button type="submit" class="btn btn-lg btn-primary my-3" disabled>Kirim Laporan</button>
+                            </div>
                         </div>
-                       
-                        <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
-                            <br />
-                            <div style="  background-color: #eaecf4;width: 100%;height: 200px;border-radius:.35rem"></div>
-                            <br />
-                            <button id="clear" class="btn btn-danger btn-sm" disabled>Hapus Tanda Tangan</button>
-                            <textarea id="" style="display: none" required></textarea>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" disabled>
-                            <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
-                        </div>
-                        <div class="form-group">
-                                <button type="submit" class="btn btn-lg btn-primary my-3" disabled>Kirim Laporan</button>
-                        </div>
-                    </div>
-                  
                     
-                </form>
-                
+                        
+                    </form>
+                    
+                </div>
             </div>
-        </div>
+            
         @else
-        <div class="card-body">
-            <div class="row">
-                <form method="post" action="{{ route('kirimLaporan') }}" class="col-lg-4" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Dinas </label>
-                            <select class="form-control select2" name="dinas" id="dinas" required>
-                                <option value="" selected disabled hidden>Pilih Dinas</option>
-                                @foreach(\App\Models\Dinas::all() as $dk)
-                                <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
+    
+                <div class="card-body">
+                    <div class="row">
+                        <form method="post" action="{{ route('kirimLaporan') }}" class="col-lg-4" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label style="color:#000;font-weight:600"> Dinas </label>
+                                    <select class="form-control select2" name="dinas" id="dinas" required>
+                                        <option value="" selected disabled hidden>Pilih Dinas</option>
+                                        @foreach(\App\Models\Dinas::all() as $dk)
+                                        <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
 
-                                @endforeach
-                            </select>
-                        </div>
-                       
-                        <div class="form-group">
-                            <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
-                            <br />
-                            <div id="sig"></div>
-                            <br />
-                            <button id="clear" class="btn btn-danger btn-sm">Hapus Tanda Tangan</button>
-                            <textarea id="signature64" name="signed" style="display: none" required></textarea>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
-                            <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
-                        </div>
-                        <div class="form-group">
-                                <button type="submit" class="btn btn-lg btn-kirim btn-primary my-3" >Kirim Laporan</button>
-                        </div>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            
+                                <div class="form-group">
+                                    <label style="color:#000;font-weight:600"> Tanda Tangan {{\Auth::user()->nama}}</label>
+                                    <br />
+                                    <div id="sig"></div>
+                                    <br />
+                                    <button id="clear" class="btn btn-danger btn-sm">Hapus Tanda Tangan</button>
+                                    <textarea id="signature64" name="signed" style="display: none" required></textarea>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                                    <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
+                                </div>
+                                <div class="form-group">
+                                        <button type="submit" class="btn btn-lg btn-kirim btn-primary my-3" >Kirim Laporan</button>
+                                </div>
+                            </div>
+                        
+                            
+                        </form>
+                        
                     </div>
-                  
-                    
-                </form>
-                
-            </div>
-        </div>
-
+                </div>
+          
         @endif
 
     </div>

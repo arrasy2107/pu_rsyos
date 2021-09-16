@@ -12,11 +12,28 @@
 @endif
 <?php 
 use Carbon\Carbon;
+date_default_timezone_set('Asia/Jakarta');
 
 setlocale(LC_TIME, 'id_ID');
+
 \Carbon\Carbon::setLocale('id');
 \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
 $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+
+$cekhariini = \Carbon\Carbon::now()->format('Ymd');
+$t = new Grei\TanggalMerah();
+$t->set_date($cekhariini);
+
+
+$now = \Carbon\Carbon::now();
+$ltime = date('H:i:s');
+$nowTime = $now->hour.':'.$now->minute.':'.$now->second;
+
+$start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',3)->pluck('jam_masuk')->first());
+$end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
+
+ 
+
 ?>
 <style>
     .shadow-textarea textarea.form-control::placeholder {
@@ -29,6 +46,8 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 </style>
 <div class="container-fluid">
 
+
+    
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Laporan Pengawas Umum</h1>
@@ -540,6 +559,10 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
     </div>
     @endif
 
+
+    <!-- cek dinas malam atau hari libur -->
+    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true)
+
     @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
@@ -643,7 +666,7 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
     </div>
 
     @endif
-
+    @endif
 
 </div>
 <!-- /.container-fluid -->

@@ -196,7 +196,7 @@ class PengawasController extends Controller
           'success' => true,
           'message' => 'Berhasil menghapus data keterangan pasien menurut dokter'
         ]
-   );
+        );
     }
   
 

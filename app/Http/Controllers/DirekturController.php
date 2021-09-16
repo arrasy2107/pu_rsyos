@@ -279,4 +279,25 @@ class DirekturController extends Controller
    }
 
 
+   //LAPORAN
+
+   public function verifikasilaporan(Request $r)
+   {
+     
+      $ids = [];
+      $ids = $r->verifikasi;
+      $date = date_default_timezone_set('Asia/Jakarta');
+     
+       $sup = \App\Models\Laporan::whereIn('id', $ids)->update(['verified' => 1, 'updated_at' => date('Y-m-d H:i:s')]);
+       
+       return response()->json(
+        [
+          'success' => true,
+          'message' => 'Berhasil verifikasi laporan '
+        ]
+        );
+       //return redirect()->back()->with('success-add', 'Berhasil verifikasi laporan');
+     
+   }
+
 }

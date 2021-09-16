@@ -47,9 +47,14 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::get('/draf-laporan', function () {
         return view('pengawas.draf-laporan');
     })->name('draf-laporan');
-    Route::get('/riwayat-laporan', function () {
-        return view('pengawas.riwayat');
-    })->name('riwayat-laporan');
+
+    Route::get('/riwayat-laporan-belum-verifikasi', function () {
+        return view('pengawas.riwayat-belum');
+    })->name('riwayat-laporan-belum');
+    Route::get('/riwayat-laporan-sudah-verifikasi', function () {
+        return view('pengawas.riwayat-sudah');
+    })->name('riwayat-laporan-sudah');
+
     Route::get('/refresh-laporan-umum/{ruangan}',function($ruangan){
         return view('pengawas.ajax.refresh-laporan-umum',compact('ruangan'));
     });
@@ -69,16 +74,20 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
  
 });
 
-//DIREKTUR
+//DIREKTUR dan BIDANG KEPERAWATAN
 Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.dashboard');
     })->name('dashboard');
  
     //Riwayat Laporan
-    Route::get('/riwayat-laporan-pengawas-umum', function () {
-        return view('admin.konten.riwayat');
-    })->name('riwayat-laporan-pengawas-umum');
+    Route::get('/riwayat-laporan-pu-belum-verifikasi', function () {
+        return view('admin.konten.riwayat-belum');
+    })->name('riwayat-laporan-pu-belum');
+    Route::get('/riwayat-laporan-pu-sudah-verifikasi', function () {
+        return view('admin.konten.riwayat-sudah');
+    })->name('riwayat-laporan-pu-sudah');
+    Route::put('verifikasilaporan', 'DirekturController@verifikasilaporan')->name('verifikasilaporan');
 
     //Grafik Laporan
     Route::get('/grafik-laporan', function () {

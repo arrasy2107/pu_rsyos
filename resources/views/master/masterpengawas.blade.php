@@ -79,15 +79,25 @@
           <i class="fas fa-edit"></i>
           <span>Draf Laporan</span></a>
       </li>
-      @if(Route::current()->getName() == 'riwayat-laporan')
+
+      @if(Route::current()->getName() == 'riwayat-laporan-belum' || Route::current()->getName() == 'riwayat-laporan-sudah')
       <li class="nav-item active">
         @else
-        <li class="nav-item">
+      <li class="nav-item">
         @endif
-        <a class="nav-link" href="{{route('riwayat-laporan')}}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-history"></i>
-          <span>Riwayat Laporan</span></a>
+          <span>Riwayat Laporan</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+
+            <a class="collapse-item" href="{{route('riwayat-laporan-belum')}}">Belum diverifikasi</a>
+            <a class="collapse-item" href="{{route('riwayat-laporan-sudah')}}">Sudah diverifikasi</a>
+          </div>
+        </div>
       </li>
+      
           
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -238,11 +248,21 @@
             </div>
             <div class="form-group">
               <label>Password Lama: </label>
-              <input type="text" class="form-control" name="passlama" autocomplete="off" required />
+                <div class="input-group" id="show_hide_password">
+                <input type="password" class="form-control" name="passlama" autocomplete="off" required />
+                  <div class="input-group-addon" style="margin-top:10px;margin-left:10px">
+                  <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label>Password Baru: </label>
-              <input type="text" class="form-control" name="password" autocomplete="off" required />
+                <div class="input-group" id="show_hide_password2">
+                <input type="password" class="form-control" name="password" autocomplete="off" required />
+                    <div class="input-group-addon" style="margin-top:10px;margin-left:10px">
+                    <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                  </div>
+                </div>
             </div>
 
         </div>
@@ -315,6 +335,38 @@
 
     })(jQuery);
   </script>
+  <script>
+$(document).ready(function() {
+    $("#show_hide_password a").on('click', function(event) {
+        event.preventDefault();
+        if($('#show_hide_password input').attr("type") == "text"){
+            $('#show_hide_password input').attr('type', 'password');
+            $('#show_hide_password i').addClass( "fa-eye-slash" );
+            $('#show_hide_password i').removeClass( "fa-eye" );
+        }else if($('#show_hide_password input').attr("type") == "password"){
+            $('#show_hide_password input').attr('type', 'text');
+            $('#show_hide_password i').removeClass( "fa-eye-slash" );
+            $('#show_hide_password i').addClass( "fa-eye" );
+        }
+    });
+});
+    </script>
+      <script>
+$(document).ready(function() {
+    $("#show_hide_password2 a").on('click', function(event) {
+        event.preventDefault();
+        if($('#show_hide_password2 input').attr("type") == "text"){
+            $('#show_hide_password2 input').attr('type', 'password');
+            $('#show_hide_password2 i').addClass( "fa-eye-slash" );
+            $('#show_hide_password2 i').removeClass( "fa-eye" );
+        }else if($('#show_hide_password2 input').attr("type") == "password"){
+            $('#show_hide_password2 input').attr('type', 'text');
+            $('#show_hide_password2 i').removeClass( "fa-eye-slash" );
+            $('#show_hide_password2 i').addClass( "fa-eye" );
+        }
+    });
+});
+    </script>
   @yield('custom_script')
 </body>
 

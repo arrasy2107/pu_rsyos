@@ -20,7 +20,10 @@ $lastdate = date('t', $ts);
 
 //$period = CarbonPeriod::create('2021-09-01', '2021-09-30');
 $from = \Carbon\Carbon::createFromFormat('Y-m-d', $tahun.'-'.$bulan.'-01');
-$to = \Carbon\Carbon::createFromFormat('Y-m-d', $tahun.'-'.$bulan.'-'.$lastdate);
+
+$tanggalsekarang = date("Y-m-t", strtotime($tahun.'-'.$bulan.'-01'));
+$to = \Carbon\Carbon::createFromFormat('Y-m-d', $tanggalsekarang);
+
 
 $period = new CarbonPeriod($from, '1 day', $to);
 
@@ -46,7 +49,7 @@ $period = new CarbonPeriod($from, '1 day', $to);
                         $t->set_date($date->format('Ymd'));
                     ?>
                     @if($date->isoFormat('dddd') == 'Minggu' || $t->is_holiday() == true)
-                    <th style="background-color:#f3574e;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
+                    <th style="background-color:#f3574e;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}} </span></th>
                     @else
                     <th style="background-color:midnightblue;color:white">{{$date->format('d')}} / <span style="font-size:12px">{{$date->isoFormat('dddd')}}</span></th>
                     

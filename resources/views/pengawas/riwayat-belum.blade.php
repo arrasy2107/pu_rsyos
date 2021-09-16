@@ -1,4 +1,4 @@
-@extends('master.masteradmin')
+@extends('master.masterpengawas')
 @section('content')
 @if (Session::has('success-add'))
 <div class="alert alert-success alert-call">
@@ -22,6 +22,10 @@
 @endif
 <?php 
 
+
+setlocale(LC_TIME, 'id_ID');
+\Carbon\Carbon::setLocale('id');
+\Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
 $t = new Grei\TanggalMerah();
 
 
@@ -30,7 +34,7 @@ $t = new Grei\TanggalMerah();
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan</h1>
+    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan (Belum diverifikasi Direktur)</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -40,11 +44,11 @@ $t = new Grei\TanggalMerah();
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th width="10%">No</th>
-                            <th width="20%">Tanggal</th>
+                            <th width="7%">No</th>
+                            <th width="15%">Tanggal</th>
+                            <th width="10%">Jam</th>
                             <th>Dinas</th>
-                            <th>Pengawas Umum</th>
-                            <th >Tanda Tangan</th>
+                            <th width="20%">Tanda Tangan</th>
                             <th width="20%">Laporan</th>
 
                         </tr>
@@ -55,24 +59,25 @@ $t = new Grei\TanggalMerah();
                     ?>
                     
                     <tbody>
-                        @foreach(\App\Models\Laporan::orderBy('updated_at','DESC')->get() as $data)
+                        @foreach(\App\Models\Laporan::where('verified',0)->orderBy('created_at','DESC')->get() as $data)
                         <?php
                         $t->set_date( date('Ymd', strtotime($data->created_at)));
                         ?>
                         <tr>
                             <td>{{ $no }}</td>
-                            <td>{{ $data->updated_at }}</td>
+                            <td>{{$data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
+                            <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
+                            
                             <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
-                            <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
                             <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
                             
                             <td>
                             <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
-                                @if($data->id_dinas == 1 || $t->check() == true)
+                                @if($data->id_dinas != 3 && $t->check() != true)
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
                                 @endif
-                             </td>
+                            </td>
 
                         </tr>
                         <?php
@@ -154,7 +159,7 @@ $t = new Grei\TanggalMerah();
 @section('custom_script')
 <script>
     $("#dataTable").DataTable({
-       
+        "ordering":false
     });
 
 
@@ -224,7 +229,6 @@ $t = new Grei\TanggalMerah();
 
 
     });
-
 
 
 
