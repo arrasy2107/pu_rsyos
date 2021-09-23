@@ -22,6 +22,15 @@ class KeperawatanController extends Controller
       $sup->tanggal = $r->tanggal;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 6;
+      $log->keterangan = 'Tambah Jadwal Piket : '.\App\Models\User::where('id',$r->id_pengawas)->pluck('nama')->first().' (Dinas : '.\App\Models\Dinas::where('id',$r->id_dinas)->pluck('dinas')->first().', Tanggal : '.$r->tanggal.')';
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       //return redirect()->back()->with('success-add', 'Berhasil menambah data');
       return response()->json(
         [
@@ -42,6 +51,15 @@ class KeperawatanController extends Controller
         $sup->id_dinas = $r->id_dinas;
         $sup->tanggal = $r->tanggal;
         $sup->save();
+
+        //log data
+        $log = new \App\Models\Log;
+        $log->id_user = \Auth::user()->id;
+        $log->id_log_jenis = 6;
+        $log->keterangan = 'Edit Jadwal Piket : '.\App\Models\User::where('id',$r->id_pengawas)->pluck('nama')->first().' (Dinas : '.\App\Models\Dinas::where('id',$r->id_dinas)->pluck('dinas')->first().', Tanggal : '.$r->tanggal.')';
+        $log->created_at = date('Y-m-d H:i:s');
+        $log->updated_at =  date('Y-m-d H:i:s');
+        $log->save();
   
         //return redirect()->back()->with('success-add', 'Berhasil mengubah data');
         return response()->json(
@@ -57,7 +75,19 @@ class KeperawatanController extends Controller
   public function deletepiket($id)
   {
 
-    $sup = \App\Models\Piket::where('id', $id)->first()->delete();
+    $sup = \App\Models\Piket::where('id', $id)->first();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 6;
+    $log->keterangan = 'Hapus Jadwal Piket : '.\App\Models\User::where('id',$sup->id_pengawas)->pluck('nama')->first().' (Dinas : '.\App\Models\Dinas::where('id',$sup->id_dinas)->pluck('dinas')->first().', Tanggal : '.$sup->tanggal.')';
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
+    $sup->delete();
+
     //return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
     return response()->json(
       [

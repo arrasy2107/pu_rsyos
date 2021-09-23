@@ -4,7 +4,7 @@
 <link href="https://cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css" rel="stylesheet">
 <style>
  th{
-        background-color:midnightblue;
+        background-color:slategrey;
         color:white;
         white-space: nowrap;
     }

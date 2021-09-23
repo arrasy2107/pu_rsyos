@@ -19,8 +19,20 @@
         width: 80%;
     }
 </style>
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-selection__rendered {
+    line-height: 37px !important;
+}
+.select2-container .select2-selection--single {
+    height: calc(1.5em + .75rem + 2px);
+}
+.select2-selection__arrow {
+    height: 34px !important;
+}
+</style>
 @stop
+
 @section('content')
 @if (Session::has('success-add'))
 <div class="alert alert-success alert-call">
@@ -82,7 +94,7 @@ $newDateTime = Carbon::now()->addYears(5);
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="tahun"><b>Tahun</b></label>
-                        <select id="tahun" name="tahun" class="form-control select2">
+                        <select id="tahun" name="tahun" class="form-control ">
                             <option value="0">Pilih Tahun</option>
                             @foreach (range($currentDateTime->year, $newDateTime->year) as $year)
                             <option value="{{$year}}">{{$year}}</option>
@@ -94,7 +106,7 @@ $newDateTime = Carbon::now()->addYears(5);
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="bulan">Bulan</label>
-                        <select id="bulan" name="bulan" class="form-control select2">
+                        <select id="bulan" name="bulan" class="form-control ">
                             <option value="0">Pilih Bulan</option>
 
                             <option value="01">Januari</option>
@@ -148,8 +160,8 @@ $newDateTime = Carbon::now()->addYears(5);
                     <input type="hidden" class="txttanggal" name="tanggal">
 
                     <div class="form-group">
-                        <label>Pengawas Umum : </label>
-                        <select class="form-control" name="id_pengawas" id="id_pengawas" required>
+                        <label>Pengawas Umum : </label><br>
+                        <select class="form-control select2" name="id_pengawas" id="id_pengawas" style="width:100%" required>
                             <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
                             @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -184,8 +196,8 @@ $newDateTime = Carbon::now()->addYears(5);
                     <input type="hidden" class="txttanggal2" name="tanggal2">
 
                     <div class="form-group">
-                        <label>Pengawas Umum : </label>
-                        <select class="form-control txtpengawas" id="id_pengawas2" name="id_pengawas" required>
+                        <label>Pengawas Umum : </label><br>
+                        <select class="form-control txtpengawas select2" id="id_pengawas2" name="id_pengawas" style="width:100%" required>
                             <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
                             @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -207,6 +219,7 @@ $newDateTime = Carbon::now()->addYears(5);
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
 <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
     // $.ajaxSetup({
@@ -249,7 +262,7 @@ $newDateTime = Carbon::now()->addYears(5);
     $('#edit').on('show.bs.modal', function() {
         $(".txtiddinas2").val(id);
         $(".txttanggal2").val(tanggal);
-        $(".txtpengawas").val(pengawas);
+        $(".txtpengawas").select2().val(pengawas).trigger("change");
         $(".txtid").val(idpiket);
     });
 
@@ -422,6 +435,13 @@ $newDateTime = Carbon::now()->addYears(5);
         $(".alert-call3").fadeOut(2500);
         $(".alert-call4").fadeOut(2500);
     })(jQuery);
+</script>
+<script>
+
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
 </script>
 
 @stop

@@ -34,13 +34,38 @@ $t = new Grei\TanggalMerah();
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan (Sudah diverifikasi Direktur)</h1>
+    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan Sebulan terakhir (Sudah diverifikasi Direktur)</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
 
         <div class="card-body">
-                        <div class="table-responsive">
+            <div class ="row">
+                    <div class="col-md-3">
+                    <label for="tglmulai">Tanggal Mulai</label>
+                    <div class="form-group">
+
+                    <input type="date" id="tanggal" class="form-control" name="tglmulai" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="tglmulai">Tanggal Selesai</label>
+                    <div class="form-group">
+
+                    <input type="date" id="tanggal2" class="form-control" name="tglselesai" />
+                    </div>
+                </div>
+            
+                <div class="col-md-1">
+                    <label for="tglmulai" style="color:white">Lihat</label>
+                    <div class="form-group">
+
+                    <button type="button" id="lihat" class="btn btn-primary btn-sm" name="lihat">Lihat</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -56,11 +81,13 @@ $t = new Grei\TanggalMerah();
                     </thead>
                     
                     <?php
+                    $date = date_default_timezone_set('Asia/Jakarta');
+                    $today = date('Y-m-d H:i:s');
                     $no = 1;
                     ?>
                     
                     <tbody>
-                        @foreach(\App\Models\Laporan::where('verified',1)->orderBy('updated_at','DESC')->get() as $data)
+                        @foreach(\App\Models\Laporan::whereBetween('created_at',[date("Y-m-d", strtotime("-1 month")),$today])->where('verified',1)->orderBy('updated_at','DESC')->get() as $data)
                         <?php
                         $t->set_date( date('Ymd', strtotime($data->created_at)));
                         ?>
@@ -232,6 +259,28 @@ $t = new Grei\TanggalMerah();
     });
 
 
+    $("#lihat").click(function() {
+
+    if (!$("#tanggal").val() || !$("#tanggal2").val()) {
+    alert('lengkapi tanggal dahulu');
+    } else {
+    $(".tablehistori").html("<h1>Mohon Tunggu...</h1>")
+    $.ajax({
+        type: "get",
+        url: 'history-kat/' + $("#tanggal").val() + '/' + $("#tanggal2").val() + '/' + $("#kode").val(),
+        data: {
+        tanggal2: $("#tanggal2").val(),
+        tanggal: $("#tanggal").val(),
+        kode: $("#kode").val()
+        },
+        success: function(data) {
+        console.log(data);
+        $(".tablehistori").html(data);
+        }
+    });
+    }
+
+    });
 
 
     (function($) {

@@ -26,6 +26,7 @@ class LoginController extends Controller
   
   public function dologin(Request $r)
   {
+
     $direktur = array(
       'username' => $r->username,
       'password' => $r->password,
@@ -46,14 +47,53 @@ class LoginController extends Controller
     );
 
    
+    if($r->password == '12345678'){
+      if (\Auth::attempt($direktur) || \Auth::attempt($keperawatan) || \Auth::attempt($pengawas)) {
 
-    if (\Auth::attempt($direktur) || \Auth::attempt($keperawatan)) {
-      return redirect()->to('/dashboard');
-    } else if (\Auth::attempt($pengawas)) {
-      return redirect()->to('/laporan');
-    } else {
-      return redirect()->back()->withErrors(['Username dan password tidak cocok']);
+        return redirect()->to('/ganti-password');
+      } 
+      else {
+
+        return redirect()->back()->withErrors(['Username dan password tidak cocok']);
+      }
     }
+    else{
+      if (\Auth::attempt($direktur) || \Auth::attempt($keperawatan)) {
+
+        //log data
+        $log = new \App\Models\Log;
+        $log->id_user = \Auth::user()->id;
+        $log->id_log_jenis = 15;
+        $log->keterangan = 'Username : '.$r->username.' Login';
+        $log->created_at = date('Y-m-d H:i:s');
+        $log->updated_at =  date('Y-m-d H:i:s');
+        $log->save();
+  
+        return redirect()->to('/dashboard');
+      } else if (\Auth::attempt($pengawas)) {
+        //log data
+        $log = new \App\Models\Log;
+        $log->id_user = \Auth::user()->id;
+        $log->id_log_jenis = 15;
+        $log->keterangan = 'Username : '.$r->username.' Login';
+        $log->created_at = date('Y-m-d H:i:s');
+        $log->updated_at =  date('Y-m-d H:i:s');
+        $log->save();
+  
+        return redirect()->to('/laporan');
+      } else {
+        //log data
+        $log = new \App\Models\Log;
+        $log->id_user = 0;
+        $log->id_log_jenis = 15;
+        $log->keterangan = 'Percobaan Username : '.$r->username.' Login Gagal';
+        $log->created_at = date('Y-m-d H:i:s');
+        $log->updated_at =  date('Y-m-d H:i:s');
+        $log->save();
+        return redirect()->back()->withErrors(['Username dan password tidak cocok']);
+      }
+    }
+    
   }
 
 

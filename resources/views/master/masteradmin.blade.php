@@ -27,7 +27,12 @@
       background-color: midnightblue;
     }
   </style>
-
+<style>
+thead {
+    background-color:slategrey;
+        color:white;
+}
+</style>
 
   @yield('custom_style')
 </head>
@@ -200,7 +205,17 @@
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
-
+      @if(\Auth::user()->id_role == 1)
+      @if(Route::current()->getName() == 'log')
+      <li class="nav-item active">
+        @else
+      <li class="nav-item">
+        @endif
+        <a class="nav-link" href="{{route('log')}}">
+          <i class="fas fa-folder	"></i>
+          <span>Log Aktivitas</span></a>
+      </li>
+      @endif
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">

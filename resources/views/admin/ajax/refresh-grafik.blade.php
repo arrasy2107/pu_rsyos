@@ -73,24 +73,24 @@ $period = new CarbonPeriod($from, '1 day', $to);
      $tgl[] = $date->format('d F');
 
      //IGD
-     if(  \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->pluck('jumlah_pasien')->last()   ){
-         $datas1[] = \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->pluck('jumlah_pasien')->last();
+     if(  \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->where('status',1)->pluck('jumlah_pasien')->last()   ){
+         $datas1[] = \App\Models\Laporanigd::whereDate('created_at',$date->format('Y-m-d'))->where('status',1)->pluck('jumlah_pasien')->last();
      }
      else{
          $datas1[] = 0;
      }
 
       //Ruangan Umum
-      if( \App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('jumlah_total_pasien')->sum()  ){
-         $datas2[] =\App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('jumlah_total_pasien')->sum();
+      if( \App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_total_pasien')->sum()  ){
+         $datas2[] =\App\Models\Laporanumum::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan',\App\Models\Laporan::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_total_pasien')->sum();
      }
      else{
          $datas2[] = 0;
      }
 
       //IRJ
-      if(  \App\Models\Laporanirjdetail::where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('pasien_total')->sum() ) {
-         $datas3[] = \App\Models\Laporanirjdetail::where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->pluck('pasien_total')->sum();
+      if(  \App\Models\Laporanirjdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('pasien_total')->sum() ) {
+         $datas3[] = \App\Models\Laporanirjdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_irj',\App\Models\Laporanirj::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('pasien_total')->sum();
      }
      else{
          $datas3[] = 0;

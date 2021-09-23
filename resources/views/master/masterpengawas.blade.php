@@ -27,6 +27,19 @@
     background-color: midnightblue;
 }
   </style>
+  <!-- select 2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-selection__rendered {
+    line-height: 37px !important;
+}
+.select2-container .select2-selection--single {
+    height: calc(1.5em + .75rem + 2px);
+}
+.select2-selection__arrow {
+    height: 34px !important;
+}
+</style>
 
   @yield('custom_style')
 </head>
@@ -295,7 +308,7 @@
   <!-- Page level plugins -->
   <script src="{{asset('sb-admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
   <script src="{{asset('sb-admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
   
@@ -367,6 +380,13 @@ $(document).ready(function() {
     });
 });
     </script>
+    <script>
+
+// In your Javascript (external .js resource or <script> tag)
+$(document).ready(function() {
+    $('.select2').select2();
+});
+</script>
   @yield('custom_script')
 </body>
 

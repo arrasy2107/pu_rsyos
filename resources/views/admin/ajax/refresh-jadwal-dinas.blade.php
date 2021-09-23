@@ -149,7 +149,7 @@ $period = new CarbonPeriod($from, '1 day', $to);
     $('#edit').on('show.bs.modal', function() {
         $(".txtiddinas2").val(id);
         $(".txttanggal2").val(tanggal);
-        $(".txtpengawas").val(pengawas);
+        $(".txtpengawas").select2().val(pengawas).trigger("change");
 
     });
 </script>

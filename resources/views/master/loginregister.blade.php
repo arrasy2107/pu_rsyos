@@ -16,7 +16,7 @@
   <!-- Custom fonts for this template-->
   <link href="{{asset('sb-admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
   
-  <link rel="stylesheet" type="text/css" href="{{asset('theme/css/font-awesome.css')}}">
+  <!-- <link rel="stylesheet" type="text/css" href="{{asset('theme/css/font-awesome.css')}}"> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <!-- Custom styles for this template-->
   <link href="{{asset('sb-admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
@@ -46,6 +46,7 @@
       $(".alert-call").fadeOut(3000);
     });
   </script>
+   @yield('custom_script')
 </body>
 
 </html>

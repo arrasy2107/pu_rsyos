@@ -16,6 +16,11 @@ Route::get('/', function () {
     return view('admin.auth.login');
 })->name('login');
 
+Route::get('/ganti-password', function () {
+    return view('admin.auth.ganti-password');
+})->name('ganti-password');
+Route::put('/gantipassword2', 'UserController@gantipassword2')->name('gantipassword2');
+
 //---------------auth--------------//
 Route::post('/dologin', 'LoginController@dologin')->name('dologin');
 Route::get('logout', 'LoginController@logout')->name('logout');
@@ -61,8 +66,17 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     
     //laporan
     Route::post('/draftlaporanIGD', 'PengawasController@draftlaporanIGD')->name('draftlaporanIGD');
+    Route::put('/editDraftlaporanIGD', 'PengawasController@editDraftlaporanIGD')->name('editDraftlaporanIGD');
+    Route::get('/deleteDraftlaporanIGD/{id}', 'PengawasController@deleteDraftlaporanIGD')->name('deleteDraftlaporanIGD');
+
     Route::post('/draftlaporanIRJ', 'PengawasController@draftlaporanIRJ')->name('draftlaporanIRJ');
+    Route::put('/editDraftlaporanIRJ', 'PengawasController@editDraftlaporanIRJ')->name('editDraftlaporanIRJ');
+    Route::get('/deleteaftlaporanIRJ/{id}', 'PengawasController@deleteaftlaporanIRJ')->name('deleteaftlaporanIRJ');
+
     Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
+    Route::put('/editDraftlaporanUmum', 'PengawasController@editDraftlaporanUmum')->name('editDraftlaporanUmum');
+    Route::get('/deleteDraftlaporanUmum/{id}', 'PengawasController@deleteDraftlaporanUmum')->name('deleteDraftlaporanUmum');
+
     Route::post('/kirimLaporan', 'PengawasController@kirimLaporan')->name('kirimLaporan');
 
     Route::post('tambahirjdetail', 'PengawasController@tambahirjdetail')->name('tambahirjdetail');
@@ -169,7 +183,16 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::put('/editjenissdmk', 'DirekturController@editjenissdmk')->name('editjenissdmk');
     Route::get('/deletejenissdmk/{id}', 'DirekturController@deletejenissdmk')->name('deletejenissdmk');
 
-
+    //Log
+    Route::get('/log', function () {
+        if(\Auth::user()->id_role == 3)
+        {
+            return view('admin.dashboard.dashboard');
+        }
+        else{
+            return view('admin.log.log');
+        }
+    })->name('log');
 });
 
 

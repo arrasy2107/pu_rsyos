@@ -28,6 +28,15 @@ class DirekturController extends Controller
       $sup->updated_at =  date('Y-m-d H:i:s');
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 7;
+      $log->keterangan = 'Tambah Pengguna : '.$r->nama.' ('.$r->username.')';
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil menambah data');
     }
   }
@@ -47,6 +56,15 @@ class DirekturController extends Controller
       $sup->updated_at =  date('Y-m-d H:i:s');
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 7;
+      $log->keterangan = 'Edit Pengguna : '.$r->nama.' ('.$r->username.')';
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil mengubah data');
     }
   }
@@ -55,8 +73,19 @@ class DirekturController extends Controller
   {
 
     $sup = \App\Models\User::where('id', $id)->first();
+    $sup->username = 0;
     $sup->status = 0;
     $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 7;
+    $log->keterangan = 'Hapus Pengguna : '.$sup->nama.' ('.$sup->username.')';
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
@@ -74,6 +103,16 @@ class DirekturController extends Controller
       $sup->nama_ruangan = $r->nama_ruangan;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 8;
+      $log->keterangan = 'Tambah Ruangan : '.$r->nama_ruangan;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
+
       return redirect()->back()->with('success-add', 'Berhasil menambah data');
     }
   }
@@ -89,6 +128,16 @@ class DirekturController extends Controller
       $sup->nama_ruangan = $r->nama_ruangan;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 8;
+      $log->keterangan = 'Edit Ruangan : '.$r->nama_ruangan;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
+
       return redirect()->back()->with('success-add', 'Berhasil mengubah data');
     }
   }
@@ -99,6 +148,16 @@ class DirekturController extends Controller
     $sup = \App\Models\Ruangan::where('id', $id)->first();
     $sup->status = 0;
     $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 8;
+    $log->keterangan = 'Hapus Ruangan : '.$sup->nama_ruangan;
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
@@ -118,6 +177,16 @@ class DirekturController extends Controller
       $sup->id_sdmk_jenis = $r->id_sdmk_jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 9;
+      $log->keterangan = 'Tambah Dokter Jaga (IGD) : '.$r->nama_dokter;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
+
       return redirect()->back()->with('success-add', 'Berhasil menambah data');
     }
   }
@@ -134,6 +203,15 @@ class DirekturController extends Controller
       $sup->id_sdmk_jenis = $r->id_sdmk_jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 9;
+      $log->keterangan = 'Edit Dokter Jaga (IGD) : '.$r->nama_dokter;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil mengubah data');
     }
   }
@@ -144,6 +222,16 @@ class DirekturController extends Controller
     $sup = \App\Models\Dokter::where('id', $id)->first();
     $sup->status = 0;
     $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 9;
+    $log->keterangan = 'Hapus Dokter Jaga (IGD) : '.$sup->nama_dokter;
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
@@ -162,6 +250,15 @@ class DirekturController extends Controller
       $sup->id_sdmk_jenis = $r->id_sdmk_jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 10;
+      $log->keterangan = 'Tambah Dokter IRJ : '.$r->nama_dokter;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil menambah data');
     }
   }
@@ -178,6 +275,15 @@ class DirekturController extends Controller
       $sup->id_sdmk_jenis = $r->id_sdmk_jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 10;
+      $log->keterangan = 'Edit Dokter IRJ : '.$r->nama_dokter;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil mengubah data');
     }
   }
@@ -188,6 +294,16 @@ class DirekturController extends Controller
     $sup = \App\Models\Dokterirj::where('id', $id)->first();
     $sup->status = 0;
     $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 10;
+    $log->keterangan = 'Hapus Dokter IRJ : '.$sup->nama;
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
@@ -207,6 +323,15 @@ class DirekturController extends Controller
       $sup->jenis = $r->jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 11;
+      $log->keterangan = 'Tambah Jenis SDMK : '.$r->jenis;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil menambah data');
     }
   }
@@ -223,6 +348,15 @@ class DirekturController extends Controller
       $sup->jenis = $r->jenis;
       $sup->save();
 
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 11;
+      $log->keterangan = 'Edit Jenis SDMK : '.$r->jenis;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
       return redirect()->back()->with('success-add', 'Berhasil mengubah data');
     }
   }
@@ -233,6 +367,16 @@ class DirekturController extends Controller
     $sup = \App\Models\sdmk_jenis::where('id', $id)->first();
     $sup->status = 0;
     $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 11;
+    $log->keterangan = 'Hapus Jenis SDMK : '.$sup->jenis;
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
@@ -249,6 +393,15 @@ class DirekturController extends Controller
        $sup = new \App\Models\sdmk_subrumpun();
        $sup->subrumpun = $r->subrumpun;
        $sup->save();
+
+       //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 12;
+      $log->keterangan = 'Tambah Subrumpun SDMK : '.$r->subrumpun;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
  
        return redirect()->back()->with('success-add', 'Berhasil menambah data');
      }
@@ -264,6 +417,15 @@ class DirekturController extends Controller
        $sup = \App\Models\sdmk_subrumpun::where('id', $r->id)->first();
        $sup->subrumpun = $r->subrumpun;
        $sup->save();
+
+       //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 12;
+      $log->keterangan = 'Edit Subrumpun SDMK : '.$r->subrumpun;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
  
        return redirect()->back()->with('success-add', 'Berhasil mengubah data');
      }
@@ -275,6 +437,16 @@ class DirekturController extends Controller
      $sup = \App\Models\sdmk_subrumpun::where('id', $id)->first();
      $sup->status = 0;
      $sup->save();
+
+     //log data
+     $log = new \App\Models\Log;
+     $log->id_user = \Auth::user()->id;
+     $log->id_log_jenis = 12;
+     $log->keterangan = 'Hapus Subrumpun SDMK : '.$sup->subrumpun;
+     $log->created_at = date('Y-m-d H:i:s');
+     $log->updated_at =  date('Y-m-d H:i:s');
+     $log->save();
+
      return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
    }
 
@@ -289,6 +461,15 @@ class DirekturController extends Controller
       $date = date_default_timezone_set('Asia/Jakarta');
      
        $sup = \App\Models\Laporan::whereIn('id', $ids)->update(['verified' => 1, 'updated_at' => date('Y-m-d H:i:s')]);
+
+       //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 13;
+      $log->keterangan = 'Verifikasi Laporan id : '.$ids;
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
        
        return response()->json(
         [

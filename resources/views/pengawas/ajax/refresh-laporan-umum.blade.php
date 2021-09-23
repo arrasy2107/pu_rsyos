@@ -282,16 +282,27 @@
             <textarea class="form-control" name="inap_permasalahan" rows="3" placeholder="Tulis disini..." readonly>{{\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('permasalahan_umum')->first()}}</textarea>
         </div>
 
+        @if(\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first())
         <div class="form-group">
-            <button type="submit" style="float:right" class="btn btn-sm btn-delete-igd btn-danger my-3 ml-2" >Batalkan Laporan</button>
-            <button type="submit" style="float:right" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
+            
+            <a href="{{ route('deleteDraftlaporanUmum',\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalumum" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
+            <button type="submit" style="float:right" class="btn btn-sm btn-edit-igd btn-success my-3" id="editumum" >Ubah Laporan</button>
                                 
         </div>
+        @endif
     </div>
 </div>
 
 
 <script>
+       $("#batalumum").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin membatalkan laporan Umum Ruangan ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+    });
+
+
  //RAWAT INAP
     function ranap1a() {
         document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');

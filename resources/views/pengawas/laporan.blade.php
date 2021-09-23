@@ -1,4 +1,7 @@
 @extends('master.masterpengawas')
+@section('custom_style')
+
+@stop 
 @section('content')
 @if (Session::has('success-add'))
 <div class="alert alert-success alert-call">
@@ -29,8 +32,8 @@ $now = \Carbon\Carbon::now();
 $ltime = date('H:i:s');
 $nowTime = $now->hour.':'.$now->minute.':'.$now->second;
 
-$start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',3)->pluck('jam_masuk')->first());
-$end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
+$start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
+$end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pluck('jam_pulang')->first());
 
  
 
@@ -198,8 +201,8 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pl
                                 <textarea class="form-control" name="igd_lainlain" rows="3" placeholder="Tulis disini..."></textarea>
                             </div>
                             <div class="form-group">
-                                <label style="color:#000;font-weight:600">Dokter Jaga: </label>
-                                <select class="form-control select2" name="igd_dokterjaga" required>
+                                <label style="color:#000;font-weight:600">Dokter Jaga: </label><br>
+                                <select class="form-control select2" name="igd_dokterjaga" style="width: 100%" required>
                                     <option value="" selected disabled hidden>Pilih Dokter</option>
                                     @foreach(\App\Models\Dokter::where('status',1)->get() as $dk)
                                     <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
@@ -252,8 +255,8 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pl
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label style="color:#000;font-weight:600"> Ruangan yang belum dikunjungi: </label>
-                                <select class="form-control select2" name="inap_ruangan" required>
+                                <label style="color:#000;font-weight:600"> Ruangan yang belum dikunjungi: </label><br>
+                                <select class="form-control select2" name="inap_ruangan" style="width: 100%" required>
                                     <option value="" selected disabled hidden>Pilih Ruangan</option>
                                     @foreach(\App\Models\Ruangan::where('status',1)->get() as $dk)
                                         @if(!\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
@@ -682,11 +685,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pl
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="" enctype="multipart/form-data">
+                <form method="post" action="" id="tambahketerangan" role="form">
                 {{ csrf_field() }}
                     <div class="form-group">
-                        <label>Dokter : </label>
-                        <select class="form-control" name="id_dokter_irj" id="id_dokter_irj" required>
+                        <label>Dokter : </label><br>
+                        <select class="form-control select2" name="id_dokter_irj" id="id_dokter_irj" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -721,13 +724,13 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pl
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
-                <form method="post" action="" enctype="multipart/form-data">
+                <form method="post" action="" id="editketerangan" role="form">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" class="txtid" name="id">
                     <div class="form-group">
-                        <label>Dokter : </label>
-                        <select class="form-control txtiddokter" name="id_dokter_irj2" id="id_dokter_irj2" required>
+                        <label>Dokter : </label><br>
+                        <select class="form-control txtiddokter select2" name="id_dokter_irj2" id="id_dokter_irj2" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -753,6 +756,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pl
 </div>
 @stop
 @section('custom_script')
+
 <script>
 
 $("#dataTable").DataTable({
@@ -900,6 +904,7 @@ $("#dataTable").DataTable({
         document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
     }
 </script>
+
 <script>
       $.ajaxSetup({
         headers: {
@@ -916,15 +921,15 @@ var id,dokter,lama,baru;
 
     });
 
-    $("#dataTable").on('click', '.btn-hapus', function() {
+    $("#dataTable").on('click', '.btn-hapus', function(e) {
         id = $(this).val(); 
         var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
         if (conf == false) {
             e.preventDefault();
-            $("#edit").modal('hide');
+            // $("#edit").modal('hide');
         }
         else{
-            $("#edit").modal('hide');
+            // $("#edit").modal('hide');
             
             console.log(id);
             var url = 'deleteirjdetail';
@@ -964,18 +969,18 @@ var id,dokter,lama,baru;
 
     $('#edit').on('show.bs.modal', function() {
         $(".txtid").val(id);
-        $(".txtiddokter").val(dokter);
+        $(".txtiddokter").select2().val(dokter).trigger("change");
         $(".txtlama").val(lama);
         $(".txtbaru").val(baru);
     });
 
 
 
+</script>
 
-
-
-$(".btn-tambah").click(function(e){
-
+<script>
+$(document).ready(function() {
+    $("#tambahketerangan").submit(function(e) {
         $("#tambah").modal('hide');
 
         e.preventDefault();
@@ -983,48 +988,55 @@ $(".btn-tambah").click(function(e){
         var id_dokter_irj = $("#id_dokter_irj :selected").val();
         var pasien_lama = $("input[name=pasien_lama]").val();
         var pasien_baru = $("input[name=pasien_baru]").val();
+    
+        
+            console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
+            var url = 'tambahirjdetail';
 
-       
-
-
-        console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
-        var url = 'tambahirjdetail';
-
-        $.ajax({
-        url:url,
-        method:'POST',
-        data:{
-            _token: "{{ csrf_token() }}",
-            id_dokter_irj:id_dokter_irj,
-            pasien_lama:pasien_lama,
-            pasien_baru : pasien_baru
-        },
-        success:function(response){
-            if(response.success){
-                $("#id_dokter_irj").val("");
-                $("input[name=pasien_lama]").val("");
-                $("input[name=pasien_baru]").val("");
-                alert(response.message) //Message come from controller
-                $.ajax({
-                    type : "get",
-                    url : 'refresh-irj-detail/',
-                    data: { "_token": "{{ csrf_token() }}",},
-                    success : function(data){
-                    //console.log(data);
-                    $(".tableketerangan").html(data);
-                    }   
-            });
-            }else{
-                alert("Error")
+            $.ajax({
+            url:url,
+            method:'POST',
+            data:{
+                _token: "{{ csrf_token() }}",
+                id_dokter_irj:id_dokter_irj,
+                pasien_lama:pasien_lama,
+                pasien_baru : pasien_baru
+            },
+            success:function(response){
+                if(response.success){
+                    $("#id_dokter_irj").val("");
+                    $("input[name=pasien_lama]").val("");
+                    $("input[name=pasien_baru]").val("");
+                    alert(response.message) //Message come from controller
+                    $.ajax({
+                        type : "get",
+                        url : 'refresh-irj-detail/',
+                        data: { "_token": "{{ csrf_token() }}",},
+                        success : function(data){
+                        //console.log(data);
+                        $(".tableketerangan").html(data);
+                        }   
+                });
+                }else{
+                    alert("Error")
+                }
+            },
+            error:function(error){
+                console.log(error)
             }
-        },
-        error:function(error){
-            console.log(error)
-        }
-        });
+            });
+        
+        
+    });
 });
 
-$(".btn-simpan").click(function(e){
+</script>
+
+<script>
+
+// $(document).ready(function() {
+//     $("#editketerangan").submit(function(e) {
+ $(".btn-simpan").click(function(e){
 
         $("#edit").modal('hide');
 
@@ -1050,7 +1062,7 @@ $(".btn-simpan").click(function(e){
             pasien_baru : pasien_baru2
         },
         success:function(response){
-            if(response.success){
+            if(response.success == true){
                 
                 alert(response.message) //Message come from controller
                 $.ajax({
@@ -1061,17 +1073,19 @@ $(".btn-simpan").click(function(e){
                     //console.log(data);
                     $(".tableketerangan").html(data);
                     }   
-            });
+                });
             }else{
-                alert("Error")
+                alert(response.message)
             }
         },
         error:function(error){
             console.log(error)
         }
         });
-});
+    });
+
 
 
 </script>
+
 @stop

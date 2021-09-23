@@ -96,7 +96,7 @@
                         <input type="text" class="form-control" name="nama" required />
                     </div>
                     <div class="form-group">
-                        <label>Username: </label>
+                        <label>Username/NIP: </label>
                         <input type="text" class="form-control" name="username" required />
                     </div>
                     <div class="form-group">
@@ -135,7 +135,7 @@
                         <input type="text" class="form-control txt-nama" name="nama" required />
                     </div>
                     <div class="form-group">
-                        <label>Username: </label>
+                        <label>Username/NIP: </label>
                         <input type="text" class="form-control txt-username" name="username" required />
                     </div>
                     <div class="form-group">
