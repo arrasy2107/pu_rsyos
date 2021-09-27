@@ -60,18 +60,23 @@ $t = new Grei\TanggalMerah();
     <div class="card shadow mb-4">
 
         <div class="card-body">
-        <div class="row">
+            @if(\Auth::user()->id_role == 1)
+            <div class="row">
                 <div class="col-md-4">
                     <button class="btn btn-primary btn-md btn-verifikasi" id="btn-verifikasi" >Verifikasi Laporan</button>
                     <br>
                 </div>
             </div>
             <br>
+            @endif
+            
                         <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            @if(\Auth::user()->id_role == 1)
                             <th width="7%">Check</th>
+                            @endif
                             <th width="15%">Tanggal</th>
                             <th width="10%">Jam</th>
                             <th>Dinas</th>
@@ -92,7 +97,9 @@ $t = new Grei\TanggalMerah();
                         $t->set_date( date('Ymd', strtotime($data->created_at)));
                         ?>
                         <tr>
+                            @if(\Auth::user()->id_role == 1)
                             <td><div class="double"><input type="checkbox" name="verifikasi[]" value="{{ $data->id }}"/></div> </td>
+                            @endif
                             <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
                             <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
                             <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>

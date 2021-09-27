@@ -43,7 +43,7 @@
   </script>
   <script>
     $(function() {
-      $(".alert-call").fadeOut(3000);
+      $(".alert-call").fadeOut(15000);
     });
   </script>
    @yield('custom_script')
