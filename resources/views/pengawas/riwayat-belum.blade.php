@@ -48,6 +48,7 @@ $t = new Grei\TanggalMerah();
                             <th width="15%">Tanggal</th>
                             <th width="10%">Jam</th>
                             <th>Dinas</th>
+                            <th>Pengawas Umum</th>
                             <th width="20%">Tanda Tangan</th>
                             <th width="20%">Laporan</th>
 
@@ -59,7 +60,7 @@ $t = new Grei\TanggalMerah();
                     ?>
                     
                     <tbody>
-                        @foreach(\App\Models\Laporan::where('verified',0)->orderBy('created_at','DESC')->get() as $data)
+                        @foreach(\App\Models\Laporan::where('verified',0)->orderBy('created_at','DESC')->where('status',1)->get() as $data)
                         <?php
                         $t->set_date( date('Ymd', strtotime($data->created_at)));
                         ?>
@@ -69,6 +70,7 @@ $t = new Grei\TanggalMerah();
                             <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
                             
                             <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
+                            <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
                             <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
                             
                             <td>

@@ -205,34 +205,44 @@ class PengawasController extends Controller
     //IRJ
     public function tambahirjdetail(Request $r)
     {
-  
-        $sup = new \App\Models\Laporanirjdetail();
-        $sup->id_dokter_irj = $r->id_dokter_irj;
-        $sup->id_pengawas =\Auth::user()->id;
-        $sup->pasien_lama = $r->pasien_lama;
-        $sup->pasien_baru = $r->pasien_baru;
-        $sup->pasien_total = $r->pasien_lama + $r->pasien_baru;
-        $date = date_default_timezone_set('Asia/Jakarta');
-        $sup->created_at = date('Y-m-d H:i:s');
-        $sup->updated_at =  date('Y-m-d H:i:s');
-        $sup->save();
+        if( $r->id_dokter_irj == '' || $r->pasien_lama == '' || $r->pasien_baru=='')
+        {
+            return response()->json(
+                [
+                  'success' => false,
+                  'message' => 'Lengkapi data terlebih dahulu'
+                ]
+           );
+        }
+        else{
+                $sup = new \App\Models\Laporanirjdetail();
+                $sup->id_dokter_irj = $r->id_dokter_irj;
+                $sup->id_pengawas =\Auth::user()->id;
+                $sup->pasien_lama = $r->pasien_lama;
+                $sup->pasien_baru = $r->pasien_baru;
+                $sup->pasien_total = $r->pasien_lama + $r->pasien_baru;
+                $date = date_default_timezone_set('Asia/Jakarta');
+                $sup->created_at = date('Y-m-d H:i:s');
+                $sup->updated_at =  date('Y-m-d H:i:s');
+                $sup->save();
 
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 4;
-        $log->keterangan = 'Tambah Data Keterangan menurut Dokter IRJ';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
-  
-        return response()->json(
-            [
-              'success' => true,
-              'message' => 'Berhasil menambah data keterangan pasien menurut dokter'
-            ]
-       );
-      
+                //log data
+                $log = new \App\Models\Log;
+                $log->id_user = \Auth::user()->id;
+                $log->id_log_jenis = 4;
+                $log->keterangan = 'Tambah Data Keterangan menurut Dokter IRJ';
+                $log->created_at = date('Y-m-d H:i:s');
+                $log->updated_at =  date('Y-m-d H:i:s');
+                $log->save();
+        
+                return response()->json(
+                    [
+                    'success' => true,
+                    'message' => 'Berhasil menambah data keterangan pasien menurut dokter'
+                    ]
+            );
+        }
+            
     }
   
     public function editirjdetail(Request $r)
@@ -244,6 +254,15 @@ class PengawasController extends Controller
                 [
                   'success' => false,
                   'message' => 'Lengkapi data terlebih dahulu'
+                ]
+           );
+        }
+        else if( \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_dokter_irj',$r->id_dokter_irj)->where('id', '<>', $r->id)->first())
+        {
+            return response()->json(
+                [
+                  'success' => false,
+                  'message' => 'Data Keterangan menurut Dokter : '.\App\Models\Dokterirj::where('id',$r->id_dokter_irj)->pluck('nama')->first() .' sudah ada'
                 ]
            );
         }
@@ -331,27 +350,33 @@ class PengawasController extends Controller
 
     }
     public function editDraftlaporanIRJ(Request $r){
-        $sup = \App\Models\Laporanirj::where('id',$r->id)->first();
-        $sup->id_pengawas = \Auth::user()->id;
-        $sup->masalah = $r->irj_masalah;
-        $sup->langkah_atasi_masalah = $r->irj_langkah;
-        
-        $date = date_default_timezone_set('Asia/Jakarta');
-        $sup->updated_at =  date('Y-m-d H:i:s');
-        $sup->save();
+        $sp = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
+ 
+        if (!$sp) {
+          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter masih kosong, silahkan isi terlebih dahulu');
+        } else {
+            $sup = \App\Models\Laporanirj::where('id',$r->id)->first();
+            $sup->id_pengawas = \Auth::user()->id;
+            $sup->masalah = $r->irj_masalah;
+            $sup->langkah_atasi_masalah = $r->irj_langkah;
+            
+            $date = date_default_timezone_set('Asia/Jakarta');
+            $sup->updated_at =  date('Y-m-d H:i:s');
+            $sup->save();
 
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 3;
-        $log->keterangan = 'Edit Draft';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
+            //log data
+            $log = new \App\Models\Log;
+            $log->id_user = \Auth::user()->id;
+            $log->id_log_jenis = 3;
+            $log->keterangan = 'Edit Draft';
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->updated_at =  date('Y-m-d H:i:s');
+            $log->save();
 
-        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+        }
     }
-    public function deleteaftlaporanIRJ($id){
+    public function deleteDraftlaporanIRJ($id){
         $sup = \App\Models\Laporanirj::where('id',$id)->first();
         $sup->status = 2; //Delete Laporan
         $sup->save();

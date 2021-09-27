@@ -33,62 +33,95 @@ $t = new Grei\TanggalMerah();
 ?>
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Riwayat Laporan (Sudah diverifikasi Direktur)</h1>
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Riwayat Laporan Sebulan terakhir (Sudah diverifikasi Direktur)</h1>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
 
-        <div class="card-body">
-                        <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th width="7%">No</th>
-                            <th width="15%">Tanggal</th>
-                            <th width="10%">Jam</th>
-                            <th>Dinas</th>
-                            <th width="20%">Tanda Tangan</th>
-                            <th width="20%">Laporan</th>
+    <div class="card-body">
+        <div class ="row">
+            <div class="col-md-3">
+                <label for="tglmulai">Tanggal Mulai</label>
+                <div class="form-group">
 
-                        </tr>
-                    </thead>
-                    
-                    <?php
-                    $no = 1;
-                    ?>
-                    
-                    <tbody>
-                        @foreach(\App\Models\Laporan::where('verified',1)->orderBy('created_at','DESC')->get() as $data)
-                        <?php
-                        $t->set_date( date('Ymd', strtotime($data->created_at)));
-                        ?>
-                        <tr>
-                            <td>{{ $no }}</td>
-                            <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
-                            <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
-                            <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
-                            <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
-                            
-                            <td>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
-                                @if($data->id_dinas != 3 && $t->check() != true)
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
-                                @endif
-                            </td>
+                <input type="date" id="tanggal" class="form-control" name="tglmulai" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="tglmulai">Tanggal Selesai</label>
+                <div class="form-group">
 
-                        </tr>
-                        <?php
-                        $no++;
-                        ?>
-                        @endforeach
+                <input type="date" id="tanggal2" class="form-control" name="tglselesai" />
+                </div>
+            </div>
+        
+            <div class="col-md-1">
+                <label for="tglmulai" style="color:white">Lihat</label>
+                <div class="form-group">
 
-                    </tbody>
-                </table>
+                <button type="button" id="lihat" class="btn btn-primary btn-sm" name="lihat">Lihat</button>
+                </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12 tablehistory">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="10%">No</th>
+                                <th width="15%">Tanggal</th>
+                                <th width="10%">Jam</th>
+                                <th>Dinas</th>
+                                <th>Pengawas Umum</th>
+                                <th >Tanda Tangan</th>
+                                <th width="20%">Laporan</th>
+
+                            </tr>
+                        </thead>
+                        
+                        <?php
+                        $date = date_default_timezone_set('Asia/Jakarta');
+                        $today = date('Y-m-d H:i:s');
+                        $no = 1;
+                        ?>
+                        
+                        <tbody>
+                            @foreach(\App\Models\Laporan::whereBetween('created_at',[date("Y-m-d", strtotime("-1 month")),$today])->where('verified',1)->orderBy('updated_at','DESC')->where('status',1)->get() as $data)
+                            <?php
+                            $t->set_date( date('Ymd', strtotime($data->created_at)));
+                            ?>
+                            <tr>
+                                <td>{{ $no }}</td>
+                                <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y')}}</td>
+                                <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
+                                <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
+                                <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
+                                <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                                
+                                <td>
+                                <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
+                                    @if($data->id_dinas != 3 && $t->check() != true)
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
+                                    @endif
+                                </td>
+
+                            </tr>
+                            <?php
+                            $no++;
+                            ?>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+                
     </div>
+</div>
 
 </div>
 <div id="igd" class="modal fade" role="dialog">
@@ -158,7 +191,7 @@ $t = new Grei\TanggalMerah();
 @section('custom_script')
 <script>
     $("#dataTable").DataTable({
-       "ordering":false
+        "ordering":false
     });
 
 
@@ -229,6 +262,28 @@ $t = new Grei\TanggalMerah();
 
     });
 
+
+    $("#lihat").click(function() {
+
+    if (!$("#tanggal").val() || !$("#tanggal2").val()) {
+    alert('lengkapi tanggal dahulu');
+    } else {
+    $(".tablehistory").html("<h1>Mohon Tunggu...</h1>")
+    $.ajax({
+        type: "get",
+        url: 'refresh-history/' + $("#tanggal").val() + '/' + $("#tanggal2").val(),
+        data: {
+        tanggal2: $("#tanggal2").val(),
+        tanggal: $("#tanggal").val(),
+        },
+        success: function(data) {
+        console.log(data);
+        $(".tablehistory").html(data);
+        }
+    });
+    }
+
+    });
 
 
     (function($) {

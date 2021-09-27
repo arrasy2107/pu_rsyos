@@ -87,7 +87,7 @@ $t = new Grei\TanggalMerah();
                     ?>
                     
                     <tbody>
-                        @foreach(\App\Models\Laporan::where('verified',0)->orderBy('created_at','DESC')->get() as $data)
+                        @foreach(\App\Models\Laporan::where('verified',0)->orderBy('created_at','DESC')->where('status',1)->get() as $data)
                         <?php
                         $t->set_date( date('Ymd', strtotime($data->created_at)));
                         ?>

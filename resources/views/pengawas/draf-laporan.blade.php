@@ -101,9 +101,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         <div class="collapse " id="collapseIGD">
             <div class="card-body">
                 <!-- Content Row -->
-                <form method="post" action="#" enctype="multipart/form-data">
+                <form method="post" action="{{ route('editDraftlaporanIGD') }}" id="editdraftigd" role="form">
                     {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="row ">
+                    <input type="hidden" class="txtid" name="id" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()}}">
                         <!-- Pending Requests Card Example -->
                         <div class="col-xl-4 col-md-6 mb-4">
                             <div class="card border-left-warning shadow h-100 py-2">
@@ -112,7 +114,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien" id="igd_pasien"  autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -134,7 +136,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien rawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_rawat')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_rawat" id="igd_pasien_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_rawat')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -153,7 +155,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Pulang</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_pulang" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_pulang')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_pulang" id="igd_pasien_pulang" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_pulang')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -173,7 +175,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien emergency</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_emergency" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_emergency')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_emergency" id="igd_pasien_emergency" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_emergency')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -193,7 +195,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Non emergency</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_non_emergency" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_non_emergency')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_non_emergency" id="igd_pasien_non_emergency"  autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_non_emergency')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -214,7 +216,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Tidak bisa dirawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_tidak_bisa_rawat')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_tidak_rawat" id="igd_pasien_tidak_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_tidak_bisa_rawat')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -235,7 +237,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Death on arrival (DOA)</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="igd_pasien_doa" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_doa')->first()}}" readonly />
+                                                <input type="number" class="form-control" name="igd_pasien_doa" id="igd_pasien_doa" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_doa')->first()}}" readonly />
 
                                             </div>
                                         </div>
@@ -253,19 +255,19 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
-                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
+                                <textarea class="form-control  z-depth-1" name="igd_alasan" id="igd_alasan" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan</label>
-                                <textarea class="form-control" name="igd_permasalahan" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('permasalahan')->first()}}</textarea>
+                                <textarea class="form-control" name="igd_permasalahan" id="igd_permasalahan" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('permasalahan')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Lain - lain</label>
-                                <textarea class="form-control" name="igd_lainlain" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('lain_lain')->first()}}</textarea>
+                                <textarea class="form-control" name="igd_lainlain" id="igd_lainlain" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('lain_lain')->first()}}</textarea>
                             </div>
                             <div class="form-group">
                                 <label style="color:#000;font-weight:600">Dokter Jaga: </label><br>
-                                <select class="form-control select2" name="igd_dokterjaga" style="width: 100%" disabled>
+                                <select class="form-control select2" name="igd_dokterjaga" id="igd_dokterjaga" style="width: 100%" disabled>
                                     <option value="" selected disabled hidden>Pilih Dokter</option>
                                     @foreach(\App\Models\Dokter::where('status',1)->get() as $dk)
                                     @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id_dokter')->first() == $dk->id)
@@ -276,20 +278,24 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                     @endforeach
                                 </select>
                             </div>
-                            @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first())
-                            <div class="form-group">
-                                
-                                <a href="{{ route('deleteDraftlaporanIGD',\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="bataligd" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
-                                <button type="submit" style="float:right" id="editigd" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
-                                
-                            </div>
-                            @endif
+                           
                         </div>
                     </div>
 
-
+                    
 
                 </form>
+                @if(\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first())
+                            <div class="form-group">
+                                
+                                <a href="{{ route('deleteDraftlaporanIGD',\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="bataligd" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
+                                <button style="float:right" id="editigd" class="btn btn-sm btn-edit-igd btn-success my-3 ml-2" >Ubah Laporan</button>
+                                <button style="float:right;display:none" id="batalperubahanigd"  class="btn btn-sm btn-edit-igd btn-danger my-3 ml-2" >Batalkan Perubahan</button>
+                                <button style="float:right;display:none" id="simpanigd"  class="btn btn-sm btn-edit-igd btn-primary my-3" type="submit"  >Simpan Laporan</button>
+                                
+                            </div>
+                            @endif
+                            
             </div>
         </div>
     </div>
@@ -299,8 +305,8 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
     <!-- Collapsable Card Example -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
-        <form method="post" action="#" enctype="multipart/form-data">
-            {{ csrf_field() }}
+        
+            
             <a href="#collapseRanap" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseRanap">
                 @if(\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
                 <h6 class="m-0 font-weight-bold ">Ruangan <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span></h6>
@@ -335,7 +341,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                     </div>
                 </div>
             </div>
-        </form>
+        
     </div>
 
     @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  && $t->check() != true)
@@ -356,6 +362,9 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
             <div class="card-body">
                 <!-- Content Row -->
                 
+                    
+                    <div class="row ">
+                    <div class="col-lg-12 tableketerangan">
                     @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
                     <div class="row">
                         <div class="col-md-4">
@@ -365,8 +374,6 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                     </div>
                     @endif
                     <br>
-                    <div class="row ">
-                    <div class="col-lg-12 tableketerangan">
                             <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -426,27 +433,22 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </div>
 
                     </div>
-                    <form method="post" action="#" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('editDraftlaporanIRJ') }}" id="editdraftirj" role="form">
                     {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="row">
                         <div class="col-lg-12">
+                        <input type="hidden" name="hitungketerangan" id="hitungketerangan" value="{{\App\Models\Laporanirjdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}}">
+                        <input type="hidden"  name="id" value="{{\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()}}">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Masalah</label>
-                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" disabled> {{\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('masalah')->first()}}</textarea>
+                                <textarea class="form-control  z-depth-1" name="irj_masalah" id="irj_masalah" rows="3" readonly> {{\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('masalah')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Langkah atasi masalah</label>
-                                <textarea class="form-control" name="irj_langkah" rows="3" placeholder="" disabled>{{\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('langkah_atasi_masalah')->first()}}</textarea>
+                                <textarea class="form-control" name="irj_langkah" id="irj_langkah" rows="3" placeholder="" readonly>{{\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('langkah_atasi_masalah')->first()}}</textarea>
                             </div>
                             
-                            
-                            <div class="form-group">
-                                @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
-                                
-                                <a href="{{ route('deleteaftlaporanIRJ',\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalirj" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
-                                <button type="submit" style="float:right" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
-                                @endif
-                            </div>
                         
 
                         </div>
@@ -455,6 +457,24 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
 
                 </form>
+                <div class="row">
+                        <div class="col-lg-12">
+                         
+                            <div class="form-group">
+                                @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+                                
+                                <a href="{{ route('deleteDraftlaporanIRJ',\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalirj" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
+                                <button style="float:right" id="editirj" class="btn btn-sm btn-edit-igd btn-success my-3" >Ubah Laporan</button>
+                                <button style="float:right;display:none" id="batalperubahanirj"  class="btn btn-sm btn-edit-igd btn-danger my-3 ml-2" >Batalkan Perubahan</button>
+                                <button style="float:right;display:none" id="simpanirj"  class="btn btn-sm btn-edit-igd btn-primary my-3" type="submit"  >Simpan Laporan</button>
+                                @endif
+
+                             
+                            </div>
+                        
+
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -467,7 +487,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
             <div class="card-body">
                 <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
                 <div class="row">
-                    <form method="post" action="#" class="col-lg-4" enctype="multipart/form-data">
+                    <form method="post" action="#" class="col-lg-6" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="col-lg-12">
                             <div class="form-group">
@@ -491,7 +511,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             </div>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" disabled>
-                                <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
+                                <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini  dan sudah memastikan bahwa semua data yang diinputkan sudah benar.</label>
                             </div>
                             <div class="form-group">
                                     <button type="submit" class="btn btn-lg btn-primary my-3" disabled>Kirim Laporan</button>
@@ -508,7 +528,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
     
                 <div class="card-body">
                     <div class="row">
-                        <form method="post" action="{{ route('kirimLaporan') }}" class="col-lg-4" enctype="multipart/form-data">
+                        <form method="post" action="{{ route('kirimLaporan') }}" class="col-lg-6" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="col-lg-12">
                                 <div class="form-group">
@@ -532,7 +552,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
-                                    <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini</label>
+                                    <label class="form-check-label" for="exampleCheck1">Saya bertanggung jawab atas laporan ini dan sudah memastikan bahwa semua data yang diinputkan sudah benar.</label>
                                 </div>
                                 <div class="form-group">
                                         <button type="submit" class="btn btn-lg btn-kirim btn-primary my-3" >Kirim Laporan</button>
@@ -571,7 +591,9 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <select class="form-control select2" name="id_dokter_irj" id="id_dokter_irj" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @if(!\App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_dokter_irj',$mb->id)->first())
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endif
                             @endforeach
                         </select>
                     </div>
@@ -649,11 +671,19 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 @section('custom_script')
 <script>
 
+$(function(){
+       $("input").prop('required',true);
+});
+
+
+
 $("#dataTable").DataTable({
     "pageLength": 5,
     "ordering" : false,
     "dom": 'rtip'
     });
+
+//IGD EDIT dan HAPUS
 
     $("#bataligd").on('click', function(e) {
         var conf = confirm('apakah anda yakin ingin membatalkan laporan IGD ini ?');
@@ -661,6 +691,97 @@ $("#dataTable").DataTable({
             e.preventDefault();
         }
     });
+
+    $("#editigd").on('click', function(e) {
+        document.getElementById('simpanigd').style.display = 'block'; 
+        document.getElementById('batalperubahanigd').style.display = 'block'; 
+        document.getElementById('bataligd').style.display = 'none'; 
+        this.style.display = 'none';
+        document.getElementById("igd_pasien").readOnly = false;
+        document.getElementById("igd_pasien_rawat").readOnly = false;
+        document.getElementById("igd_pasien_emergency").readOnly = false;
+        document.getElementById("igd_pasien_tidak_rawat").readOnly = false;
+        document.getElementById("igd_pasien_doa").readOnly = false;
+        document.getElementById("igd_alasan").readOnly = false;
+        document.getElementById("igd_permasalahan").readOnly = false;
+        document.getElementById("igd_lainlain").readOnly = false;
+        document.getElementById("igd_dokterjaga").disabled = false;
+    });
+
+    $("#simpanigd").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin menyimpan perubahan laporan IGD ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+           
+            a = $("#igd_pasien").val();
+            b = $("#igd_pasien_rawat").val();
+            c = $("#igd_pasien_emergency").val();
+            d = $("#igd_pasien_tidak_rawat").val();
+            e = $("#igd_pasien_doa").val();
+            f = $("#igd_dokterjaga").val();
+
+            if (a == "" || b == "" || c == "" || d == "" || e == "" || f == "" ) {
+            alert("lengkapi data terlebih dahulu");
+            
+            }
+            else{
+                document.getElementById("editdraftigd").submit();
+                e.preventDefault();
+            }
+        }
+           
+        
+    });
+
+  
+    $("#batalperubahanigd").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin membatalkan perubahan laporan IGD ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+            location.reload();
+
+        }
+    });
+
+
+
+//IRJ EDIT dan HAPUS
+
+$("#editirj").on('click', function(e) {
+        document.getElementById('simpanirj').style.display = 'block'; 
+        document.getElementById('batalperubahanirj').style.display = 'block'; 
+        document.getElementById('batalirj').style.display = 'none'; 
+        this.style.display = 'none';
+        document.getElementById("irj_masalah").readOnly = false;
+        document.getElementById("irj_langkah").readOnly = false;
+
+    });
+
+    $("#simpanirj").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin menyimpan perubahan laporan IRJ ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+           
+            a = $("#hitungketerangan").val();
+            if(a > 0){
+                document.getElementById("editdraftirj").submit();
+                e.preventDefault();
+            }
+            else{
+                alert('Jumlah pasien menurut Dokter masih kosong, silahkan isi terlebih dahulu')
+            }
+            
+        }
+           
+        
+    });
+
     $("#batalirj").on('click', function(e) {
         var conf = confirm('apakah anda yakin ingin membatalkan laporan IRJ ini ?');
         if (conf == false) {
@@ -668,6 +789,16 @@ $("#dataTable").DataTable({
         }
     });
 
+    $("#batalperubahanirj").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin membatalkan perubahan laporan IRJ ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+            location.reload();
+
+        }
+    });
 
 
  //IGD
@@ -744,16 +875,19 @@ var id,dokter,lama,baru;
 
     });
 
-    $("#dataTable").on('click', '.btn-hapus', function() {
+    $("#dataTable").on('click', '.btn-hapus', function(e) {
         id = $(this).val(); 
         var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
         if (conf == false) {
             e.preventDefault();
-            $("#edit").modal('hide');
+            //$("#edit").modal('hide');
         }
         else{
-            $("#edit").modal('hide');
+            //$("#edit").modal('hide');
             
+            var x = parseInt($("#hitungketerangan").val()) - 1;
+            $("#hitungketerangan").val(x)
+
             console.log(id);
             var url = 'deleteirjdetail';
 
@@ -846,63 +980,62 @@ $(".btn-simpan").click(function(e){
         });
 });
 
+$(".btn-tambah").click(function(e){
 
-</script>
-<script>
+    $("#tambah").modal('hide');
 
+    e.preventDefault();
 
-$(document).ready(function() {
-    $("#tambahketerangan").submit(function(e) {
+    var id_dokter_irj = $("#id_dokter_irj :selected").val();
+    var pasien_lama = $("input[name=pasien_lama]").val();
+    var pasien_baru = $("input[name=pasien_baru]").val();
 
-        $("#tambah").modal('hide');
-
-        e.preventDefault();
-
-        var id_dokter_irj = $("#id_dokter_irj :selected").val();
-        var pasien_lama = $("input[name=pasien_lama]").val();
-        var pasien_baru = $("input[name=pasien_baru]").val();
+    var x = parseInt($("#hitungketerangan").val()) + 1;
+    $("#hitungketerangan").val(x)
 
 
 
 
-        console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
-        var url = 'tambahirjdetail';
+    console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
+    var url = 'tambahirjdetail';
 
-        $.ajax({
-        url:url,
-        method:'POST',
-        data:{
-            _token: "{{ csrf_token() }}",
-            id_dokter_irj:id_dokter_irj,
-            pasien_lama:pasien_lama,
-            pasien_baru : pasien_baru
-        },
-        success:function(response){
-            if(response.success){
-                $("#id_dokter_irj").val("");
-                $("input[name=pasien_lama]").val("");
-                $("input[name=pasien_baru]").val("");
-                alert(response.message) //Message come from controller
-                $.ajax({
-                    type : "get",
-                    url : 'refresh-irj-detail/',
-                    data: { "_token": "{{ csrf_token() }}",},
-                    success : function(data){
-                    //console.log(data);
-                    $(".tableketerangan").html(data);
-                    }   
-            });
-            }else{
-                alert("Error")
-            }
-        },
-        error:function(error){
-            console.log(error)
+    $.ajax({
+    url:url,
+    method:'POST',
+    data:{
+        _token: "{{ csrf_token() }}",
+        id_dokter_irj:id_dokter_irj,
+        pasien_lama:pasien_lama,
+        pasien_baru : pasien_baru
+    },
+    success:function(response){
+        if(response.success){
+            $("#id_dokter_irj").val("");
+            $("input[name=pasien_lama]").val("");
+            $("input[name=pasien_baru]").val("");
+            alert(response.message) //Message come from controller
+            $.ajax({
+                type : "get",
+                url : 'refresh-irj-detail/',
+                data: { "_token": "{{ csrf_token() }}",},
+                success : function(data){
+                //console.log(data);
+                $(".tableketerangan").html(data);
+                }   
+        });
+        }else{
+            alert(response.message) 
         }
-        });
-        });
+    },
+    error:function(error){
+        console.log(error)
+    }
     });
+
+});
+
 </script>
+
 <script>
 $("#inap_ruangan").change(function(){
   

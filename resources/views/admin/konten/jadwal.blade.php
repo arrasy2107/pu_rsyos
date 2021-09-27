@@ -153,27 +153,28 @@ $newDateTime = Carbon::now()->addYears(5);
                 Pilih Jadwal Piket Pengawas Umum
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body" style="padding:30px">
-                <form method="post" action="" enctype="multipart/form-data">
+            <form method="post" action="" enctype="multipart/form-data">
+                <div class="modal-body" style="padding:30px">
                     
-                    <input type="hidden" class="txtiddinas" name="id_dinas">
-                    <input type="hidden" class="txttanggal" name="tanggal">
+                        
+                        <input type="hidden" class="txtiddinas" name="id_dinas">
+                        <input type="hidden" class="txttanggal" name="tanggal">
 
-                    <div class="form-group">
-                        <label>Pengawas Umum : </label><br>
-                        <select class="form-control select2" name="id_pengawas" id="id_pengawas" style="width:100%" required>
-                            <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
-                            @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
-                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label>Pengawas Umum : </label><br>
+                            <select class="form-control select2" name="id_pengawas" id="id_pengawas" style="width:100%" required>
+                                <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
+                                @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
+                                <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
 
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-primary btn-tambah">Simpan</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary btn-tambah">Simpan</button>
+                </div>
             </form>
         </div>
     </div>
@@ -187,29 +188,111 @@ $newDateTime = Carbon::now()->addYears(5);
                 Ubah Jadwal Piket Pengawas Umum
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body" style="padding:30px">
-                <form method="post" action="" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    {{ method_field('PUT') }}
-                    <input type="hidden" class="txtid" name="idpiket">
-                    <input type="hidden" class="txtiddinas2" name="id_dinas2">
-                    <input type="hidden" class="txttanggal2" name="tanggal2">
+            <form method="post" action="" enctype="multipart/form-data">
+                <div class="modal-body" style="padding:30px">
+                    
+                        {{ csrf_field() }}
+                        {{ method_field('PUT') }}
+                        <input type="hidden" class="txtid" name="idpiket">
+                        <input type="hidden" class="txtiddinas2" name="id_dinas2">
+                        <input type="hidden" class="txttanggal2" name="tanggal2">
 
-                    <div class="form-group">
-                        <label>Pengawas Umum : </label><br>
-                        <select class="form-control txtpengawas select2" id="id_pengawas2" name="id_pengawas" style="width:100%" required>
-                            <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
-                            @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
-                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-            </div>
+                        <div class="form-group">
+                            <label>Pengawas Umum : </label><br>
+                            <select class="form-control txtpengawas select2" id="id_pengawas2" name="id_pengawas" style="width:100%" required>
+                                <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
+                                @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
+                                <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                </div>
             
             </form>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-sm btn-hapus btn-danger float-left">Hapus</button>
                 <button type="submit" class="btn btn-sm btn-edit btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- untuk custom IRJ Buka -->
+<div id="jadwal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                Pilih Jadwal Piket Pengawas Umum
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" action="" enctype="multipart/form-data">
+                <div class="modal-body" style="padding:30px">
+                    
+                        
+                        <input type="hidden" class="txtiddinasx" name="id_dinasx">
+                        <input type="hidden" class="txttanggalx" name="tanggalx">
+
+                        <div class="form-group">
+                            <label>Pengawas Umum : </label><br>
+                            <select class="form-control select2" name="id_pengawasx" id="id_pengawasx" style="width:100%" required>
+                                <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
+                                @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
+                                <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="irjbuka" name="irjbuka">
+                            <label class="form-check-label" for="exampleCheck1">IRJ Buka</label>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary btn-tambah2">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="edit2" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                Ubah Jadwal Piket Pengawas Umum
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" action="" enctype="multipart/form-data">
+                <div class="modal-body" style="padding:30px">
+                    
+                        {{ csrf_field() }}
+                        {{ method_field('PUT') }}
+                        <input type="hidden" class="txtidx" name="idpiketx">
+                        <input type="hidden" class="txtiddinas2x" name="id_dinas2x">
+                        <input type="hidden" class="txttanggal2x" name="tanggal2x">
+
+                        <div class="form-group">
+                            <label>Pengawas Umum : </label><br>
+                            <select class="form-control txtpengawasx select2" id="id_pengawas2x" name="id_pengawasx" style="width:100%" required>
+                                <option value="" selected disabled hidden>Pilih Pengawas Umum</option>
+                                @foreach(\App\Models\User::where('id_role',2)->where('status',1)->get() as $mb)
+                                <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input txtirj" id="irjbuka2" name="irjbuka2">
+                            <label class="form-check-label" for="exampleCheck1">IRJ Buka</label>
+                        </div>
+                </div>
+            
+            </form>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-hapus2 btn-danger float-left">Hapus</button>
+                <button type="submit" class="btn btn-sm btn-edit2 btn-primary">Simpan</button>
             </div>
         </div>
     </div>
@@ -234,7 +317,7 @@ $newDateTime = Carbon::now()->addYears(5);
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    var id, dinas, tanggal, idpiket;
+    var id, dinas, tanggal, idpiket, cekirj, irjcheckbox;
     $("#example").on('click', '.btn-jadwal', function() {
         id = $(this).val(); //dinas
         dinas = $(this).data('dinas');
@@ -249,14 +332,22 @@ $newDateTime = Carbon::now()->addYears(5);
         dinas = $(this).data('dinas');
         tanggal = $(this).data('tanggal');
         pengawas = $(this).data('pengawas');
-        console.log(idpiket)
+        cekirj= $(this).data('irj');
+        if(cekirj){
+            irjcheckbox = true;
+        }
+        else{
+            irjcheckbox = false;
+        }
+      
+        console.log(irjcheckbox)
 
     });
 
     $('#jadwal').on('show.bs.modal', function() {
         $(".txtiddinas").val(id);
         $(".txttanggal").val(tanggal);
-
+        $("#id_pengawas").select2().val("").trigger("change");
 
     });
     $('#edit').on('show.bs.modal', function() {
@@ -276,9 +367,11 @@ $newDateTime = Carbon::now()->addYears(5);
         var id_pengawas = $("#id_pengawas :selected").val();
         var id_dinas = $("input[name=id_dinas]").val();
         var tanggal = $("input[name=tanggal]").val();
+        var irj = 0;
 
-        $("#id_pengawas").val("");
         
+        //document.getElementById("id_pengawas").value = "";
+
        
         console.log(id_pengawas+' '+ id_dinas + ' '+ tanggal);
         var url = 'tambahpiket';
@@ -289,7 +382,8 @@ $newDateTime = Carbon::now()->addYears(5);
         data:{
             id_pengawas:id_pengawas,
             id_dinas:id_dinas,
-            tanggal : tanggal
+            tanggal : tanggal,
+            irj : irj
         },
         success:function(response){
             if(response.success){
@@ -300,7 +394,7 @@ $newDateTime = Carbon::now()->addYears(5);
                     url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
                     data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
                     success : function(data){
-                    console.log(data);
+                    //console.log(data);
                     $(".tablejadwal").html(data);
                     }   
              });
@@ -323,7 +417,7 @@ $newDateTime = Carbon::now()->addYears(5);
         var id_pengawas = $("#id_pengawas2 :selected").val();
         var id_dinas = $("input[name=id_dinas2]").val();
         var tanggal = $("input[name=tanggal2]").val();
-
+        var irj = 0;
 
         console.log(id_pengawas+' - '+ id_dinas + ' - '+ tanggal);
         var url = 'editpiket';
@@ -334,7 +428,8 @@ $newDateTime = Carbon::now()->addYears(5);
         data:{
             id_pengawas:id_pengawas,
             id_dinas:id_dinas,
-            tanggal : tanggal
+            tanggal : tanggal,
+            irj:0
         },
         success:function(response){
             if(response.success){
@@ -345,7 +440,7 @@ $newDateTime = Carbon::now()->addYears(5);
                     url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
                     data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
                     success : function(data){
-                    console.log(data);
+                    //console.log(data);
                     $(".tablejadwal").html(data);
                     }   
             });
@@ -368,6 +463,180 @@ $newDateTime = Carbon::now()->addYears(5);
         else{
             $("#edit").modal('hide');
             var id = $("input[name=idpiket]").val();
+
+            console.log(id);
+            var url = 'deletepiket/'+id;
+
+            $.ajax({
+            url:url,
+            method:'GET',
+            data:{
+                id:id,
+               
+            },
+            success:function(response){
+                if(response.success){
+                    
+                    alert(response.message) //Message come from controller
+                    $.ajax({
+                        type : "get",
+                        url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                        data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                        success : function(data){
+                        console.log(data);
+                        $(".tablejadwal").html(data);
+                        }   
+                });
+                }else{
+                    alert("Error")
+                }
+            },
+            error:function(error){
+                console.log(error)
+            }
+            });
+        }
+    });
+
+
+    //Khusus untuk IRJ Custom buka
+
+    // var irjcheckbox = true;
+
+    $('#jadwal2').on('show.bs.modal', function() {
+        $(".txtiddinasx").val(id);
+        $(".txttanggalx").val(tanggal);
+        $("#id_pengawasx").select2().val("").trigger("change");
+        $("#irjbuka").prop("checked", false);
+
+    });
+    $('#edit2').on('show.bs.modal', function() {
+        $(".txtiddinas2x").val(id);
+        $(".txttanggal2x").val(tanggal);
+        $(".txtpengawasx").select2().val(pengawas).trigger("change");
+        $(".txtidx").val(idpiket);
+        console.log(irjcheckbox)
+        $(".txtirj").prop("checked", irjcheckbox);
+    });
+
+
+    $(".btn-tambah2").click(function(e){
+
+        $("#jadwal2").modal('hide');
+
+        e.preventDefault();
+
+        var id_pengawas = $("#id_pengawasx :selected").val();
+        var id_dinas = $("input[name=id_dinasx]").val();
+        var tanggal = $("input[name=tanggalx]").val();
+        var irj = $("#irjbuka").is(":checked");
+        if(irj){
+            irj = 1;
+        }
+        else{
+            irj = 0;
+        }
+
+        $("#id_pengawasx").val("");
+        
+       
+        console.log(id_pengawas+' '+ id_dinas + ' '+ tanggal+ ' '+irj);
+        var url = 'tambahpiket';
+
+        $.ajax({
+        url:url,
+        method:'POST',
+        data:{
+            id_pengawas:id_pengawas,
+            id_dinas:id_dinas,
+            tanggal : tanggal,
+            irj:irj
+        },
+        success:function(response){
+            if(response.success){
+                
+                alert(response.message) //Message come from controller
+                $.ajax({
+                    type : "get",
+                    url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                    data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                    success : function(data){
+                    //console.log(data);
+                    $(".tablejadwal").html(data);
+                    }   
+             });
+            }else{
+                alert("Error")
+            }
+        },
+        error:function(error){
+            console.log(error)
+        }
+        });
+    });
+
+    $(".btn-edit2").click(function(e){
+
+        $("#edit2").modal('hide');
+
+        e.preventDefault();
+
+        var id_pengawas = $("#id_pengawas2x :selected").val();
+        var id_dinas = $("input[name=id_dinas2x]").val();
+        var tanggal = $("input[name=tanggal2x]").val();
+        var irj = $("#irjbuka2").is(":checked");
+        if(irj){
+            irj = 1;
+        }
+        else{
+            irj = 0;
+        }
+
+
+        console.log(id_pengawas+' - '+ id_dinas + ' - '+ tanggal + ' - '+ irj);
+        var url = 'editpiket';
+
+        $.ajax({
+        url:url,
+        method:'PUT',
+        data:{
+            id_pengawas:id_pengawas,
+            id_dinas:id_dinas,
+            tanggal : tanggal,
+            irj : irj
+        },
+        success:function(response){
+            if(response.success){
+                
+                alert(response.message) //Message come from controller
+                $.ajax({
+                    type : "get",
+                    url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
+                    data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
+                    success : function(data){
+                    //console.log(data);
+                    $(".tablejadwal").html(data);
+                    }   
+            });
+            }else{
+                alert("Error")
+            }
+        },
+        error:function(error){
+            console.log(error)
+        }
+        });
+    });
+
+    $(".btn-hapus2").click(function(e){
+        var conf = confirm('apakah anda yakin ingin menghapus jadwal ini ?');
+        if (conf == false) {
+            e.preventDefault();
+            $("#edit2").modal('hide');
+        }
+        else{
+            $("#edit2").modal('hide');
+            var id = $("input[name=idpiketx]").val();
 
             console.log(id);
             var url = 'deletepiket/'+id;

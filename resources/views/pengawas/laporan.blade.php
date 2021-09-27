@@ -586,15 +586,16 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
             <div class="card-body">
                 <!-- Content Row -->
                 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Keterangan</button>
-                            <br>
-                        </div>
-                    </div>
-                    <br>
+                   
                     <div class="row ">
                         <div class="col-lg-12 tableketerangan">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Keterangan</button>
+                                    <br>
+                                </div>
+                            </div>
+                            <br>
                             <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -692,7 +693,9 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <select class="form-control select2" name="id_dokter_irj" id="id_dokter_irj" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @if(!\App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_dokter_irj',$mb->id)->first())
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endif
                             @endforeach
                         </select>
                     </div>
@@ -978,61 +981,64 @@ var id,dokter,lama,baru;
 
 </script>
 
+
 <script>
-$(document).ready(function() {
-    $("#tambahketerangan").submit(function(e) {
-        $("#tambah").modal('hide');
 
-        e.preventDefault();
 
-        var id_dokter_irj = $("#id_dokter_irj :selected").val();
-        var pasien_lama = $("input[name=pasien_lama]").val();
-        var pasien_baru = $("input[name=pasien_baru]").val();
-    
-        
-            console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
-            var url = 'tambahirjdetail';
+$(".btn-tambah").click(function(e){
 
+    $("#tambah").modal('hide');
+
+    e.preventDefault();
+
+    var id_dokter_irj = $("#id_dokter_irj :selected").val();
+    var pasien_lama = $("input[name=pasien_lama]").val();
+    var pasien_baru = $("input[name=pasien_baru]").val();
+
+    var x = parseInt($("#hitungketerangan").val()) + 1;
+    $("#hitungketerangan").val(x)
+
+
+
+
+    console.log(id_dokter_irj+' '+ pasien_lama + ' '+ pasien_baru);
+    var url = 'tambahirjdetail';
+
+    $.ajax({
+    url:url,
+    method:'POST',
+    data:{
+        _token: "{{ csrf_token() }}",
+        id_dokter_irj:id_dokter_irj,
+        pasien_lama:pasien_lama,
+        pasien_baru : pasien_baru
+    },
+    success:function(response){
+        if(response.success){
+            $("#id_dokter_irj").val("");
+            $("input[name=pasien_lama]").val("");
+            $("input[name=pasien_baru]").val("");
+            alert(response.message) //Message come from controller
             $.ajax({
-            url:url,
-            method:'POST',
-            data:{
-                _token: "{{ csrf_token() }}",
-                id_dokter_irj:id_dokter_irj,
-                pasien_lama:pasien_lama,
-                pasien_baru : pasien_baru
-            },
-            success:function(response){
-                if(response.success){
-                    $("#id_dokter_irj").val("");
-                    $("input[name=pasien_lama]").val("");
-                    $("input[name=pasien_baru]").val("");
-                    alert(response.message) //Message come from controller
-                    $.ajax({
-                        type : "get",
-                        url : 'refresh-irj-detail/',
-                        data: { "_token": "{{ csrf_token() }}",},
-                        success : function(data){
-                        //console.log(data);
-                        $(".tableketerangan").html(data);
-                        }   
-                });
-                }else{
-                    alert("Error")
-                }
-            },
-            error:function(error){
-                console.log(error)
-            }
-            });
-        
-        
+                type : "get",
+                url : 'refresh-irj-detail/',
+                data: { "_token": "{{ csrf_token() }}",},
+                success : function(data){
+                //console.log(data);
+                $(".tableketerangan").html(data);
+                }   
+        });
+        }else{
+            alert(response.message) 
+        }
+    },
+    error:function(error){
+        console.log(error)
+    }
     });
-});
 
-</script>
+    });
 
-<script>
 
 // $(document).ready(function() {
 //     $("#editketerangan").submit(function(e) {

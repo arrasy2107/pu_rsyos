@@ -41,7 +41,7 @@ $t = new Grei\TanggalMerah();
 
         <div class="card-body">
             <div class ="row">
-                    <div class="col-md-3">
+                <div class="col-md-3">
                     <label for="tglmulai">Tanggal Mulai</label>
                     <div class="form-group">
 
@@ -64,58 +64,62 @@ $t = new Grei\TanggalMerah();
                     </div>
                 </div>
             </div>
-            
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th width="10%">No</th>
-                            <th width="15%">Tanggal</th>
-                            <th width="10%">Jam</th>
-                            <th>Dinas</th>
-                            <th>Pengawas Umum</th>
-                            <th >Tanda Tangan</th>
-                            <th width="20%">Laporan</th>
+            <div class="row">
+                <div class="col-md-12 tablehistory">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="10%">No</th>
+                                    <th width="15%">Tanggal</th>
+                                    <th width="10%">Jam</th>
+                                    <th>Dinas</th>
+                                    <th>Pengawas Umum</th>
+                                    <th >Tanda Tangan</th>
+                                    <th width="20%">Laporan</th>
 
-                        </tr>
-                    </thead>
-                    
-                    <?php
-                    $date = date_default_timezone_set('Asia/Jakarta');
-                    $today = date('Y-m-d H:i:s');
-                    $no = 1;
-                    ?>
-                    
-                    <tbody>
-                        @foreach(\App\Models\Laporan::whereBetween('created_at',[date("Y-m-d", strtotime("-1 month")),$today])->where('verified',1)->orderBy('updated_at','DESC')->get() as $data)
-                        <?php
-                        $t->set_date( date('Ymd', strtotime($data->created_at)));
-                        ?>
-                        <tr>
-                            <td>{{ $no }}</td>
-                            <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y')}}</td>
-                            <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
-                            <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
-                            <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
-                            <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                                </tr>
+                            </thead>
                             
-                            <td>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
-                                @if($data->id_dinas != 3 && $t->check() != true)
-                                <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
-                                @endif
-                             </td>
+                            <?php
+                            $date = date_default_timezone_set('Asia/Jakarta');
+                            $today = date('Y-m-d H:i:s');
+                            $no = 1;
+                            ?>
+                            
+                            <tbody>
+                                @foreach(\App\Models\Laporan::whereBetween('created_at',[date("Y-m-d", strtotime("-1 month")),$today])->where('verified',1)->orderBy('updated_at','DESC')->where('status',1)->get() as $data)
+                                <?php
+                                $t->set_date( date('Ymd', strtotime($data->created_at)));
+                                ?>
+                                <tr>
+                                    <td>{{ $no }}</td>
+                                    <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y')}}</td>
+                                    <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
+                                    <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
+                                    <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
+                                    <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                                    
+                                    <td>
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
+                                        <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
+                                        @if($data->id_dinas != 3 && $t->check() != true)
+                                        <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
+                                        @endif
+                                    </td>
 
-                        </tr>
-                        <?php
-                        $no++;
-                        ?>
-                        @endforeach
+                                </tr>
+                                <?php
+                                $no++;
+                                ?>
+                                @endforeach
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+                    
         </div>
     </div>
 
@@ -264,18 +268,17 @@ $t = new Grei\TanggalMerah();
     if (!$("#tanggal").val() || !$("#tanggal2").val()) {
     alert('lengkapi tanggal dahulu');
     } else {
-    $(".tablehistori").html("<h1>Mohon Tunggu...</h1>")
+    $(".tablehistory").html("<h1>Mohon Tunggu...</h1>")
     $.ajax({
         type: "get",
-        url: 'history-kat/' + $("#tanggal").val() + '/' + $("#tanggal2").val() + '/' + $("#kode").val(),
+        url: 'refresh-history/' + $("#tanggal").val() + '/' + $("#tanggal2").val(),
         data: {
         tanggal2: $("#tanggal2").val(),
         tanggal: $("#tanggal").val(),
-        kode: $("#kode").val()
         },
         success: function(data) {
         console.log(data);
-        $(".tablehistori").html(data);
+        $(".tablehistory").html(data);
         }
     });
     }

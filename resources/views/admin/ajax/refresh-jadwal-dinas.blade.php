@@ -74,11 +74,28 @@ $period = new CarbonPeriod($from, '1 day', $to);
                 <td><span style="color:transparent;margin-left:-10px">{{$data->id}}. </span> <img src="{{asset('sb-admin/icon/piket/half-moon.png')}}" height="30px" width="30px"> {{ strtoupper($data->dinas) }}</td>
                 @endif
                 @foreach($period as $tgl)
-                @if(\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->first())
-                <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-ganti " style="display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-pengawas="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first()}}" data-idpiket="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first()}}" data-toggle="modal" data-target="#edit"><span class="badge badge-primary">{{\App\Models\User::where('id',\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first())->pluck('nama')->first()}}</span></button></td>
-                @else
-                <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-jadwal " style="background-color: #f8f9fc;display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-toggle="modal" data-target="#jadwal"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
-                @endif
+                    <?php
+                        $t->set_date($tgl->format('Ymd'));
+                    ?>
+                    @if($t->is_holiday() == true && $data->id == 1 || $t->is_holiday() == true && $data->id == 2)
+                        @if(\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->first())
+                        <td>
+                            <button value="{{$data->id}}" class="btn btn-sm btn-default btn-ganti " style="display: block;margin: auto;" data-irj="{{ \App\Models\Irjbuka::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first() }}" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-pengawas="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first()}}" data-idpiket="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first()}}" data-toggle="modal" data-target="#edit2"><span class="badge badge-primary">{{\App\Models\User::where('id',\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first())->pluck('nama')->first()}}</span></button>
+                            @if(\App\Models\Irjbuka::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first())
+                            <span style="display: block;margin: auto;text-align:center;font-size:10px">( IRJ Buka )</span>
+                            @endif
+                        </td>
+                        @else
+                        <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-jadwal " style="background-color: #f8f9fc;display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-toggle="modal" data-target="#jadwal2"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                        @endif
+                    @else
+                        @if(\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->first())
+                        <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-ganti " style="display: block;margin: auto;" data-irj="{{ \App\Models\Irjbuka::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first() }}"  data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-pengawas="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first()}}" data-idpiket="{{\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id')->first()}}" data-toggle="modal" data-target="#edit"><span class="badge badge-primary">{{\App\Models\User::where('id',\App\Models\Piket::where('tanggal',$tgl->format('Y-m-d'))->where('id_dinas',$data->id)->pluck('id_pengawas')->first())->pluck('nama')->first()}}</span></button></td>
+                        @else
+                        <td><button value="{{$data->id}}" class="btn btn-sm btn-default btn-jadwal " style="background-color: #f8f9fc;display: block;margin: auto;" data-dinas="{{ $data->id }}" data-tanggal="{{$tgl->format('Y-m-d')}}" data-toggle="modal" data-target="#jadwal"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                        @endif
+
+                    @endif
                 @endforeach
             </tr>
             <?php
@@ -90,6 +107,7 @@ $period = new CarbonPeriod($from, '1 day', $to);
     </table>
 
 </div>
+
 
 <script>
     // $("#dataTable").DataTable({
@@ -121,7 +139,7 @@ $period = new CarbonPeriod($from, '1 day', $to);
     });
 
 
-    var id, dinas, tanggal, idpiket;
+    var id, dinas, tanggal, idpiket, cekirj, irjcheckbox;
     $("#example").on('click', '.btn-jadwal', function() {
         id = $(this).val(); //dinas
         dinas = $(this).data('dinas');
@@ -136,20 +154,28 @@ $period = new CarbonPeriod($from, '1 day', $to);
         dinas = $(this).data('dinas');
         tanggal = $(this).data('tanggal');
         pengawas = $(this).data('pengawas');
-        console.log(idpiket)
+        cekirj= $(this).data('irj');
+        if(cekirj){
+            irjcheckbox = true;
+        }
+        else{
+            irjcheckbox = false;
+        }
+    
+        console.log(irjcheckbox)
 
     });
 
-    $('#jadwal').on('show.bs.modal', function() {
-        $(".txtiddinas").val(id);
-        $(".txttanggal").val(tanggal);
+    // $('#jadwal').on('show.bs.modal', function() {
+    //     $(".txtiddinas").val(id);
+    //     $(".txttanggal").val(tanggal);
 
 
-    });
-    $('#edit').on('show.bs.modal', function() {
-        $(".txtiddinas2").val(id);
-        $(".txttanggal2").val(tanggal);
-        $(".txtpengawas").select2().val(pengawas).trigger("change");
+    // });
+    // $('#edit').on('show.bs.modal', function() {
+    //     $(".txtiddinas2").val(id);
+    //     $(".txttanggal2").val(tanggal);
+    //     $(".txtpengawas").select2().val(pengawas).trigger("change");
 
-    });
+    // });
 </script>

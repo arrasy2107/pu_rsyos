@@ -40,6 +40,11 @@ Route::group(['middleware' => ['auth']],  function () {
     Route::get('/refresh-detail-laporan-irj/{idlaporan}',function($idlaporan){
         return view('admin.ajax.refresh-detail-laporan-irj',compact('idlaporan'));
     });
+
+    //REFRESH HISTORY
+    Route::get('/refresh-history/{tanggal}/{tanggal2}',function($tanggal,$tanggal2){
+        return view('admin.ajax.refresh-history',compact('tanggal','tanggal2'));
+    });
 });
 
 //PENGAWAS
@@ -71,7 +76,7 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
 
     Route::post('/draftlaporanIRJ', 'PengawasController@draftlaporanIRJ')->name('draftlaporanIRJ');
     Route::put('/editDraftlaporanIRJ', 'PengawasController@editDraftlaporanIRJ')->name('editDraftlaporanIRJ');
-    Route::get('/deleteaftlaporanIRJ/{id}', 'PengawasController@deleteaftlaporanIRJ')->name('deleteaftlaporanIRJ');
+    Route::get('/deleteDraftlaporanIRJ/{id}', 'PengawasController@deleteDraftlaporanIRJ')->name('deleteDraftlaporanIRJ');
 
     Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
     Route::put('/editDraftlaporanUmum', 'PengawasController@editDraftlaporanUmum')->name('editDraftlaporanUmum');
