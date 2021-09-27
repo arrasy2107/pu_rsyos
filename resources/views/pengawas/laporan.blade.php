@@ -26,14 +26,42 @@ $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
 $cekhariini = \Carbon\Carbon::now()->format('Ymd');
 $t = new Grei\TanggalMerah();
 $t->set_date($cekhariini);
+// $t->set_date('20211002');
 
 
 $now = \Carbon\Carbon::now();
+// $now = new \Carbon\Carbon('2021-10-02 16:53:20');
 $ltime = date('H:i:s');
+$hariini = date('Y-m-d');
+// $hariini = '2021-10-02';
 $nowTime = $now->hour.':'.$now->minute.':'.$now->second;
+
+if(\App\Models\Irjbuka::where('tanggal',$hariini)->first())
+{
+    $cekdinaspagi = \App\Models\Irjbuka::where('tanggal',$hariini)->where('id_dinas',1)->first();
+    $cekdinassore = \App\Models\Irjbuka::where('tanggal',$hariini)->where('id_dinas',2)->first();
+
+    if($cekdinaspagi && $cekdinassore){
+        $start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
+        $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pluck('jam_pulang')->first());
+    }
+    else if($cekdinaspagi){
+        $start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
+        $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_pulang')->first());
+
+    }else{
+        $start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pluck('jam_masuk')->first());
+        $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pluck('jam_pulang')->first());
+
+    }
+
+}
+else{
 
 $start = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',1)->pluck('jam_masuk')->first());
 $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pluck('jam_pulang')->first());
+}
+
 
  
 
@@ -563,8 +591,8 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
     @endif
 
 
-    <!-- cek dinas malam atau hari libur -->
-    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true)
+    <!-- cek dinas pagi sore dan tidak hari libur || cek hari libur custom IRJ buka-->
+    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first())
 
     @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
     <div class="card shadow mb-4">
