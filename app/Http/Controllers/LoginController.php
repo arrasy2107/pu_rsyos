@@ -66,15 +66,16 @@ class LoginController extends Controller
     $start3 = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',3)->pluck('jam_masuk')->first());
     $end3 = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',3)->pluck('jam_pulang')->first());
 
-    if(strtotime($nowTime) > strtotime($start1) && strtotime($nowTime) < strtotime($end1))
-    {
-      $dinas = 1;
-    }
-    else if(strtotime($nowTime) > strtotime($start2) && strtotime($nowTime) < strtotime($end2))
+
+    if(strtotime($nowTime) >= strtotime($start2) && strtotime($nowTime) <= strtotime($end2))
     {
       $dinas = 2;
     }
-    else if(strtotime($nowTime) > strtotime($start3) && strtotime($nowTime) < strtotime($end3))
+    else if(strtotime($nowTime) >= strtotime($start1) && strtotime($nowTime) <= strtotime($end1))
+    {
+      $dinas = 1;
+    }
+    else
     {
       $dinas = 3;
     }
@@ -115,6 +116,8 @@ class LoginController extends Controller
         $log->created_at = date('Y-m-d H:i:s');
         $log->updated_at =  date('Y-m-d H:i:s');
         $log->save();
+
+        
   
         return redirect()->to('/laporan');
 
@@ -165,6 +168,13 @@ class LoginController extends Controller
         $log->created_at = date('Y-m-d H:i:s');
         $log->updated_at =  date('Y-m-d H:i:s');
         $log->save();
+
+        $user = \Auth::user();
+        // $userToLogout = \App\Models\User::find(2);
+        // \Auth::setUser($userToLogout);
+        // \Auth::logout();
+
+        \Auth::setUser($user);
   
         return redirect()->to('/laporan');
       } else {

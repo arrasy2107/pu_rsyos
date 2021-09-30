@@ -684,7 +684,7 @@ $newDateTime = Carbon::now()->addYears(5);
             url : 'refresh-jadwal-dinas/'+$("#tahun").val()+'/'+$("#bulan").val(),
             data: {tahun: $("#tahun").val(), bulan: $("#bulan").val()},
             success : function(data){
-            console.log(data);
+            //console.log(data);
             $(".tablejadwal").html(data);
             }
         });

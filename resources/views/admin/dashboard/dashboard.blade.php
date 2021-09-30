@@ -367,11 +367,11 @@
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Masalah</label>
-                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}"></textarea>
+                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" disabled value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}"></textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Langkah atasi masalah</label>
-                                <textarea class="form-control" name="irj_langkah" rows="3" value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}"></textarea>
+                                <textarea class="form-control" name="irj_langkah" rows="3" disabled value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}"></textarea>
                             </div>
                             
                           
