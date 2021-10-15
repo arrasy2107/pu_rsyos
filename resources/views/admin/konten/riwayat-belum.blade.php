@@ -289,31 +289,40 @@ $t = new Grei\TanggalMerah();
             }else{
                 //alert("Cek: " + cek.join(", "));
             
+                var conf = confirm('apakah Anda yakin ingin verifikasi laporan ini ?');
+                if (conf == false) {
+                    e.preventDefault();
+                }
+                else{
+                    console.log(cek);
+                    var url = 'verifikasilaporan';
 
-                console.log(cek);
-                var url = 'verifikasilaporan';
+                    $.ajax({
+                        url:url,
+                        method:'PUT',
+                        data:{
+                            verifikasi:cek,
+                        
+                        },
+                        success:function(response){
+                            if(response.success){
+                                
+                                alert(response.message) //Message come from controller
+                                location.reload();
+                            }
+                            else{
+                                alert("Error")
+                            }
+                        },
+                        error:function(error){
+                            console.log(error)
+                        }
+                    });
+                }
+                
 
-                $.ajax({
-                    url:url,
-                    method:'PUT',
-                    data:{
-                        verifikasi:cek,
-                    
-                    },
-                    success:function(response){
-                        if(response.success){
-                            
-                            alert(response.message) //Message come from controller
-                            location.reload();
-                        }
-                        else{
-                            alert("Error")
-                        }
-                    },
-                    error:function(error){
-                        console.log(error)
-                    }
-                });
+
+
             }
             
         });

@@ -30,7 +30,7 @@ $t = new Grei\TanggalMerah();
                             ?>
                             
                             <tbody>
-                                @foreach(\App\Models\Laporan::whereBetween('created_at',[$tanggal,$tanggal2])->where('verified',1)->orderBy('updated_at','DESC')->where('status',1)->get() as $data)
+                                @foreach(\App\Models\Laporan::whereDate('created_at','>=',$tanggal)->whereDate('created_at','<=',$tanggal2)->where('verified',1)->orderBy('updated_at','DESC')->where('status',1)->get() as $data)
                                 <?php
                                 $t->set_date( date('Ymd', strtotime($data->created_at)));
                                 ?>
@@ -62,6 +62,9 @@ $t = new Grei\TanggalMerah();
 
 
 <script>
+    $("#dataTable").DataTable({
+        "ordering":false
+    });
 $("#dataTable").on('click', '.btn-igd', function() {
         id1 = $(this).val();
      

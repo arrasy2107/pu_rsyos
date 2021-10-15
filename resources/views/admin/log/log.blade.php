@@ -60,7 +60,7 @@ setlocale(LC_TIME, 'id_ID');
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="lokasi">Jenis Log</label>
-                        <select id="kode" name="kode" class="form-control select2">
+                        <select id="jenis" name="jenis" class="form-control select2">
                         <option value="0">Semua</option>
                         @foreach(\App\Models\Logjenis::all() as $slk)
                         <option value="{{ $slk->id }}">{{ $slk->jenis }}</option>
@@ -76,42 +76,47 @@ setlocale(LC_TIME, 'id_ID');
                     </div>
                 </div>
             </div>
-           
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th width="20%">Tanggal</th>
-                            <th width="10%">Jam</th>
-                            <th>User</th>
-                            <th>Log Jenis</th>
-                            <th>Keterangan</th>
-                           
+            <div class="row">
+                <div class="col-md-12 tablelog">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Tanggal</th>
+                                    <th width="10%">Jam</th>
+                                    <th>User</th>
+                                    <th>Log Jenis</th>
+                                    <th>Keterangan</th>
+                                
 
-                        </tr>
-                    </thead>
-                    <?php
-                    $date = date_default_timezone_set('Asia/Jakarta');
-                    $today = date('Y-m-d H:i:s');
-                    
-                    ?>
-                    <tbody>
-                        @foreach(\App\Models\Log::whereBetween('created_at',[date("Y-m-d", strtotime("-1 week")),$today])->orderBy('created_at','DESC')->get() as $data)
-                        <tr>
+                                </tr>
+                            </thead>
+                            <?php
+                            $date = date_default_timezone_set('Asia/Jakarta');
+                            $today = date('Y-m-d H:i:s');
+                            
+                            ?>
+                            <tbody>
+                                @foreach(\App\Models\Log::whereBetween('created_at',[date("Y-m-d", strtotime("-1 week")),$today])->orderBy('created_at','DESC')->get() as $data)
+                                <tr>
 
-                            <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
-                            <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
-                            <td>{{ \App\Models\User::where('id',$data->id_user)->pluck('username')->first() }}</td>
-                            <td>{{ \App\Models\Logjenis::where('id',$data->id_log_jenis)->pluck('jenis')->first() }}</td>
-                            <td>{{ $data->keterangan }}</td>
+                                    <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
+                                    <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
+                                    <td>{{ \App\Models\User::where('id',$data->id_user)->pluck('username')->first() }}</td>
+                                    <td>{{ \App\Models\Logjenis::where('id',$data->id_log_jenis)->pluck('jenis')->first() }}</td>
+                                    <td>{{ $data->keterangan }}</td>
 
-                        </tr>
-                       
-                        @endforeach
+                                </tr>
+                            
+                                @endforeach
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+           
+            
         </div>
     </div>
 
@@ -129,6 +134,30 @@ setlocale(LC_TIME, 'id_ID');
         
     });
 
+    $("#lihat").click(function() {
+
+    if (!$("#tanggal").val() || !$("#tanggal2").val()) {
+    alert('lengkapi tanggal dahulu');
+    } else {
+    $(".tablelog").html("<h1>Mohon Tunggu...</h1>")
+    $.ajax({
+        type: "get",
+        url: 'refresh-log/' + $("#tanggal").val() + '/' + $("#tanggal2").val() + '/' + $("#jenis").val(),
+        data: {
+        tanggal2: $("#tanggal2").val(),
+        tanggal: $("#tanggal").val(),
+        jenis: $("#jenis").val()
+        },
+        success: function(data) {
+        console.log(data);
+        $(".tablelog").html(data);
+        }
+    });
+    }
+
+    });
 </script>
+
+
 
 @stop

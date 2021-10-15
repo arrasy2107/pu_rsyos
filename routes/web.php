@@ -192,12 +192,17 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::get('/log', function () {
         if(\Auth::user()->id_role == 3)
         {
-            return view('admin.dashboard.dashboard');
+            return redirect()->to('/dashboard');
         }
         else{
             return view('admin.log.log');
         }
     })->name('log');
+    Route::get('/refresh-log/{tanggalmulai}/{tanggalselesai}/{jenis}',function($tanggalmulai, $tanggalselesai, $jenis){
+        return view('admin.ajax.refresh-log',compact('tanggalmulai','tanggalselesai','jenis'));
+    });
+
+
 });
 
 
