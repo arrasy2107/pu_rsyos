@@ -5,6 +5,7 @@
     <div class="col-lg-12 tableketerangan">
     <h6 >Tanggal : {{ date('d F Y', strtotime(\App\Models\Laporan::where('id',$idlaporan)->pluck('created_at')->first() ))  }}</h6>
     <h6 >Dinas : {{  strtoupper(\App\Models\Dinas::where('id',\App\Models\Laporan::where('id',$idlaporan)->pluck('id_dinas')->first())->pluck('dinas')->first())  }} </h6>
+    <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('status',1)->where('id_laporan_irj',\App\Models\Laporanirj::where('id_laporan',$idlaporan)->pluck('id')->first())->pluck('pasien_total')->sum() }} orang</b></h6>
 
         <label class="mt-2" style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
         <div class="table-responsive">

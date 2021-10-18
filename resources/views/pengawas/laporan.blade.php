@@ -444,6 +444,27 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             </div>
                         </div>
 
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Pulang</div>
+                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
+                                                <input type="number" class="form-control" name="inap_pasien_pulang" autocomplete="off" onfocus="ranap13a();" onfocusout="ranap13b();" required />
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                        <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_inap_pasien_pulang" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
 
                     </div>
@@ -671,6 +692,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                             <th width="10%">No</th>
                                             <th>Dokter Operasi</th>
                                             <th>Dokter Anestesi</th>
+                                            <th>Pendamping</th>
                                             <th>Ruangan Asal</th>
                                             <th>Jam mulai</th>
                                             <th>Jam selesai</th>
@@ -690,12 +712,13 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                             <td>{{ $no }}</td>
                                             <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td>
                                             <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
+                                            <td>{{ $data->pendamping }}</td>
                                             <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
                                             <td>{{ $data->jam_mulai }}</td>
                                             <td>{{ $data->jam_selesai }}</td>
                                             <td>{{ $data->diagnosa }}</td>
                                             <td>{{ $data->jumlah_pasien }}</td>
-                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs">Ubah</button>
+                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs">Ubah</button>
                                             <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-hapus ">Hapus</button>
                                                 
                                             </td>
@@ -884,6 +907,10 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
+                        <label>Pendamping : </label>
+                        <input type="text" class="form-control" name="pendamping"  />
+                    </div>
+                    <div class="form-group">
                         <label>Ruangan Asal: </label><br>
                         <select class="form-control select2" name="id_ruangan" id="id_ruangan" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Ruangan</option>
@@ -952,6 +979,10 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pendamping : </label>
+                        <input type="text" class="form-control txt-pendamping" id="pendamping2" name="pendamping2"  />
                     </div>
                     <div class="form-group">
                         <label>Ruangan Asal: </label><br>
@@ -1244,6 +1275,14 @@ $("#dataTable2").DataTable({
     function ranap12b() {
         document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
     }
+
+    function ranap13a() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}');
+    }
+
+    function ranap13b() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-pulang.png')}}');
+    }
 </script>
 
 <script>
@@ -1438,6 +1477,7 @@ $(".btn-tambah").click(function(e){
         idibs = $(this).val(); //laporan ibs detail
         dokteroperasi = $(this).data('dokteroperasi');
         dokteranestesi = $(this).data('dokteranestesi');
+        pendamping = $(this).data('pendamping');
         ruangan = $(this).data('ruangan');
         jammulai = $(this).data('jammulai');
         jamselesai = $(this).data('jamselesai');
@@ -1450,6 +1490,7 @@ $(".btn-tambah").click(function(e){
         $(".txt-operasi").select2().val(dokteroperasi).trigger("change");
         $(".txt-anestesi").select2().val(dokteranestesi).trigger("change");
         $(".txt-ruangan").select2().val(ruangan).trigger("change");
+        $(".txt-pendamping").val(pendamping);
         $(".txt-mulai").val(jammulai);
         $(".txt-selesai").val(jamselesai);
         $(".txt-diagnosa").val(diagnosa);
@@ -1516,6 +1557,7 @@ $(".btn-tambahibs").click(function(e){
     var id_dokter_operasi = $("#id_dokter_operasi :selected").val();
     var id_dokter_anestesi = $("#id_dokter_anestesi :selected").val();
     var id_ruangan = $("#id_ruangan :selected").val();
+    var pendamping = $("input[name=pendamping]").val();
     var jam_mulai = $("input[name=jam_mulai]").val();
     var jam_selesai = $("input[name=jam_selesai]").val();
     var diagnosa = $("textarea[name=diagnosa]").val();
@@ -1527,7 +1569,7 @@ $(".btn-tambahibs").click(function(e){
 
 
 
-    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
+    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ pendamping + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
     var url = 'tambahibsdetail';
 
     $.ajax({
@@ -1537,6 +1579,7 @@ $(".btn-tambahibs").click(function(e){
         _token: "{{ csrf_token() }}",
         id_dokter_operasi:id_dokter_operasi,
         id_dokter_anestesi:id_dokter_anestesi,
+        pendamping:pendamping,
         id_ruangan : id_ruangan,
         jam_mulai : jam_mulai,
         jam_selesai : jam_selesai,
@@ -1549,6 +1592,7 @@ $(".btn-tambahibs").click(function(e){
             $("#id_dokter_anestesi").val("");
             $("#id_ruangan").val("");
             $("input[name=jam_mulai]").val("");
+            $("input[name=pendamping]").val("");
             $("input[name=jam_selesai]").val("");
             $("input[name=diagnosa]").val("");
             $("input[name=jumlah_pasien]").val("");
@@ -1587,13 +1631,14 @@ $(".btn-tambahibs").click(function(e){
         var id_dokter_operasi2 = $("#id_dokter_operasi2 :selected").val();
         var id_dokter_anestesi2 = $("#id_dokter_anestesi2 :selected").val();
         var id_ruangan2 = $("#id_ruangan2 :selected").val();
+        var pendamping2 = $("input[name=pendamping2]").val();
         var jam_mulai2 = $("input[name=jam_mulai2]").val();
         var jam_selesai2 = $("input[name=jam_selesai2]").val();
         var diagnosa2 = $("textarea[name=diagnosa2]").val();
         var jumlah_pasien2 = $("input[name=jumlah_pasien2]").val();
 
 
-        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
+        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ pendamping2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
         var url = 'editibsdetail';
 
         $.ajax({
@@ -1604,6 +1649,7 @@ $(".btn-tambahibs").click(function(e){
             id:id2,
             id_dokter_operasi:id_dokter_operasi2,
             id_dokter_anestesi:id_dokter_anestesi2,
+            pendamping:pendamping2,
             id_ruangan : id_ruangan2,
             jam_mulai : jam_mulai2,
             jam_selesai : jam_selesai2,

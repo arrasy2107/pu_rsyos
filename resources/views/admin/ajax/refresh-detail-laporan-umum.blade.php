@@ -9,15 +9,40 @@
 <div class="table-responsive">
     <table class="table table-bordered" id="dataTableRuangan" width="100%" cellspacing="0">
         <thead>
+            <tr style="background-color:green;color:white">
+
+                <th>TOTAL</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_lama')->sum() }}</th>
+                <th> {{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_baru')->sum() }}</th>
+                <th> {{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_pindah')->sum() }}</th>
+                <th> {{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_pindahan')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_meninggal')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_pulang')->sum() }}</th>
+
+                <th><b>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_total_pasien')->sum() }}</b></th>
+
+                <th>-</th>
+                <th>-</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_covid')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_suspek_covid')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_restrain')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_perilaku_kekerasan')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_keracunan')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_keterbatasan_bahasa')->sum() }}</th>
+                <th>{{ \App\Models\Laporanumum::where('id_laporan',$idlaporan)->pluck('jumlah_pasien_difabel')->sum() }}</th>
+                <th>-</th>
+            </tr>
             <tr>
 
                 <th>Ruangan</th>
                 <th> Lama</th>
                 <th> Baru</th>
-                <th><b>Total Pasien</b></th>
                 <th> Pindah</th>
                 <th> Pindahan</th>
                 <th>Meninggal</th>
+                <th>Pulang</th>
+
+                <th><b>Total Pasien</b></th>
 
                 <th>Catatan Pasien Istimewa</th>
                 <th>Catatan Pasien Baru</th>
@@ -42,11 +67,12 @@
                 <td style="white-space: nowrap;word-wrap: break-word;">{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first()  }}</td>
                 <td> {{$data->jumlah_pasien_lama}}</td>
                 <td> {{$data->jumlah_pasien_baru}}</td>
-                <td><b>{{$data->jumlah_total_pasien}}</b></td>
+                
                 <td> {{$data->jumlah_pasien_pindah}}</td>
                 <td> {{$data->jumlah_pasien_pindahan}}</td>
                 <td>{{$data->jumlah_pasien_meninggal}}</td>
-
+                <td>{{$data->jumlah_pasien_pulang}}</td>
+                <td><b>{{$data->jumlah_total_pasien}}</b></td>
                 @if($data->catatan_pasien_istimewa)
                 <td>{{$data->catatan_pasien_istimewa}}</td>
                 @else

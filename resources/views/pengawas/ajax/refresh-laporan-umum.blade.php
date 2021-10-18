@@ -111,6 +111,27 @@
         </div>
     </div>
 
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body" onmouseover="ranap13a();" onmouseout="ranap13b();">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Pulang</div>
+                        <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
+                            <input type="number" class="form-control" name="inap_pasien_pulang" id="inap_pasien_pulang" autocomplete="off" value="{{\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_pulang')->first()}}" readonly />
+
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_inap_pasien_pulang" height="64px" width="64px" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 </div>
@@ -323,6 +344,7 @@
         document.getElementById("inap_pasien_pindah").readOnly = false;
         document.getElementById("inap_pasien_pindahan").readOnly = false;
         document.getElementById("inap_pasien_meninggal").readOnly = false;
+        document.getElementById("inap_pasien_pulang").readOnly = false;
         document.getElementById("inap_catatan_istimewa").readOnly = false;
         document.getElementById("inap_catatan_baru").readOnly = false;
         document.getElementById("inap_pasien_covid").readOnly = false;
@@ -475,6 +497,13 @@
 
     function ranap12b() {
         document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
+    }
+    function ranap13a() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}');
+    }
+
+    function ranap13b() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-pulang.png')}}');
     }
 </script>
 

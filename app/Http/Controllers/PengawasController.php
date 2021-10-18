@@ -117,7 +117,8 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_pindah = $r->inap_pasien_pindah;
         $sup->jumlah_pasien_pindahan = $r->inap_pasien_pindahan;
         $sup->jumlah_pasien_meninggal = $r->inap_pasien_meninggal;
-        
+        $sup->jumlah_pasien_pulang = $r->inap_pasien_pulang;
+
         $sup->catatan_pasien_istimewa = $r->inap_catatan_istimewa;
         $sup->catatan_pasien_baru = $r->inap_catatan_baru;
         $sup->jumlah_pasien_covid = $r->inap_pasien_covid;
@@ -129,7 +130,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal;/// 
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang;/// 
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');
@@ -160,6 +161,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_pindah = $r->inap_pasien_pindah;
         $sup->jumlah_pasien_pindahan = $r->inap_pasien_pindahan;
         $sup->jumlah_pasien_meninggal = $r->inap_pasien_meninggal;
+        $sup->jumlah_pasien_pulang = $r->inap_pasien_pulang;
         
         $sup->catatan_pasien_istimewa = $r->inap_catatan_istimewa;
         $sup->catatan_pasien_baru = $r->inap_catatan_baru;
@@ -172,7 +174,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal;/// 
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang;/// 
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');
@@ -424,6 +426,7 @@ class PengawasController extends Controller
                 $sup->id_pengawas =\Auth::user()->id;
                 $sup->id_dokter_operasi = $r->id_dokter_operasi;
                 $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
+                $sup->pendamping = $r->pendamping;
                 $sup->id_ruangan = $r->id_ruangan;
                 $sup->jam_mulai = $r->jam_mulai;
                 $sup->jam_selesai = $r->jam_selesai;
@@ -472,6 +475,7 @@ class PengawasController extends Controller
             $sup->id_pengawas =\Auth::user()->id;
             $sup->id_dokter_operasi = $r->id_dokter_operasi;
             $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
+            $sup->pendamping = $r->pendamping;
             $sup->id_ruangan = $r->id_ruangan;
             $sup->jam_mulai = $r->jam_mulai;
             $sup->jam_selesai = $r->jam_selesai;
@@ -636,11 +640,11 @@ class PengawasController extends Controller
 
         //Update Laporan IRJ
         $irj = \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::pluck('id')->last(), 'status' => 1]);
+        $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->pluck('id')->last(), 'status' => 1]);
 
         //Update Laporan IBS
         $irj = \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $irjdetail = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanirj::pluck('id')->last(), 'status' => 1]);
+        $irjdetail = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->pluck('id')->last(), 'status' => 1]);
 
 
         //log data
