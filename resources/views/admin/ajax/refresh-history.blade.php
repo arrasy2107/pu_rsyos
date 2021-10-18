@@ -43,8 +43,9 @@ $t = new Grei\TanggalMerah();
                                     <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
                                     
                                     <td>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
+                                        <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
                                         <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
+                                        <button value="{{ $data->id }}" class="btn btn-sm btn-warning btn-ibs " style="color:#000" data-jenis="4" data-toggle="modal" data-target="#ibs">IBS</button>
                                         @if($data->id_dinas != 3 && $t->check() != true)
                                         <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
                                         @endif
@@ -79,6 +80,11 @@ $("#dataTable").on('click', '.btn-igd', function() {
         id3 = $(this).val();
 
     });
+    $("#dataTable").on('click', '.btn-ibs', function() {
+        id4 = $(this).val();
+
+    });
+
 
     $('#igd').on('show.bs.modal', function() {
            $.ajax({
@@ -116,6 +122,19 @@ $("#dataTable").on('click', '.btn-igd', function() {
                             success : function(data){
                             //console.log(data);
                             $(".tableirj").html(data);
+                            }   
+                    });
+
+
+    });
+    $('#ibs').on('show.bs.modal', function() {
+           $.ajax({
+                            type : "get",
+                            url : 'refresh-detail-laporan-ibs/'+id4,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : id4},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableibs").html(data);
                             }   
                     });
 

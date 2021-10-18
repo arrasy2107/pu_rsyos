@@ -44,8 +44,9 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Username</th>
-                            <th>Password</th>
                             <th>Role</th>
+                            <th>Password</th>
+                            
                             <th>Aksi</th>
 
                         </tr>
@@ -60,8 +61,9 @@
                             <td>{{ $no }}</td>
                             <td>{{ $data->nama }}</td>
                             <td>{{ $data->username }}</td>
-                            <td>******</td>
+                            
                             <td>{{App\Models\Role::where('id',$data->id_role)->pluck('role')->first()}}</td>
+                            <td><a href="{{ route('resetpassword',$data->id) }}" style="width:auto" class="btn btn-sm btn-primary btn-reset">Reset</a></td>
                             <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{$data->nama}}" data-username="{{ $data->username }}" data-role="{{$data->id_role}}"  data-toggle="modal" data-target="#edit">Ubah</button>
                                 <a href="{{ route('deletepengguna',$data->id) }}" style="width:auto" class="btn btn-sm btn-danger btn-delete">Hapus</a>
                             </td>
@@ -102,7 +104,7 @@
                     <div class="form-group">
                         <label>Role: </label>
                         <select class="form-control" name="role" required>
-                            @foreach(\App\Models\Role::where('id','<>',1)->get() as $mb)
+                            @foreach(\App\Models\Role::all() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->role }}</option>
                             @endforeach
                         </select>
@@ -141,7 +143,7 @@
                     <div class="form-group">
                         <label>Role: </label>
                         <select class="form-control txt-role" name="role" required>
-                            @foreach(\App\Models\Role::where('id','<>',1)->get() as $mb)
+                            @foreach(\App\Models\Role::all() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->role }}</option>
                             @endforeach
                         </select>
@@ -189,6 +191,12 @@
 
     $("#dataTable").on('click', '.btn-delete', function(e) {
         var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+    });
+    $("#dataTable").on('click', '.btn-reset', function(e) {
+        var conf = confirm('apakah anda yakin ingin reset password pengguna ini ?');
         if (conf == false) {
             e.preventDefault();
         }

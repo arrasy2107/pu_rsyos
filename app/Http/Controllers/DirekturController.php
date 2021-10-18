@@ -89,6 +89,27 @@ class DirekturController extends Controller
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
   }
 
+
+  public function resetpassword($id)
+  {
+
+    $sup = \App\Models\User::where('id', $id)->first();
+    $password = '12345678';
+    $sup->password = bcrypt($password);
+    $sup->save();
+
+    //log data
+    $log = new \App\Models\Log;
+    $log->id_user = \Auth::user()->id;
+    $log->id_log_jenis = 7;
+    $log->keterangan = 'Reset Password Pengguna : '.$sup->nama.' ('.$sup->username.')';
+    $log->created_at = date('Y-m-d H:i:s');
+    $log->updated_at =  date('Y-m-d H:i:s');
+    $log->save();
+
+    return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
+  }
+
   //RUANGAN
 
   public function tambahruangan(Request $r)

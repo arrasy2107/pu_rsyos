@@ -120,18 +120,10 @@ thead {
       </li>
       @endif
 
-      @if(Route::current()->getName() == 'data-pengawas-umum')
-      <li class="nav-item active">
-        @else
-      <li class="nav-item">
-        @endif
-        <a class="nav-link" href="{{route('data-pengawas-umum')}}">
-          <i class="fa fa-users"></i>
-          <span>Data Pengawas Umum</span></a>
-      </li>
+    
 
 
-
+      @if(\Auth::user()->id_role == 3)
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
@@ -189,7 +181,7 @@ thead {
           </div>
         </div>
       </li>
-      @if(\Auth::user()->id_role == 1)
+      
       @if(Route::current()->getName() == 'data-pengguna')
       <li class="nav-item active">
         @else
@@ -205,7 +197,7 @@ thead {
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
-      @if(\Auth::user()->id_role == 1)
+      
       @if(Route::current()->getName() == 'log')
       <li class="nav-item active">
         @else
@@ -215,7 +207,7 @@ thead {
           <i class="fas fa-folder	"></i>
           <span>Log Aktivitas</span></a>
       </li>
-      @endif
+      
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">

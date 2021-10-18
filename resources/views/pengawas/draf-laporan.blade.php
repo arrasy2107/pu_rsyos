@@ -241,7 +241,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
 
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Tidak bisa dirawat</div>
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah pasien rujuk dan tolak rawat </div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien_tidak_rawat" id="igd_pasien_tidak_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_tidak_bisa_rawat')->first()}}" readonly />
 
@@ -262,7 +262,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
 
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Death on arrival (DOA)</div>
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah "DOA" dan pasien meninggal</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien_doa" id="igd_pasien_doa" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_doa')->first()}}" readonly />
 
@@ -276,12 +276,73 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             </div>
                         </div>
 
+                         <!-- Earnings (Monthly) Card Example -->
+                         <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd8a();" onmouseout="igd8b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute</div>
+                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
+                                                <input type="number" class="form-control" name="igd_pasien_sisrute" id="igd_pasien_sisrute" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_sisrute')->first()}}" readonly />
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute.png')}}" id="gbr_igd_pasien_sisrute" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd9a();" onmouseout="igd9b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang diterima</div>
+                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
+                                                <input type="number" class="form-control" name="igd_pasien_sisrute_diterima" id="igd_pasien_sisrute_diterima" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_sisrute_diterima')->first()}}" readonly />
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute-terima.png')}}" id="gbr_igd_pasien_sisrute_diterima" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd10a();" onmouseout="igd10b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang ditolak</div>
+                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
+                                                <input type="number" class="form-control" name="igd_pasien_sisrute_ditolak" id="igd_pasien_sisrute_ditolak" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_sisrute_ditolak')->first()}}" readonly />
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}" id="gbr_igd_pasien_sisrute_ditolak" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
+                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien rujuk dan tolak rawat </label>
                                 <textarea class="form-control  z-depth-1" name="igd_alasan" id="igd_alasan" rows="3"  readonly>{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('alasan_tidak_bisa_rawat')->first()}}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
@@ -370,6 +431,141 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
             </div>
         
     </div>
+
+    <!-- IBS -->
+    <!-- Collapsable Card Example -->
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseIBS" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIBS">
+           
+            @if(\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+            <h6 class="m-0 font-weight-bold ">Instalasi Bedah Sentral (IBS) <span style="color:green;font-size:14px">(sudah dikunjungi)</span></h6>
+            @else
+            <h6 class="m-0 font-weight-bold ">Instalasi Bedah Sentral (IBS)</h6>
+            @endif
+        </a>
+        <!-- Card Content - Collapse -->
+        <div class="collapse " id="collapseIBS">
+            <div class="card-body">
+                <!-- Content Row -->
+                
+                   
+                    <div class="row ">
+                        <div class="col-lg-12 tableketeranganibs">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs">Tambah Keterangan</button>
+                                    <br>
+                                </div>
+                            </div>
+                            <br>
+                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter IBS</label>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">No</th>
+                                            <th>Dokter Operasi</th>
+                                            <th>Dokter Anestesi</th>
+                                            <th>Ruangan Asal</th>
+                                            <th>Jam mulai</th>
+                                            <th>Jam selesai</th>
+                                            <th>Diagnosa</th>
+                                            <th>Jumlah Pasien</th>
+                                            <th width="20%">Aksi</th>
+
+                                        </tr>
+                                    </thead>
+                                    
+                                    <?php
+                                    $no = 1;
+                                    ?>
+                                    <tbody>
+                                    @if(\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+                                        @foreach(\App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->get() as $data)
+                                        <tr>
+                                            <td>{{ $no }}</td>
+                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td>
+                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
+                                            <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
+                                            <td>{{ $data->jam_mulai }}</td>
+                                            <td>{{ $data->jam_selesai }}</td>
+                                            <td>{{ $data->diagnosa }}</td>
+                                            <td>{{ $data->jumlah_pasien }}</td>
+                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs">Ubah</button>
+                                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-hapus ">Hapus</button>
+                                                
+                                            </td>
+
+                                        </tr>
+                                        <?php
+                                        $no++;
+                                        ?>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                    @endif
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                 
+                    <form method="post" action="{{ route('editDraftlaporanIBS') }}" id="editdraftibs" role="form">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                    <input type="hidden" name="hitungketeranganibs" id="hitungketeranganibs" value="{{\App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}}">
+                    <input type="hidden"  name="idibs" value="{{\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()}}">
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <div class="form-group shadow-textarea">
+                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan IBS untuk Dinas Berikutnya</label>
+                                <textarea class="form-control  z-depth-1" name="ibs_catatan" id="ibs_catatan" rows="3" readonly>{{\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('catatan')->first()}}</textarea>
+                            </div>
+                            
+                        
+                        </div>
+                    </div>
+
+                    </form>
+                    <div class="row">
+                        <div class="col-lg-12">
+                         
+                            <div class="form-group">
+                                @if(\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+                                
+                                <a href="{{ route('deleteDraftlaporanIBS',\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalibs" style="float:right;" class="btn btn-sm btn-danger my-3 ml-2">Batalkan Laporan</a>
+                                <button style="float:right" id="editibslaporan" class="btn btn-sm btn-edit-ibs btn-success my-3" >Ubah Laporan</button>
+                                <button style="float:right;display:none" id="batalperubahanibs"  class="btn btn-sm btn-batal-ibs btn-danger my-3 ml-2" >Batalkan Perubahan</button>
+                                <button style="float:right;display:none" id="simpanibs"  class="btn btn-sm btn-simpan-ibs btn-primary my-3" type="submit"  >Simpan Laporan</button>
+                                @endif
+
+                             
+                            </div>
+                        
+
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+
     <!-- cek dinas pagi sore dan tidak hari libur || cek hari libur custom IRJ buka-->
     @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  && $t->check() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first())
     <!-- IRJ -->
@@ -501,7 +697,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         
 
                         </div>
-                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -509,7 +705,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
     
     <div class="card shadow mb-4 ">
-        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first() && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0)
+        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first() && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
             
             <div class="card-body">
                 <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
@@ -682,6 +878,144 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         </div>
     </div>
 </div>
+<!-- IBS -->
+
+<div id="tambahibs" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                Tambah Keterangan Jumlah Pasien IBS
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+                <form method="post" action="" id="tambahketeranganibs" role="form">
+                {{ csrf_field() }}
+                    <div class="form-group">
+                        <label>Dokter Operasi: </label><br>
+                        <select class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Dokter</option>
+                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dokter Anestesi: </label><br>
+                        <select class="form-control select2" name="id_dokter_anestesi" id="id_dokter_anestesi" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Dokter</option>
+                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ruangan Asal: </label><br>
+                        <select class="form-control select2" name="id_ruangan" id="id_ruangan" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Ruangan</option>
+                            @foreach(\App\Models\Ruangan::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama_ruangan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jam Mulai: </label>
+                        <input type="time" class="form-control" name="jam_mulai" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Jam Selesai: </label>
+                        <input type="time" class="form-control" name="jam_selesai" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Diagnosa: </label>
+                        <textarea class="form-control" name="diagnosa" rows="3" placeholder="Tulis disini..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Pasien : </label>
+                        <input type="number" class="form-control" name="jumlah_pasien" required />
+                    </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-primary btn-tambahibs">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="editibs" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                Ubah Keterangan Jumlah Pasien IBS
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+                <form method="post" action="" id="editketeranganibs" role="form">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                    <input type="hidden" class="txtidibs" name="idibs">
+                    <div class="form-group">
+                        <label>Dokter Operasi: </label><br>
+                        <select class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Dokter</option>
+                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dokter Anestesi: </label><br>
+                        <select class="form-control select2 txt-anestesi" name="id_dokter_anestesi2" id="id_dokter_anestesi2" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Dokter</option>
+                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ruangan Asal: </label><br>
+                        <select class="form-control select2 txt-ruangan" name="id_ruangan2" id="id_ruangan2" style="width: 100%" required>
+                            <option value="" selected disabled hidden>Pilih Ruangan</option>
+                            @foreach(\App\Models\Ruangan::where('status',1)->get() as $mb)
+                            <option value="{{ $mb->id }}">{{ $mb->nama_ruangan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jam Mulai: </label>
+                        <input type="time" class="form-control txt-mulai" name="jam_mulai2" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Jam Selesai: </label>
+                        <input type="time" class="form-control txt-selesai" name="jam_selesai2" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Diagnosa: </label>
+                        <textarea class="form-control txt-diagnosa" name="diagnosa2" rows="3" placeholder="Tulis disini..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Pasien : </label>
+                        <input type="number" class="form-control txt-jumlah" name="jumlah_pasien2" required />
+                    </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-primary btn-simpanibs">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     var sig = $("#sig").signature({
         syncField: "#signature64",
@@ -709,7 +1043,11 @@ $("#dataTable").DataTable({
     "ordering" : false,
     "dom": 'rtip'
     });
-
+$("#dataTable2").DataTable({
+    "pageLength": 5,
+    "ordering" : false,
+    lengthMenu: [[5], [5]]
+    });
 //IGD EDIT dan HAPUS
 
     $("#bataligd").on('click', function(e) {
@@ -729,6 +1067,10 @@ $("#dataTable").DataTable({
         document.getElementById("igd_pasien_emergency").readOnly = false;
         document.getElementById("igd_pasien_tidak_rawat").readOnly = false;
         document.getElementById("igd_pasien_doa").readOnly = false;
+        // SISRUTE
+        document.getElementById("igd_pasien_sisrute").readOnly = false;
+        document.getElementById("igd_pasien_sisrute_diterima").readOnly = false;
+        
         document.getElementById("igd_alasan").readOnly = false;
         document.getElementById("igd_permasalahan").readOnly = false;
         document.getElementById("igd_lainlain").readOnly = false;
@@ -748,8 +1090,11 @@ $("#dataTable").DataTable({
             d = $("#igd_pasien_tidak_rawat").val();
             e = $("#igd_pasien_doa").val();
             f = $("#igd_dokterjaga").val();
+            g = $("#igd_pasien_sisrute").val();
+            h = $("#igd_pasien_sisrute_diterima").val();
+            
 
-            if (a == "" || b == "" || c == "" || d == "" || e == "" || f == "" ) {
+            if (a == "" || b == "" || c == "" || d == "" || e == "" || f == "" || g == "" || h == "") {
             alert("lengkapi data terlebih dahulu");
             
             }
@@ -827,6 +1172,56 @@ $("#editirj").on('click', function(e) {
         }
     });
 
+    //IBS EDIT dan HAPUS
+
+$("#editibslaporan").on('click', function(e) {
+        document.getElementById('simpanibs').style.display = 'block'; 
+        document.getElementById('batalperubahanibs').style.display = 'block'; 
+        document.getElementById('batalibs').style.display = 'none'; 
+        this.style.display = 'none';
+        document.getElementById("ibs_catatan").readOnly = false;
+
+    });
+
+    $("#simpanibs").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin menyimpan perubahan laporan IBS ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+           
+            a = $("#hitungketeranganibs").val();
+            if(a > 0){
+                document.getElementById("editdraftibs").submit();
+                e.preventDefault();
+            }
+            else{
+                alert('Jumlah pasien menurut Dokter IBS masih kosong, silahkan isi terlebih dahulu')
+            }
+            
+        }
+           
+        
+    });
+
+    $("#batalibs").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin membatalkan laporan IBS ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+    });
+
+    $("#batalperubahanibs").on('click', function(e) {
+        var conf = confirm('apakah anda yakin ingin membatalkan perubahan laporan IBS ini ?');
+        if (conf == false) {
+            e.preventDefault();
+        }
+        else{
+            location.reload();
+
+        }
+    });
+
 
  //IGD
     
@@ -884,6 +1279,30 @@ $("#editirj").on('click', function(e) {
 
     function igd7b() {
         document.getElementById("gbr_igd_pasien_non_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}');
+    }
+
+    function igd8a() {
+        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute.png')}}');
+    }
+
+    function igd8b() {
+        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute.png')}}');
+    }
+
+    function igd9a() {
+        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-terima.png')}}');
+    }
+
+    function igd9b() {
+        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-terima.png')}}');
+    }
+
+    function igd10a() {
+        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-tolak.png')}}');
+    }
+
+    function igd10b() {
+        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}');
     }
 </script>
 <!-- IRJ -->
@@ -1093,6 +1512,211 @@ $(".btn-kirim").click(function(){
     }
 });
 </script>
+<!-- IBS -->
 
+<script>
+    $("#dataTable2").on('click', '.btn-edit', function() {
+        idibs = $(this).val(); //laporan ibs detail
+        dokteroperasi = $(this).data('dokteroperasi');
+        dokteranestesi = $(this).data('dokteranestesi');
+        ruangan = $(this).data('ruangan');
+        jammulai = $(this).data('jammulai');
+        jamselesai = $(this).data('jamselesai');
+        diagnosa = $(this).data('diagnosa');
+        jumlahpasien = $(this).data('jumlahpasien');
+
+    });
+    $('#editibs').on('show.bs.modal', function() {
+        $(".txtidibs").val(idibs);
+        $(".txt-operasi").select2().val(dokteroperasi).trigger("change");
+        $(".txt-anestesi").select2().val(dokteranestesi).trigger("change");
+        $(".txt-ruangan").select2().val(ruangan).trigger("change");
+        $(".txt-mulai").val(jammulai);
+        $(".txt-selesai").val(jamselesai);
+        $(".txt-diagnosa").val(diagnosa);
+        $(".txt-jumlah").val(jumlahpasien);
+    });
+
+    $("#dataTable2").on('click', '.btn-hapus', function(e) {
+        id = $(this).val(); 
+        var conf = confirm('apakah anda yakin ingin menghapus data ini ?');
+        if (conf == false) {
+            e.preventDefault();
+            // $("#edit").modal('hide');
+        }
+        else{
+            // $("#edit").modal('hide');
+            var x = parseInt($("#hitungketeranganibs").val()) - 1;
+            $("#hitungketeranganibs").val(x)
+            console.log(id);
+            var url = 'deleteibsdetail';
+
+            $.ajax({
+            url:url,
+            method:'GET',
+            data:{
+                _token: "{{ csrf_token() }}",
+                id:id,
+            
+            },
+            success:function(response){
+                if(response.success){
+                    
+                    alert(response.message) //Message come from controller
+                    $.ajax({
+                            type : "get",
+                            url : 'refresh-ibs-detail/',
+                            data: { "_token": "{{ csrf_token() }}",},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableketeranganibs").html(data);
+                            }   
+                    });
+                }else{
+                    alert("Error")
+                }
+            },
+            error:function(error){
+                console.log(error)
+            }
+            });
+        }
+
+    });
+
+    
+</script>
+<script>
+
+
+$(".btn-tambahibs").click(function(e){
+
+    $("#tambahibs").modal('hide');
+
+    e.preventDefault();
+
+    var id_dokter_operasi = $("#id_dokter_operasi :selected").val();
+    var id_dokter_anestesi = $("#id_dokter_anestesi :selected").val();
+    var id_ruangan = $("#id_ruangan :selected").val();
+    var jam_mulai = $("input[name=jam_mulai]").val();
+    var jam_selesai = $("input[name=jam_selesai]").val();
+    var diagnosa = $("textarea[name=diagnosa]").val();
+    var jumlah_pasien = $("input[name=jumlah_pasien]").val();
+
+    var x = parseInt($("#hitungketeranganibs").val()) + 1;
+    $("#hitungketeranganibs").val(x)
+
+
+
+
+    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
+    var url = 'tambahibsdetail';
+
+    $.ajax({
+    url:url,
+    method:'POST',
+    data:{
+        _token: "{{ csrf_token() }}",
+        id_dokter_operasi:id_dokter_operasi,
+        id_dokter_anestesi:id_dokter_anestesi,
+        id_ruangan : id_ruangan,
+        jam_mulai : jam_mulai,
+        jam_selesai : jam_selesai,
+        diagnosa : diagnosa,
+        jumlah_pasien : jumlah_pasien
+    },
+    success:function(response){
+        if(response.success){
+            $("#id_dokter_operasi").val("");
+            $("#id_dokter_anestesi").val("");
+            $("#id_ruangan").val("");
+            $("input[name=jam_mulai]").val("");
+            $("input[name=jam_selesai]").val("");
+            $("input[name=diagnosa]").val("");
+            $("input[name=jumlah_pasien]").val("");
+            alert(response.message) //Message come from controller
+            $.ajax({
+                type : "get",
+                url : 'refresh-ibs-detail/',
+                data: { "_token": "{{ csrf_token() }}",},
+                success : function(data){
+                //console.log(data);
+                $(".tableketeranganibs").html(data);
+                }   
+        });
+        }else{
+            alert(response.message) 
+        }
+    },
+    error:function(error){
+        console.log(error)
+    }
+    });
+
+    });
+
+
+// $(document).ready(function() {
+//     $("#editketerangan").submit(function(e) {
+ $(".btn-simpanibs").click(function(e){
+
+        $("#editibs").modal('hide');
+
+        e.preventDefault();
+
+
+        var id2 = $("input[name=idibs]").val();
+        var id_dokter_operasi2 = $("#id_dokter_operasi2 :selected").val();
+        var id_dokter_anestesi2 = $("#id_dokter_anestesi2 :selected").val();
+        var id_ruangan2 = $("#id_ruangan2 :selected").val();
+        var jam_mulai2 = $("input[name=jam_mulai2]").val();
+        var jam_selesai2 = $("input[name=jam_selesai2]").val();
+        var diagnosa2 = $("textarea[name=diagnosa2]").val();
+        var jumlah_pasien2 = $("input[name=jumlah_pasien2]").val();
+
+
+        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
+        var url = 'editibsdetail';
+
+        $.ajax({
+        url:url,
+        method:'PUT',
+        data:{
+            _token: "{{ csrf_token() }}",
+            id:id2,
+            id_dokter_operasi:id_dokter_operasi2,
+            id_dokter_anestesi:id_dokter_anestesi2,
+            id_ruangan : id_ruangan2,
+            jam_mulai : jam_mulai2,
+            jam_selesai : jam_selesai2,
+            diagnosa : diagnosa2,
+            jumlah_pasien : jumlah_pasien2
+        },
+        success:function(response){
+            if(response.success == true){
+                
+                alert(response.message) //Message come from controller
+                $.ajax({
+                    type : "get",
+                    url : 'refresh-ibs-detail/',
+                    data: { "_token": "{{ csrf_token() }}",},
+                    success : function(data){
+                    //console.log(data);
+                    $(".tableketeranganibs").html(data);
+                    }   
+                });
+            }else{
+                alert(response.message)
+            }
+        },
+        error:function(error){
+            console.log(error)
+        }
+        });
+    });
+
+
+
+</script>
 
 @stop

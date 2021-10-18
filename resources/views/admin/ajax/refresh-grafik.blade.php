@@ -68,7 +68,7 @@ $period = new CarbonPeriod($from, '1 day', $to);
  $datas1 = [];
  $datas2 = [];
  $datas3 = [];
-
+ $datas4 = [];
  foreach($period as $date){
      $tgl[] = $date->format('d F');
 
@@ -95,6 +95,14 @@ $period = new CarbonPeriod($from, '1 day', $to);
      else{
          $datas3[] = 0;
      }
+
+      //IBS
+      if(  \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_pasien')->sum() ) {
+        $datas4[] = \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_pasien')->sum();
+    }
+    else{
+        $datas4[] = 0;
+    }
 
  }
 ?>
@@ -167,7 +175,7 @@ Highcharts.chart('container', {
     subtitle: {
         text:{!! json_encode($monthName) !!} +' '+ {{ $tahun }},
     },
-    colors: [ '#ED561B', '#50B432','#058DC7'],
+    colors: [ '#ED561B', '#50B432','#058DC7','#FFA500'],
     xAxis: {
         categories: {!! json_encode($tgl) !!},
         tickInterval: 7, // one week
@@ -239,6 +247,10 @@ Highcharts.chart('container', {
     }, {
         name: 'IRJ',
         data: {!! json_encode($datas3) !!},
+        
+    }, {
+        name: 'IBS',
+        data: {!! json_encode($datas4) !!},
         
     }]
 });

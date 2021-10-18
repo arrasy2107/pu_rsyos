@@ -125,7 +125,7 @@
                             <div class="card-body" onmouseover="igd5a()" onmouseout="igd5b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-uppercase mb-1"> Pasien tidak bisa Dirawat</div>
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1"> Pasien pasien rujuk dan tolak rawat</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_tidak_bisa_rawat')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
@@ -143,7 +143,7 @@
                             <div class="card-body" onmouseover="igd6a()" onmouseout="igd6b()">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien death on arrival (DOA)</div>
+                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien "DOA" dan pasien meninggal</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_doa')->first() }}</div>
                                     </div>
                                     <div class="col-auto">
@@ -154,6 +154,58 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd7a();" onmouseout="igd7b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute')->first() }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute.png')}}" id="gbr_igd_pasien_sisrute" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd8a();" onmouseout="igd8b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang diterima</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute_diterima')->first() }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute-terima.png')}}" id="gbr_igd_pasien_sisrute_diterima" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body" onmouseover="igd9a();" onmouseout="igd9b();">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang ditolak</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute_ditolak')->first() }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}" id="gbr_igd_pasien_sisrute_ditolak" height="64px" width="64px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
                 </div>
@@ -463,6 +515,30 @@ $("#inap_ruangan").change(function(){
 
     function igd6b() {
         document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-doa.png')}}');
+    }
+
+    function igd7a() {
+        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute.png')}}');
+    }
+
+    function igd7b() {
+        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute.png')}}');
+    }
+
+    function igd8a() {
+        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-terima.png')}}');
+    }
+
+    function igd8b() {
+        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-terima.png')}}');
+    }
+
+    function igd9a() {
+        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-tolak.png')}}');
+    }
+
+    function igd9b() {
+        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}');
     }
 
 

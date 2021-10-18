@@ -40,6 +40,9 @@ Route::group(['middleware' => ['auth']],  function () {
     Route::get('/refresh-detail-laporan-irj/{idlaporan}',function($idlaporan){
         return view('admin.ajax.refresh-detail-laporan-irj',compact('idlaporan'));
     });
+    Route::get('/refresh-detail-laporan-ibs/{idlaporan}',function($idlaporan){
+        return view('admin.ajax.refresh-detail-laporan-ibs',compact('idlaporan'));
+    });
 
     //REFRESH HISTORY
     Route::get('/refresh-history/{tanggal}/{tanggal2}',function($tanggal,$tanggal2){
@@ -78,6 +81,10 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::put('/editDraftlaporanIRJ', 'PengawasController@editDraftlaporanIRJ')->name('editDraftlaporanIRJ');
     Route::get('/deleteDraftlaporanIRJ/{id}', 'PengawasController@deleteDraftlaporanIRJ')->name('deleteDraftlaporanIRJ');
 
+    Route::post('/draftlaporanIBS', 'PengawasController@draftlaporanIBS')->name('draftlaporanIBS');
+    Route::put('/editDraftlaporanIBS', 'PengawasController@editDraftlaporanIBS')->name('editDraftlaporanIBS');
+    Route::get('/deleteDraftlaporanIBS/{id}', 'PengawasController@deleteDraftlaporanIBS')->name('deleteDraftlaporanIBS');
+
     Route::post('/draftlaporanUmum', 'PengawasController@draftlaporanUmum')->name('draftlaporanUmum');
     Route::put('/editDraftlaporanUmum', 'PengawasController@editDraftlaporanUmum')->name('editDraftlaporanUmum');
     Route::get('/deleteDraftlaporanUmum/{id}', 'PengawasController@deleteDraftlaporanUmum')->name('deleteDraftlaporanUmum');
@@ -89,6 +96,13 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::get('deleteirjdetail', 'PengawasController@deleteirjdetail')->name('deleteirjdetail');
     Route::get('/refresh-irj-detail',function(){
         return view('pengawas.ajax.refresh-irj-detail');
+    });
+
+    Route::post('tambahibsdetail', 'PengawasController@tambahibsdetail')->name('tambahibsdetail');
+    Route::put('editibsdetail', 'PengawasController@editibsdetail')->name('editibsdetail');
+    Route::get('deleteibsdetail', 'PengawasController@deleteibsdetail')->name('deleteibsdetail');
+    Route::get('/refresh-ibs-detail',function(){
+        return view('pengawas.ajax.refresh-ibs-detail');
     });
  
 });
@@ -158,6 +172,7 @@ Route::group(['middleware' => ['auth', 'direktur']],  function () {
     Route::post('/tambahpengguna', 'DirekturController@tambahpengguna')->name('tambahpengguna');
     Route::put('/editpengguna', 'DirekturController@editpengguna')->name('editpengguna');
     Route::get('/deletepengguna/{id}', 'DirekturController@deletepengguna')->name('deletepengguna');
+    Route::get('/resetpassword/{id}', 'DirekturController@resetpassword')->name('resetpassword');
 
     //Laporan
     Route::get('/refresh-laporan-umum-pu/{ruangan}',function($ruangan){

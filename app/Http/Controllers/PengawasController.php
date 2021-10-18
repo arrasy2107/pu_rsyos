@@ -21,6 +21,11 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_emergency = $r->igd_pasien_emergency;	
         $sup->jumlah_pasien_non_emergency = $r->igd_pasien - $r->igd_pasien_emergency;
         $sup->jumlah_pasien_tidak_bisa_rawat= $r->igd_pasien_tidak_rawat ;
+        // SISRUTE
+        $sup->jumlah_pasien_sisrute= $r->igd_pasien_sisrute ;
+        $sup->jumlah_pasien_sisrute_diterima= $r->igd_pasien_sisrute_diterima ;
+        $sup->jumlah_pasien_sisrute_ditolak= $r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima ;
+        
         $sup->alasan_tidak_bisa_rawat= $r->igd_alasan ;	
         $sup->jumlah_pasien_doa= $r->igd_pasien_doa;	
         $sup->permasalahan = $r->igd_permasalahan ;
@@ -55,6 +60,11 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_emergency = $r->igd_pasien_emergency;	
         $sup->jumlah_pasien_non_emergency = $r->igd_pasien - $r->igd_pasien_emergency;
         $sup->jumlah_pasien_tidak_bisa_rawat= $r->igd_pasien_tidak_rawat ;
+        // SISRUTE
+        $sup->jumlah_pasien_sisrute= $r->igd_pasien_sisrute ;
+        $sup->jumlah_pasien_sisrute_diterima= $r->igd_pasien_sisrute_diterima ;
+        $sup->jumlah_pasien_sisrute_ditolak= $r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima ;
+        
         $sup->alasan_tidak_bisa_rawat= $r->igd_alasan ;	
         $sup->jumlah_pasien_doa= $r->igd_pasien_doa;	
         $sup->permasalahan = $r->igd_permasalahan ;
@@ -119,7 +129,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru ;///
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal;/// 
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');
@@ -162,7 +172,7 @@ class PengawasController extends Controller
         $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
         $sup->permasalahan_umum = $r->inap_permasalahan;
         
-        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru ;///
+        $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal;/// 
         
         $date = date_default_timezone_set('Asia/Jakarta');
         $sup->created_at = date('Y-m-d H:i:s');
@@ -396,6 +406,200 @@ class PengawasController extends Controller
         return redirect()->back()->with('success-add', 'Berhasil menghapus data draf Laporan IRJ');
     }
 
+
+    //IBS
+    public function tambahibsdetail(Request $r)
+    {
+        if( $r->id_dokter_operasi == '' || $r->id_dokter_anestesi == '' || $r->id_ruangan=='' || $r->jam_mulai=='' || $r->jam_selesai=='' || $r->diagnosa=='' || $r->jumlah_pasien=='')
+        {
+            return response()->json(
+                [
+                  'success' => false,
+                  'message' => 'Lengkapi data terlebih dahulu'
+                ]
+           );
+        }
+        else{
+                $sup = new \App\Models\Laporanibsdetail();
+                $sup->id_pengawas =\Auth::user()->id;
+                $sup->id_dokter_operasi = $r->id_dokter_operasi;
+                $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
+                $sup->id_ruangan = $r->id_ruangan;
+                $sup->jam_mulai = $r->jam_mulai;
+                $sup->jam_selesai = $r->jam_selesai;
+                $sup->diagnosa = $r->diagnosa;
+                $sup->jumlah_pasien = $r->jumlah_pasien;
+
+                $date = date_default_timezone_set('Asia/Jakarta');
+                $sup->created_at = date('Y-m-d H:i:s');
+                $sup->updated_at =  date('Y-m-d H:i:s');
+                $sup->save();
+
+                //log data
+                $log = new \App\Models\Log;
+                $log->id_user = \Auth::user()->id;
+                $log->id_log_jenis = 17;
+                $log->keterangan = 'Tambah Data Keterangan menurut Dokter IBS';
+                $log->created_at = date('Y-m-d H:i:s');
+                $log->updated_at =  date('Y-m-d H:i:s');
+                $log->save();
+        
+                return response()->json(
+                    [
+                    'success' => true,
+                    'message' => 'Berhasil menambah data keterangan pasien operasi menurut dokter'
+                    ]
+            );
+        }
+            
+    }
+  
+    public function editibsdetail(Request $r)
+    {
+ 
+        if( $r->id_dokter_operasi == '' || $r->id_dokter_anestesi == '' || $r->id_ruangan=='' || $r->jam_mulai=='' || $r->jam_selesai=='' || $r->diagnosa=='' || $r->jumlah_pasien=='')
+        {
+            return response()->json(
+                [
+                  'success' => false,
+                  'message' => 'Lengkapi data terlebih dahulu'
+                ]
+           );
+        }
+        
+        else{
+            $sup = \App\Models\Laporanibsdetail::where('id', $r->id)->first();
+            $sup->id_pengawas =\Auth::user()->id;
+            $sup->id_dokter_operasi = $r->id_dokter_operasi;
+            $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
+            $sup->id_ruangan = $r->id_ruangan;
+            $sup->jam_mulai = $r->jam_mulai;
+            $sup->jam_selesai = $r->jam_selesai;
+            $sup->diagnosa = $r->diagnosa;
+            $sup->jumlah_pasien = $r->jumlah_pasien;
+            $date = date_default_timezone_set('Asia/Jakarta');
+            $sup->updated_at =  date('Y-m-d H:i:s');
+            $sup->save();
+    
+            //log data
+            $log = new \App\Models\Log;
+            $log->id_user = \Auth::user()->id;
+            $log->id_log_jenis = 17;
+            $log->keterangan = 'Edit Data Keterangan menurut Dokter IBS';
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->updated_at =  date('Y-m-d H:i:s');
+            $log->save();
+      
+            return response()->json(
+                [
+                  'success' => true,
+                  'message' => 'Berhasil mengubah data keterangan pasien menurut dokter IBS'
+                ]
+           );
+        }
+        
+      
+    }
+  
+    public function deleteibsdetail(Request $r)
+    {
+  
+      $sup = \App\Models\Laporanibsdetail::where('id', $r->id)->first()->delete();
+    
+      //log data
+      $log = new \App\Models\Log;
+      $log->id_user = \Auth::user()->id;
+      $log->id_log_jenis = 17;
+      $log->keterangan = 'Hapus Data Keterangan menurut Dokter IBS';
+      $log->created_at = date('Y-m-d H:i:s');
+      $log->updated_at =  date('Y-m-d H:i:s');
+      $log->save();
+
+      return response()->json(
+        [
+          'success' => true,
+          'message' => 'Berhasil menghapus data keterangan pasien menurut dokter IBS'
+        ]
+        );
+    }
+  
+
+
+    public function draftlaporanIBS(Request $r){
+        $sp = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
+ 
+        if (!$sp) {
+          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter IBS masih kosong, silahkan isi terlebih dahulu');
+        } else {
+            $sup = new \App\Models\Laporanibs;
+            $sup->id_pengawas = \Auth::user()->id;
+            $sup->total_pasien = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->pluck('jumlah_pasien')->sum();
+            $sup->catatan = $r->ibs_catatan;
+            $date = date_default_timezone_set('Asia/Jakarta');
+            $sup->created_at = date('Y-m-d H:i:s');
+            $sup->updated_at =  date('Y-m-d H:i:s');
+            $sup->save();
+
+            //log data
+            $log = new \App\Models\Log;
+            $log->id_user = \Auth::user()->id;
+            $log->id_log_jenis = 16;
+            $log->keterangan = 'Tambah Draft';
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->updated_at =  date('Y-m-d H:i:s');
+            $log->save();
+
+        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IBS');
+        }
+
+    }
+    public function editDraftlaporanIBS(Request $r){
+        $sp = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
+ 
+        if (!$sp) {
+          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter IBS masih kosong, silahkan isi terlebih dahulu');
+        } else {
+            $sup = \App\Models\Laporanibs::where('id',$r->idibs)->first();
+            $sup->id_pengawas = \Auth::user()->id;
+            $sup->total_pasien = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->pluck('jumlah_pasien')->sum();
+            $sup->catatan = $r->ibs_catatan;
+            
+            $date = date_default_timezone_set('Asia/Jakarta');
+            $sup->updated_at =  date('Y-m-d H:i:s');
+            $sup->save();
+
+            //log data
+            $log = new \App\Models\Log;
+            $log->id_user = \Auth::user()->id;
+            $log->id_log_jenis = 16;
+            $log->keterangan = 'Edit Draft';
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->updated_at =  date('Y-m-d H:i:s');
+            $log->save();
+
+            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IBS');
+        }
+    }
+    public function deleteDraftlaporanIBS($id){
+        $sup = \App\Models\Laporanibs::where('id',$id)->first();
+        $sup->status = 2; //Delete Laporan
+        $sup->save();
+
+        //hapus detail
+        \App\Models\Laporanibsdetail::where('status', 0)->where('id_pengawas',\Auth::user()->id)->delete();
+
+        //log data
+        $log = new \App\Models\Log;
+        $log->id_user = \Auth::user()->id;
+        $log->id_log_jenis = 16;
+        $log->keterangan = 'Hapus Draft';
+        $log->created_at = date('Y-m-d H:i:s');
+        $log->updated_at =  date('Y-m-d H:i:s');
+        $log->save();
+
+        return redirect()->back()->with('success-add', 'Berhasil menghapus data draf Laporan IBS');
+    }
+
     public function kirimLaporan(Request $r)
     {   
 
@@ -433,6 +637,11 @@ class PengawasController extends Controller
         //Update Laporan IRJ
         $irj = \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
         $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::pluck('id')->last(), 'status' => 1]);
+
+        //Update Laporan IBS
+        $irj = \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
+        $irjdetail = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanirj::pluck('id')->last(), 'status' => 1]);
+
 
         //log data
         $log = new \App\Models\Log;
