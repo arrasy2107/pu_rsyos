@@ -138,14 +138,14 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd1a();" onmouseout="igd1b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien" id="igd_pasien"  autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien')->first()}}" readonly />
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/general/pasien.png')}}" id="gbr_igd_pasien" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -160,14 +160,14 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd2a();" onmouseout="igd2b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien rawat</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien_rawat" id="igd_pasien_rawat" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_rawat')->first()}}" readonly />
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" id="gbr_igd_pasien_rawat" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -179,14 +179,14 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd6a();" onmouseout="igd6b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Pulang</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien_pulang" id="igd_pasien_pulang" autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_pulang')->first()}}" readonly />
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_igd_pasien_pulang" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -218,7 +218,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-danger shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd7a();" onmouseout="igd7b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Non emergency</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -226,7 +226,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}" id="gbr_igd_pasien_non_emergency" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -239,7 +239,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-danger shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd4a();" onmouseout="igd4b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah pasien rujuk dan tolak rawat </div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -247,7 +247,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" id="gbr_igd_pasien_tidak_rawat" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -260,7 +260,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-danger shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd5a();" onmouseout="igd5b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah "DOA" dan pasien meninggal</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -268,7 +268,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" id="gbr_igd_pasien_doa" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -281,7 +281,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd8a();" onmouseout="igd8b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -289,7 +289,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/sisrute.png')}}" id="gbr_igd_pasien_sisrute" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -301,7 +301,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-success shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd9a();" onmouseout="igd9b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang diterima</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -309,7 +309,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/sisrute-terima.png')}}" id="gbr_igd_pasien_sisrute_diterima" height="64px" width="64px">
                                         </div>
                                     </div>
@@ -321,7 +321,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             <div class="card border-left-danger shadow h-100 py-2">
                                 <div class="card-body" onmouseover="igd10a();" onmouseout="igd10b();">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
+                                        <div class="col-md-10">
 
                                             <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang ditolak</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
@@ -329,7 +329,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-md-2">
                                             <img src="{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}" id="gbr_igd_pasien_sisrute_ditolak" height="64px" width="64px">
                                         </div>
                                     </div>
