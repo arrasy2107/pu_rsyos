@@ -27,7 +27,7 @@ setlocale(LC_TIME, 'id_ID');
 \Carbon\Carbon::setLocale('id');
 \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
 $t = new Grei\TanggalMerah();
-
+$hariini = date('Y-m-d');
 
 
 ?>
@@ -77,7 +77,7 @@ $t = new Grei\TanggalMerah();
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-warning btn-ibs " style="color:#000" data-jenis="4" data-toggle="modal" data-target="#ibs">IBS</button>
-                                @if($data->id_dinas != 3 && $t->check() != true)
+                                @if($data->id_dinas != 3 && $t->check() != true || \App\Models\Irjbuka::where('tanggal',date('Y-m-d', strtotime($data->created_at)) )->first() && $data->id_dinas != 3)
                                 <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
                                 @endif
                             </td>

@@ -643,8 +643,8 @@ class PengawasController extends Controller
         $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->pluck('id')->last(), 'status' => 1]);
 
         //Update Laporan IBS
-        $irj = \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $irjdetail = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->pluck('id')->last(), 'status' => 1]);
+        $ibs = \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan' => \App\Models\Laporan::pluck('id')->last(), 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
+        $ibsdetail = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanibs::where('id_pengawas',\Auth::user()->id)->pluck('id')->last(), 'status' => 1]);
 
 
         //log data
