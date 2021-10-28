@@ -48,6 +48,18 @@ Route::group(['middleware' => ['auth']],  function () {
     Route::get('/refresh-history/{tanggal}/{tanggal2}',function($tanggal,$tanggal2){
         return view('admin.ajax.refresh-history',compact('tanggal','tanggal2'));
     });
+
+    // Riwayat Ruangan
+    Route::get('/refresh-istimewa/{idlaporanumum}/{idruangan}',function($idlaporanumum,$idruangan){
+        return view('admin.ajax.ruangan.refresh-istimewa',compact('idlaporanumum','idruangan'));
+    });
+    Route::get('/refresh-baru/{idlaporanumum}/{idruangan}',function($idlaporanumum,$idruangan){
+        return view('admin.ajax.ruangan.refresh-baru',compact('idlaporanumum','idruangan'));
+    });
+    Route::get('/refresh-permasalahan/{idlaporanumum}/{idruangan}',function($idlaporanumum,$idruangan){
+        return view('admin.ajax.ruangan.refresh-permasalahan',compact('idlaporanumum','idruangan'));
+    });
+
 });
 
 //PENGAWAS
@@ -70,6 +82,12 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
 
     Route::get('/refresh-laporan-umum/{ruangan}',function($ruangan){
         return view('pengawas.ajax.refresh-laporan-umum',compact('ruangan'));
+    });
+    Route::get('/refresh-laporan-ruangan/{ruangan}',function($ruangan){
+        return view('pengawas.ajax.refresh-laporan-ruangan',compact('ruangan'));
+    });
+    Route::get('/refresh-jumlah-pasien-lama/{ruangan}',function($ruangan){
+        return view('pengawas.ajax.refresh-jumlah-pasien-lama',compact('ruangan'));
     });
     
     //laporan
@@ -103,6 +121,16 @@ Route::group(['middleware' => ['auth', 'pengawas']],  function () {
     Route::get('deleteibsdetail', 'PengawasController@deleteibsdetail')->name('deleteibsdetail');
     Route::get('/refresh-ibs-detail',function(){
         return view('pengawas.ajax.refresh-ibs-detail');
+    });
+
+    Route::post('tambahcatatanpasien', 'PengawasController@tambahcatatanpasien')->name('tambahcatatanpasien');
+    Route::put('editcatatanpasien', 'PengawasController@editcatatanpasien')->name('editcatatanpasien');
+    Route::get('deletecatatanpasien', 'PengawasController@deletecatatanpasien')->name('deletecatatanpasien');
+    Route::get('/refresh-catatan-pasien-istimewa/{ruangan2}',function($ruangan2){
+        return view('pengawas.ajax.refresh-catatan-pasien-istimewa',compact('ruangan2'));
+    });
+    Route::get('/refresh-catatan-pasien-baru/{ruangan2}',function($ruangan2){
+        return view('pengawas.ajax.refresh-catatan-pasien-baru',compact('ruangan2'));
     });
  
 });

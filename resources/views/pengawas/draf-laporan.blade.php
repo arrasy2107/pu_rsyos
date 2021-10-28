@@ -4,6 +4,11 @@
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css" rel="stylesheet">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
+
+<!-- untuk touch mobile -->
+<script src="{{asset('sb-admin/js/jquery.ui.touch-punch.min.js')}}"></script>
+
+<!-- signature -->
 <script src="{{asset('sb-admin/js/signature.js')}}"></script>
 <link href="{{asset('sb-admin/css/signature.css')}}" rel="stylesheet">
 
@@ -27,9 +32,10 @@
 </div>
 @endif
 @if (Session::has('fail-add'))
-<div class="alert alert-danger alert-call">
-    <p>{{ Session::get('fail-add') }}</p>
-</div>
+<script type="text/javascript" >
+        var msg = '{{Session::get('fail-add')}}';
+        alert(msg);
+    </script>
 @endif
 <?php
 date_default_timezone_set('Asia/Jakarta');
@@ -139,7 +145,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                 <div class="card-body" onmouseover="igd1a();" onmouseout="igd1b();">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col-md-10">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">Total Kunjungan Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien" id="igd_pasien"  autocomplete="off" value="{{\App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien')->first()}}" readonly />
 
@@ -397,7 +403,10 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
             
             <a href="#collapseRanap" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseRanap">
                 @if(\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
-                <h6 class="m-0 font-weight-bold ">Ruangan <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span></h6>
+                <h6 class="m-0 font-weight-bold ">Ruangan <span style="color:green;font-size:14px">( {{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->count()}} / {{\App\Models\Ruangan::where('status',1)->count()}} sudah dikunjungi)</span>
+                <span style="font-size:14px;color:red;font-weight:400;float: right;">Total Pasien (Ruangan): <b>{{\App\Models\Laporanumum::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_total_pasien')->sum()}} orang</b></span>
+                </h6>
+                
                 @else
                 <h6 class="m-0 font-weight-bold ">Ruangan</h6>
                 @endif
@@ -455,26 +464,28 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             @if(\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs">Tambah Keterangan</button>
+                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs">Input Pasien</button>
                                     <br>
                                 </div>
                             </div>
                             @endif
                             <br>
-                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter IBS</label>
+                            <h6 style="color:red"><b>Total Pasien (IBS) : {{ \App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() }} orang</b></h6>
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th width="10%">No</th>
+                                            <th>No</th>
+                                            <th>Nama <br> (RM)</th>
                                             <th>Dokter Operasi</th>
                                             <th>Dokter Anestesi</th>
                                             <th>Pendamping</th>
                                             <th>Ruangan Asal</th>
                                             <th>Jam mulai</th>
                                             <th>Jam selesai</th>
-                                            <th>Diagnosa</th>
-                                            <th>Jumlah Pasien</th>
+                                            <th>Diagnosa Pre</th>
+                                            <th>Diagnosa Post</th>
                                             <th width="20%">Aksi</th>
 
                                         </tr>
@@ -486,21 +497,33 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                     <tbody>
                                     @if(\App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
                                         @foreach(\App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->get() as $data)
+                                        
+                                        <?php
+                                        $arrdokteroperasi = explode(',',$data->id_dokter_operasi);
+
+                                        
+                                        ?>
                                         <tr>
                                             <td>{{ $no }}</td>
-                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td>
+                                            <td>{{ $data->nama }}<br>({{ $data->rm }})</td>
+                                            <td>
+                                            @foreach($arrdokteroperasi as $key)  
+                                                {{ \App\Models\Dokterirj::where('id',$key)->pluck('nama')->first() }}<br>    
+                                            @endforeach
+
+                                            </td>
+                                            <!-- <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td> -->
                                             <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
                                             <td>{{ $data->pendamping }}</td>
                                             <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
                                             <td>{{ $data->jam_mulai }}</td>
                                             <td>{{ $data->jam_selesai }}</td>
-                                            <td>{{ $data->diagnosa }}</td>
-                                            <td>{{ $data->jumlah_pasien }}</td>
-                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs">Ubah</button>
+                                            <td>{{ $data->diagnosa_pre }}</td>
+                                            <td>{{ $data->diagnosa_post }}</td>
+                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{ $data->nama }}" data-rm="{{ $data->rm }}" data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosapre="{{$data->diagnosa_pre}}" data-diagnosapost="{{$data->diagnosa_post}}" data-toggle="modal" data-target="#editibs">Ubah</button>
                                             <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-hapus ">Hapus</button>
                                                 
                                             </td>
-
                                         </tr>
                                         <?php
                                         $no++;
@@ -518,7 +541,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                             <td></td>
                                             <td></td>
                                             <td></td>
-
+                                            <td></td>
                                         </tr>
                                     @endif
 
@@ -572,7 +595,10 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
 
     <!-- cek dinas pagi sore dan tidak hari libur || cek hari libur custom IRJ buka-->
-    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  && $t->check() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first())
+    <!-- if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  && $t->check() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first()) -->
+    <!-- if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end)  || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && \App\Models\Irjbuka::where('tanggal',$hariini)->first()) -->
+    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_sunday() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first()) 
+    
     <!-- IRJ -->
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
@@ -596,13 +622,14 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                     @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
                     <div class="row">
                         <div class="col-md-4">
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Keterangan</button>
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Input Pasien</button>
                             <br>
                         </div>
                     </div>
                     @endif
                     <br>
-                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
+                    <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('pasien_total')->sum() }} orang</b></h6>
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
@@ -710,10 +737,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
     
     <div class="card shadow mb-4 ">
-        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->first() || \App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first() && \App\Models\Laporanirj::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() == 0 && \App\Models\Laporanibs::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
+        <!-- IBS dan IRJ tidak wajib diisi -->
+        @if(\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->count() < \App\Models\Ruangan::where('status',1)->count() || \App\Models\Laporanigd::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() == 0 )
             
             <div class="card-body">
-                <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan</p>
+                <p style="color:red">* kunjungi semua ruangan dahulu agar bisa tanda tangan dan kirim laporan <span style="color:#000">(jika IRJ dan IBS  tidak ada pasien, tidak wajib diisi datanya)</span></p>
                 <div class="row">
                     <form method="post" action="#" class="col-lg-6" enctype="multipart/form-data">
                         {{ csrf_field() }}
@@ -826,11 +854,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control" name="pasien_lama" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control" name="pasien_baru" required />
                     </div>
 
@@ -867,11 +895,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control txtlama" name="pasien_lama2" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control txtbaru" name="pasien_baru2" required />
                     </div>
             </div>
@@ -892,17 +920,25 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Tambah Keterangan Jumlah Pasien IBS
+                Input Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
                 <form method="post" action="" id="tambahketeranganibs" role="form">
                 {{ csrf_field() }}
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control" name="nama"  />
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control" name="rm"  />
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" data-placeholder="Pilih Dokter (Bisa lebih dari 1)" required>
+                            
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -911,13 +947,13 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <label>Dokter Anestesi: </label><br>
                         <select class="form-control select2" name="id_dokter_anestesi" id="id_dokter_anestesi" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Pendamping : </label>
+                        <label>Pendamping / Petugas : </label>
                         <input type="text" class="form-control" name="pendamping"  />
                     </div>
                     <div class="form-group">
@@ -930,20 +966,20 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jam Mulai: </label>
+                        <label>Jam Mulai : </label>
                         <input type="time" class="form-control" name="jam_mulai" required />
                     </div>
                     <div class="form-group">
-                        <label>Jam Selesai: </label>
+                        <label>Jam Selesai : </label>
                         <input type="time" class="form-control" name="jam_selesai" required />
                     </div>
                     <div class="form-group">
-                        <label>Diagnosa: </label>
-                        <textarea class="form-control" name="diagnosa" rows="3" placeholder="Tulis disini..."></textarea>
+                        <label>Diagnosa Pre : </label>
+                        <textarea class="form-control" name="diagnosapre" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control" name="jumlah_pasien" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control" name="diagnosapost" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
 
 
@@ -964,7 +1000,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Ubah Keterangan Jumlah Pasien IBS
+                Ubah Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
@@ -973,10 +1009,18 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                 {{ method_field('PUT') }}
                     <input type="hidden" class="txtidibs" name="idibs2">
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control txt-nama" name="nama2"  required/>
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control txt-rm" name="rm2"  required/>
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
+                            
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -985,7 +1029,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <label>Dokter Anestesi: </label><br>
                         <select class="form-control select2 txt-anestesi" name="id_dokter_anestesi2" id="id_dokter_anestesi2" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -1013,11 +1057,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                     </div>
                     <div class="form-group">
                         <label>Diagnosa: </label>
-                        <textarea class="form-control txt-diagnosa" name="diagnosa2" rows="3" placeholder="Tulis disini..."></textarea>
+                        <textarea class="form-control txt-diagnosapre" name="diagnosapre2" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control txt-jumlah" name="jumlah_pasien2" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control txt-diagnosapost" name="diagnosapost2" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
 
 
@@ -1528,28 +1572,43 @@ $(".btn-kirim").click(function(){
 <!-- IBS -->
 
 <script>
+    
     $("#dataTable2").on('click', '.btn-edit', function() {
         idibs = $(this).val(); //laporan ibs detail
+        nama = $(this).data('nama');
+        rm = $(this).data('rm');
+
         dokteroperasi = $(this).data('dokteroperasi');
+        if((typeof(dokteroperasi) == "string" &&  dokteroperasi.includes(","))){
+            listdokteroperasi = dokteroperasi.split(',');
+        }
+        else{
+            listdokteroperasi = dokteroperasi;
+        }
+        
+
+        console.log(listdokteroperasi);
         dokteranestesi = $(this).data('dokteranestesi');
         pendamping = $(this).data('pendamping');
         ruangan = $(this).data('ruangan');
         jammulai = $(this).data('jammulai');
         jamselesai = $(this).data('jamselesai');
-        diagnosa = $(this).data('diagnosa');
-        jumlahpasien = $(this).data('jumlahpasien');
+        diagnosapre = $(this).data('diagnosapre');
+        diagnosapost = $(this).data('diagnosapost');
 
     });
     $('#editibs').on('show.bs.modal', function() {
         $(".txtidibs").val(idibs);
-        $(".txt-operasi").select2().val(dokteroperasi).trigger("change");
+        $(".txt-nama").val(nama);
+        $(".txt-rm").val(rm);
+        $(".txt-operasi").select2().val(listdokteroperasi).trigger("change");
         $(".txt-anestesi").select2().val(dokteranestesi).trigger("change");
         $(".txt-ruangan").select2().val(ruangan).trigger("change");
         $(".txt-pendamping").val(pendamping);
         $(".txt-mulai").val(jammulai);
         $(".txt-selesai").val(jamselesai);
-        $(".txt-diagnosa").val(diagnosa);
-        $(".txt-jumlah").val(jumlahpasien);
+        $(".txt-diagnosapre").val(diagnosapre);
+        $(".txt-diagnosapost").val(diagnosapost);
     });
 
     $("#dataTable2").on('click', '.btn-hapus', function(e) {
@@ -1561,8 +1620,7 @@ $(".btn-kirim").click(function(){
         }
         else{
             // $("#edit").modal('hide');
-            var x = parseInt($("#hitungketeranganibs").val()) - 1;
-            $("#hitungketeranganibs").val(x)
+            
             console.log(id);
             var url = 'deleteibsdetail';
 
@@ -1609,15 +1667,16 @@ $(".btn-tambahibs").click(function(e){
     $("#tambahibs").modal('hide');
 
     e.preventDefault();
-
-    var id_dokter_operasi = $("#id_dokter_operasi :selected").val();
+    var nama = $("input[name=nama]").val();
+    var rm = $("input[name=rm]").val();
+    var id_dokter_operasi =  $('#id_dokter_operasi').val();
     var id_dokter_anestesi = $("#id_dokter_anestesi :selected").val();
-    var pendamping = $("input[name=pendamping]").val();
     var id_ruangan = $("#id_ruangan :selected").val();
+    var pendamping = $("input[name=pendamping]").val();
     var jam_mulai = $("input[name=jam_mulai]").val();
     var jam_selesai = $("input[name=jam_selesai]").val();
-    var diagnosa = $("textarea[name=diagnosa]").val();
-    var jumlah_pasien = $("input[name=jumlah_pasien]").val();
+    var diagnosapre = $("textarea[name=diagnosapre]").val();
+    var diagnosapost = $("textarea[name=diagnosapost]").val();
 
     var x = parseInt($("#hitungketeranganibs").val()) + 1;
     $("#hitungketeranganibs").val(x)
@@ -1625,7 +1684,7 @@ $(".btn-tambahibs").click(function(e){
 
 
 
-    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ id_ruangan + ' '+ pendamping + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
+    console.log(nama +' '+rm+' '+id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ pendamping + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosapre + ' '+ diagnosapost);
     var url = 'tambahibsdetail';
 
     $.ajax({
@@ -1633,25 +1692,29 @@ $(".btn-tambahibs").click(function(e){
     method:'POST',
     data:{
         _token: "{{ csrf_token() }}",
+        nama:nama,
+        rm:rm,
         id_dokter_operasi:id_dokter_operasi,
         id_dokter_anestesi:id_dokter_anestesi,
         pendamping:pendamping,
         id_ruangan : id_ruangan,
         jam_mulai : jam_mulai,
         jam_selesai : jam_selesai,
-        diagnosa : diagnosa,
-        jumlah_pasien : jumlah_pasien
+        diagnosapre : diagnosapre,
+        diagnosapost : diagnosapost
     },
     success:function(response){
         if(response.success){
+            $("input[name=nama]").val("");
+            $("input[name=rm]").val("");
             $("#id_dokter_operasi").val("");
             $("#id_dokter_anestesi").val("");
             $("#id_ruangan").val("");
-            $("input[name=pendamping]").val("");
             $("input[name=jam_mulai]").val("");
+            $("input[name=pendamping]").val("");
             $("input[name=jam_selesai]").val("");
-            $("input[name=diagnosa]").val("");
-            $("input[name=jumlah_pasien]").val("");
+            $("input[name=diagnosapre]").val("");
+            $("input[name=diagnosapost]").val("");
             alert(response.message) //Message come from controller
             $.ajax({
                 type : "get",
@@ -1676,7 +1739,7 @@ $(".btn-tambahibs").click(function(e){
 
 // $(document).ready(function() {
 //     $("#editketerangan").submit(function(e) {
- $(".btn-simpanibs").click(function(e){
+    $(".btn-simpanibs").click(function(e){
 
         $("#editibs").modal('hide');
 
@@ -1684,17 +1747,19 @@ $(".btn-tambahibs").click(function(e){
 
 
         var id2 = $("input[name=idibs2]").val();
-        var id_dokter_operasi2 = $("#id_dokter_operasi2 :selected").val();
+        var nama2 = $("input[name=nama2]").val();
+        var rm2 = $("input[name=rm2]").val();
+        var id_dokter_operasi2 = $('#id_dokter_operasi2').val();
         var id_dokter_anestesi2 = $("#id_dokter_anestesi2 :selected").val();
-        var pendamping2 = $("input[name=pendamping2]").val();
         var id_ruangan2 = $("#id_ruangan2 :selected").val();
+        var pendamping2 = $("input[name=pendamping2]").val();
         var jam_mulai2 = $("input[name=jam_mulai2]").val();
         var jam_selesai2 = $("input[name=jam_selesai2]").val();
-        var diagnosa2 = $("textarea[name=diagnosa2]").val();
-        var jumlah_pasien2 = $("input[name=jumlah_pasien2]").val();
+        var diagnosapre2 = $("textarea[name=diagnosapre2]").val();
+        var diagnosapost2 = $("textarea[name=diagnosapost2]").val();
 
 
-        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ id_ruangan2 + ' '+ pendamping2 +' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
+        console.log(id+' '+nama +' '+rm+' '+id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ pendamping2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosapre2 + ' '+ diagnosapost2);
         var url = 'editibsdetail';
 
         $.ajax({
@@ -1703,14 +1768,16 @@ $(".btn-tambahibs").click(function(e){
         data:{
             _token: "{{ csrf_token() }}",
             id:id2,
+            nama:nama2,
+            rm:rm2,
             id_dokter_operasi:id_dokter_operasi2,
             id_dokter_anestesi:id_dokter_anestesi2,
             pendamping:pendamping2,
             id_ruangan : id_ruangan2,
             jam_mulai : jam_mulai2,
             jam_selesai : jam_selesai2,
-            diagnosa : diagnosa2,
-            jumlah_pasien : jumlah_pasien2
+            diagnosapre : diagnosapre2,
+            diagnosapost : diagnosapost2
         },
         success:function(response){
             if(response.success == true){
@@ -1737,6 +1804,13 @@ $(".btn-tambahibs").click(function(e){
 
 
 
+
+
+</script>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 </script>
 
 @stop

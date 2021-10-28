@@ -20,6 +20,10 @@
     <p>{{ Session::get('fail-delete') }}</p>
 </div>
 @endif
+
+
+
+
 <?php 
 
 
@@ -179,6 +183,76 @@ $hariini = date('Y-m-d');
         </div>
     </div>
 </div>
+
+<!-- Rincian umum -->
+<div id="istimewa" class="modal fade" role="dialog"  >
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4>Catatan Pasien Istimewa</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                
+            </div>
+            <div class="modal-body" style="padding:30px">
+                <div class="row ">
+                    <div class="col-lg-12 tableistimewa">
+                
+                    </div>
+                </div>
+            </div>
+         
+        </div>
+        
+    </div>
+</div>
+
+<div id="baru" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <h4>Catatan Pasien Baru</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+            <div class="row ">
+                <div class="col-lg-12 tablebaru">
+                
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+<div id="permasalahan" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <h4>Permasalahan</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+            <div class="row ">
+                <div class="col-lg-12 tablemasalah">
+                
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
 @stop
 @section('custom_script')
 <script>
@@ -272,6 +346,55 @@ $hariini = date('Y-m-d');
 
     });
 
+
+    // 
+    $("#dataTableRuangan").on('click','.btn-istimewa',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tableistimewa").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-istimewa/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableistimewa").html(data);
+                            }   
+                    });
+
+    });
+
+    $("#dataTableRuangan").on('click','.btn-baru',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tablebaru").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-baru/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tablebaru").html(data);
+                            }   
+                    });
+
+    });
+
+    $("#dataTableRuangan").on('click','.btn-permasalahan',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tablemasalah").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-permasalahan/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tablemasalah").html(data);
+                            }   
+                    });
+
+    });
 
 
     (function($) {

@@ -399,7 +399,7 @@ $newDateTime = Carbon::now()->addYears(5);
                     }   
              });
             }else{
-                alert("Error")
+                alert(response.message)
             }
         },
         error:function(error){
@@ -445,7 +445,7 @@ $newDateTime = Carbon::now()->addYears(5);
                     }   
             });
             }else{
-                alert("Error")
+                alert(response.message)
             }
         },
         error:function(error){
@@ -488,7 +488,7 @@ $newDateTime = Carbon::now()->addYears(5);
                         }   
                 });
                 }else{
-                    alert("Error")
+                    alert(response.message)
                 }
             },
             error:function(error){
@@ -566,7 +566,7 @@ $newDateTime = Carbon::now()->addYears(5);
                     }   
              });
             }else{
-                alert("Error")
+                alert(response.message)
             }
         },
         error:function(error){
@@ -623,7 +623,7 @@ $newDateTime = Carbon::now()->addYears(5);
             }
         },
         error:function(error){
-            console.log(error)
+            alert(response.message)
         }
         });
     });
@@ -662,7 +662,7 @@ $newDateTime = Carbon::now()->addYears(5);
                         }   
                 });
                 }else{
-                    alert("Error")
+                    alert(response.message)
                 }
             },
             error:function(error){

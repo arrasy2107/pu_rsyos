@@ -24,7 +24,7 @@
   <style>
   .sidebar-dark .nav-item.active .nav-link {
     
-    background-color: midnightblue;
+    background-color: dodgerblue;
 }
   </style>
   <!-- select 2 -->

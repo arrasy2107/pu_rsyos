@@ -98,6 +98,25 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         </div>
     </div>
 
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body" onmouseover="ranap13a();" onmouseout="ranap13b();">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Pulang</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_meninggal')->first()}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_inap_pasien_pulang" height="64px" width="64px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 </div>
@@ -105,11 +124,91 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
     <div class="col-lg-12">
         <div class="form-group shadow-textarea">
             <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan pasien istimewa</label>
-            <textarea class="form-control  z-depth-1" name="inap_catatan_istimewa" rows="3"  readonly>{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('catatan_pasien_istimewa')->first()}}</textarea>
+                <div class="row ">
+                    <div class="col-lg-12 ">
+                       
+                        <?php
+                            $getIDumum = \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('id')->first();
+                        ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTableistimewa2" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">No</th>
+                                        <th>Kamar</th>
+                                        <th>Nama<br>RM<br>Diagnosa<br>DPJP</th>
+                                        <th>Kondisi</th>
+
+                                    </tr>
+                                </thead>
+
+                                <?php
+                                $no = 1;
+                                ?>
+                                <tbody>
+                                    @foreach(\App\Models\Catatanpasien::where('id_laporan_umum',$getIDumum)->where('id_ruangan',$ruangan)->where('id_jenis_pasien',1)->get() as $data)
+                                    <tr>
+                                        <td>{{ $no }}</td>
+                                        <td>{{ $data->kamar }}</td>
+                                        <td>{{ $data->nama }}<hr>{{ $data->rm }}<hr>{{ $data->diagnosa }}<hr>{{ \App\Models\Dokterirj::where('id',$data->dpjp)->pluck('nama')->first() }}</td>
+                                        <td>{{ $data->kondisi }}</td>
+                                    
+
+                                    </tr>
+                                    <?php
+                                    $no++;
+                                    ?>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
         </div>
         <div class="form-group shadow-textarea">
             <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan pasien baru</label>
-            <textarea class="form-control" name="inap_catatan_baru" rows="3"  readonly>{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('catatan_pasien_baru')->first()}}</textarea>
+                <div class="row ">
+                    <div class="col-lg-12 ">
+                       
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTablebaru2" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">No</th>
+                                        <th>Kamar</th>
+                                        <th>Nama<br>RM<br>Diagnosa<br>DPJP</th>
+                                        <th>Kondisi</th>
+
+                                    </tr>
+                                </thead>
+
+                                <?php
+                                $no = 1;
+                                ?>
+                                <tbody>
+                                    @foreach(\App\Models\Catatanpasien::where('id_laporan_umum',$getIDumum)->where('id_ruangan',$ruangan)->where('id_jenis_pasien',2)->get() as $data)
+                                    <tr>
+                                        <td>{{ $no }}</td>
+                                        <td>{{ $data->kamar }}</td>
+                                        <td>{{ $data->nama }}<hr>{{ $data->rm }}<hr>{{ $data->diagnosa }}<hr>{{ \App\Models\Dokterirj::where('id',$data->dpjp)->pluck('nama')->first() }}</td>
+                                        <td>{{ $data->kondisi }}</td>
+                                    
+
+                                    </tr>
+                                    <?php
+                                    $no++;
+                                    ?>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
         </div>
 
     </div>
@@ -346,4 +445,25 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
     function ranap12b() {
         document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
     }
+    function ranap13a() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}');
+    }
+
+    function ranap13b() {
+        document.getElementById("gbr_inap_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-pulang.png')}}');
+    }
+</script>
+<script>
+$("#dataTableistimewa2").DataTable({
+    "pageLength": 5,
+    "ordering" : false,
+    lengthMenu: [[5], [5]]
+    });
+
+    $("#dataTablebaru2").DataTable({
+    "pageLength": 5,
+    "ordering" : false,
+    lengthMenu: [[5], [5]]
+    });
+
 </script>

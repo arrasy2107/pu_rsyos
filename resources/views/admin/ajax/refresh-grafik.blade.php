@@ -97,8 +97,8 @@ $period = new CarbonPeriod($from, '1 day', $to);
      }
 
       //IBS
-      if(  \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_pasien')->sum() ) {
-        $datas4[] = \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->pluck('jumlah_pasien')->sum();
+      if(  \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->count() ) {
+        $datas4[] = \App\Models\Laporanibsdetail::whereDate('created_at',$date->format('Y-m-d'))->where('id_laporan_ibs',\App\Models\Laporanibs::whereDate('created_at',$date->format('Y-m-d'))->pluck('id')->last())->where('status',1)->count();
     }
     else{
         $datas4[] = 0;

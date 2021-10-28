@@ -39,7 +39,8 @@
         <div class="collapse show" id="collapseCardExample">
             <div class="card-body">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h5 mb-0 text-gray-800">Total Pasien : {{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien')->first() }} orang</h1>
+                    
+                    <h6 style="color:red"><b>Total Pasien (IGD) : {{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien')->first() }} orang</b></h6>
 
                 </div>
                 <div class="row ">
@@ -280,19 +281,46 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Laporan Umum Semua Ruangan</h5>
+                            <h6 style="color:red"><b>Total Pasien (Ruangan) : {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_total_pasien')->sum() }} orang</b></h6>
+
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="dataTableRuangan" width="100%" cellspacing="0">
                                 <thead>
+                                    <tr style="background-color:green;color:white">
+
+                                        <th >TOTAL</th>
+                                        <th >{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_lama')->sum() }}</th>
+                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_baru')->sum() }}</th>
+                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pindah')->sum() }}</th>
+                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pindahan')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_meninggal')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pulang')->sum() }}</th>
+
+                                        <th><b>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_total_pasien')->sum() }}</b></th>
+
+                                        <th>-</th>
+                                        <th>-</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_covid')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_suspek_covid')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_restrain')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_perilaku_kekerasan')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_keracunan')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_keterbatasan_bahasa')->sum() }}</th>
+                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_difabel')->sum() }}</th>
+                                        <th>-</th>
+                                    </tr>
                                     <tr>
                                         
                                         <th >Ruangan</th>
                                         <th> Lama</th>
                                         <th> Baru</th>
-                                        <th><b>Total Pasien</b></th>
+                                        
                                         <th> Pindah</th>
                                         <th> Pindahan</th>
                                         <th>Meninggal</th>
-                                        
+                                        <th>Pulang</th>
+                                        <th><b>Total Pasien</b></th>
+
                                         <th>Catatan Pasien Istimewa</th>
                                         <th>Catatan Pasien Baru</th>
                                         <th>Covid</th>
@@ -316,21 +344,25 @@
                                         <td style="white-space: nowrap;word-wrap: break-word;">{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first()  }}</td>
                                         <td> {{$data->jumlah_pasien_lama}}</td>
                                         <td> {{$data->jumlah_pasien_baru}}</td>
-                                        <td><b>{{$data->jumlah_total_pasien}}</b></td>
+                                        
                                         <td> {{$data->jumlah_pasien_pindah}}</td>
                                         <td> {{$data->jumlah_pasien_pindahan}}</td>
                                         <td>{{$data->jumlah_pasien_meninggal}}</td>
-                                        
-                                        @if($data->catatan_pasien_istimewa)
-                                        <td>{{$data->catatan_pasien_istimewa}}</td>
+                                        <td>{{$data->jumlah_pasien_pulang}}</td>
+                                        <td><b>{{$data->jumlah_total_pasien}}</b></td>
+
+                                        @if(\App\Models\Catatanpasien::where('id_laporan_umum',$data->id)->where('id_ruangan',$data->id_ruangan)->where('id_jenis_pasien',1)->first())
+                                        <td><a href="#" data-id="{{ $data->id }}"  data-ruangan="{{$data->id_ruangan}}" class="btn-istimewa" data-toggle="modal" data-target="#istimewa" >Lihat</a></td>
                                         @else
                                         <td>-</td>
                                         @endif
-                                        @if($data->catatan_pasien_baru)
-                                        <td>{{$data->catatan_pasien_baru}}</td>
+
+                                        @if(\App\Models\Catatanpasien::where('id_laporan_umum',$data->id)->where('id_ruangan',$data->id_ruangan)->where('id_jenis_pasien',2)->first())
+                                        <td><a href="#" data-id="{{ $data->id }}"  data-ruangan="{{$data->id_ruangan}}" class="btn-baru" data-toggle="modal" data-target="#baru" >Lihat</a></td>
                                         @else
                                         <td>-</td>
                                         @endif
+
                                         <td>{{$data->jumlah_pasien_covid}}</td>
                                         <td>{{$data->jumlah_pasien_suspek_covid}}</td>
                                         <td>{{$data->jumlah_pasien_restrain}}</td>
@@ -339,7 +371,7 @@
                                         <td>{{$data->jumlah_pasien_keterbatasan_bahasa}}</td>
                                         <td>{{$data->jumlah_pasien_difabel}}</td>
                                         @if($data->permasalahan_umum)
-                                        <td>{{$data->permasalahan_umum}}</td>
+                                        <td><a href="#" data-id="{{ $data->id }}" data-ruangan="{{$data->id_ruangan}}"  class="btn-permasalahan" data-toggle="modal" data-target="#permasalahan" >Lihat</a></td>
                                         @else
                                         <td>-</td>
                                         @endif
@@ -360,22 +392,133 @@
         </div>
     </div>
 
-    <!-- Collapsable Card Example -->
-<div class="card shadow mb-4">
+<!-- IBS -->
+   <!-- Collapsable Card Example -->
+   <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
-        <a href="#collapseIRJ" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIRJ">
-            <h6 class="m-0 font-weight-bold ">Instalasi Rawat Jalan (IRJ)</h6>
+        <a href="#collapseIBS" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIBS">
+            <h6 class="m-0 font-weight-bold ">Instalasi Bedah Sentral (IBS)</h6>
         </a>
         <!-- Card Content - Collapse -->
-        <div class="collapse " id="collapseIRJ">
+        <div class="collapse show" id="collapseIBS">
             <div class="card-body">
                 <!-- Content Row -->
                 
                     <div class="row ">
                         <div class="col-lg-12 tableketerangan">
-                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
+                        <?php
+                            $getIDibs = \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('id')->first();
+                        ?>
+                        @if($getIDibs)
+                        <h6 style="color:red"><b>Total Pasien (IBS) : {{ \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('total_pasien')->first() }} orang</b></h6>
+                        @else
+                        <h6 style="color:red"><b>Total Pasien (IBS) : 0 orang</b></h6>
+                        
+                        @endif
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="dataTableIBS" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama <br> (RM)</th>
+                                            <th>Dokter Operasi</th>
+                                            <th>Dokter Anestesi</th>
+                                            <th>Pendamping</th>
+                                            <th>Ruangan Asal</th>
+                                            <th>Jam mulai</th>
+                                            <th>Jam selesai</th>
+                                            <th>Diagnosa Pre</th>
+                                            <th>Diagnosa Post</th>
+                                  
+
+                                        </tr>
+                                    </thead>
+                                    
+                                    <?php
+                                    $no = 1;
+                                    ?>
+                                    <tbody>
+                                        @foreach(\App\Models\Laporanibsdetail::where('id_laporan_ibs',$getIDibs)->get() as $data)
+                                        <?php
+                                        $arrdokteroperasi = explode(',',$data->id_dokter_operasi);
+
+                                        
+                                        ?>
+                                        <tr>
+                                            <td>{{ $no }}</td>
+                                            <td>{{ $data->nama }}<br>({{ $data->rm }})</td>
+                                            <td>
+                                            @foreach($arrdokteroperasi as $key)  
+                                                {{ \App\Models\Dokterirj::where('id',$key)->pluck('nama')->first() }}<br>    
+                                            @endforeach
+
+                                            </td>
+                                            <!-- <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td> -->
+                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
+                                            <td>{{ $data->pendamping }}</td>
+                                            <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
+                                            <td>{{ $data->jam_mulai }}</td>
+                                            <td>{{ $data->jam_selesai }}</td>
+                                            <td>{{ $data->diagnosa_pre }}</td>
+                                            <td>{{ $data->diagnosa_post }}</td>
+                                            
+                                        </tr>
+                                        <?php
+                                        $no++;
+                                        ?>
+                                        @endforeach
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <div class="form-group shadow-textarea">
+                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan IBS untuk Dinas berikutnya</label>
+                                <textarea class="form-control  z-depth-1" name="ibs_catatan" rows="3" disabled >{{ \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('catatan')->first() }}</textarea>
+                            </div>
+                           
+                          
+                        </div>
+                    </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Collapsable Card Example -->
+<div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseIRJ" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIRJ">
+            <h6 class="m-0 font-weight-bold ">Instalasi Rawat Jalan (IRJ)</h6>
+        </a>
+        <!-- Card Content - Collapse -->
+        <div class="collapse show" id="collapseIRJ">
+            <div class="card-body">
+                <!-- Content Row -->
+                
+                    <div class="row ">
+                        <div class="col-lg-12 tableketerangan">
+                        <?php
+                            $getIDirj = \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('id')->first();
+                        ?>
+                        @if($getIDirj)
+                        <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('id_laporan_irj',$getIDirj)->pluck('pasien_total')->sum() }} orang</b></h6>
+                        @else
+                        <h6 style="color:red"><b>Total Pasien (IRJ) : 0 orang</b></h6>
+                        
+                        @endif
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTableIRJ" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th width="10%">No</th>
@@ -419,11 +562,11 @@
                         <div class="col-lg-12">
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Masalah</label>
-                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" disabled value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}"></textarea>
+                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" disabled >{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}</textarea>
                             </div>
                             <div class="form-group shadow-textarea">
                                 <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Langkah atasi masalah</label>
-                                <textarea class="form-control" name="irj_langkah" rows="3" disabled value="{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}"></textarea>
+                                <textarea class="form-control" name="irj_langkah" rows="3" disabled >{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}</textarea>
                             </div>
                             
                           
@@ -442,11 +585,92 @@
 
 
 
+<!-- Rincian umum -->
+<div id="istimewa" class="modal fade" role="dialog"  >
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4>Catatan Pasien Istimewa</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                
+            </div>
+            <div class="modal-body" style="padding:30px">
+                <div class="row ">
+                    <div class="col-lg-12 tableistimewa">
+                
+                    </div>
+                </div>
+            </div>
+         
+        </div>
+        
+    </div>
+</div>
+
+<div id="baru" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <h4>Catatan Pasien Baru</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+            <div class="row ">
+                <div class="col-lg-12 tablebaru">
+                
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+<div id="permasalahan" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <h4>Permasalahan</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:30px">
+            <div class="row ">
+                <div class="col-lg-12 tablemasalah">
+                
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
 @stop
 @section('custom_script')
 <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
 <script>
+    $("#dataTableIRJ").DataTable({
+        "pageLength": 5,
+        "ordering" : false,
+        lengthMenu: [[5], [5]]
+    });
+    $("#dataTableIBS").DataTable({
+        "pageLength": 5,
+        "ordering" : false,
+        lengthMenu: [[5], [5]]
+    });
 $("#inap_ruangan").change(function(){
   
      $(".tablelaporan").html("<h1>Mohon Tunggu...</h1>")
@@ -645,7 +869,7 @@ $("#inap_ruangan").change(function(){
 
     // });
     $(document).ready(function() {
-        var table = $('#dataTable').removeAttr('width').DataTable({
+        var table = $('#dataTableRuangan').removeAttr('width').DataTable({
             scrollX: true,
             
             ordering: false,
@@ -661,5 +885,55 @@ $("#inap_ruangan").change(function(){
     });
 
 
+</script>
+<script>
+// 
+$("#dataTableRuangan").on('click','.btn-istimewa',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tableistimewa").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-istimewa/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tableistimewa").html(data);
+                            }   
+                    });
+
+    });
+
+    $("#dataTableRuangan").on('click','.btn-baru',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tablebaru").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-baru/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tablebaru").html(data);
+                            }   
+                    });
+
+    });
+
+    $("#dataTableRuangan").on('click','.btn-permasalahan',function(){
+        idlaporan =  $(this).data('id');
+        ruangan =  $(this).data('ruangan');
+        $(".tablemasalah").html('<h4>Mohon Tunggu...</h4>');
+        $.ajax({
+                            type : "get",
+                            url : 'refresh-permasalahan/'+idlaporan+'/'+ruangan,
+                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
+                            success : function(data){
+                            //console.log(data);
+                            $(".tablemasalah").html(data);
+                            }   
+                    });
+
+    });
 </script>
 @stop

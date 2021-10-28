@@ -1,12 +1,13 @@
                   <div class="row">
                         <div class="col-md-4">
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah2">Tambah Keterangan</button>
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah2">Input Pasien</button>
                             <br>
                         </div>
                     </div>
                  
                     <br>
-<label style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
+                    <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('pasien_total')->sum() }} orang</b></h6>
+
 <div class="table-responsive">
     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
         <thead>
@@ -63,7 +64,7 @@
                 {{ csrf_field() }}
                     <div class="form-group">
                         <label>Dokter : </label><br>
-                        <select class="form-control select2" name="id_dokter_irj" id="id_dokter_irj" style="width: 100%" required>
+                        <select class="form-control select2" name="id_dokter_irj3" id="id_dokter_irj3" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
                             @if(!\App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_dokter_irj',$mb->id)->first())
@@ -73,11 +74,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control" name="pasien_lama" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control" name="pasien_baru" required />
                     </div>
 
@@ -106,7 +107,7 @@
                     <input type="hidden" class="txtid" name="id">
                     <div class="form-group">
                         <label>Dokter : </label><br>
-                        <select class="form-control txtiddokter select2" name="id_dokter_irj2" id="id_dokter_irj2" style="width: 100%" required>
+                        <select class="form-control txtiddokter select2" name="id_dokter_irj4" id="id_dokter_irj4" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
                             @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
@@ -114,11 +115,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control txtlama" name="pasien_lama2" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control txtbaru" name="pasien_baru2" required />
                     </div>
             </div>
@@ -213,7 +214,7 @@ $(".btn-simpan2").click(function(e){
 
 
         var id2 = $("input[name=id]").val();
-        var id_dokter_irj2 = $("#id_dokter_irj2 :selected").val();
+        var id_dokter_irj2 = $("#id_dokter_irj4 :selected").val();
         var pasien_lama2 =$("input[name=pasien_lama2]").val();
         var pasien_baru2 = $("input[name=pasien_baru2]").val();
 
@@ -259,7 +260,7 @@ $(".btn-tambah2").click(function(e){
 
     e.preventDefault();
 
-    var id_dokter_irj = $("#id_dokter_irj :selected").val();
+    var id_dokter_irj = $("#id_dokter_irj3 :selected").val();
     var pasien_lama = $("input[name=pasien_lama]").val();
     var pasien_baru = $("input[name=pasien_baru]").val();
 
@@ -306,4 +307,12 @@ $(".btn-tambah2").click(function(e){
     });
 
     });
+</script>
+
+<script>
+    
+// In your Javascript (external .js resource or <script> tag)
+$(document).ready(function() {
+    $('.select2').select2();
+});
 </script>

@@ -9,9 +9,10 @@
 </div>
 @endif
 @if (Session::has('fail-add'))
-<div class="alert alert-danger alert-call">
-    <p>{{ Session::get('fail-add') }}</p>
-</div>
+<script type="text/javascript" >
+        var msg = '{{Session::get('fail-add')}}';
+        alert(msg);
+    </script>
 @endif
 <?php 
 use Carbon\Carbon;
@@ -113,7 +114,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col-md-10 ">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien</div>
+                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">Total Kunjungan Pasien</div>
                                             <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
                                                 <input type="number" class="form-control" name="igd_pasien" onfocus="igd1a();" onfocusout="igd1b();" autocomplete="off" required />
 
@@ -326,7 +327,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label style="color:#000;font-weight:600"> Ruangan yang belum dikunjungi: </label><br>
-                                <select class="form-control select2" name="inap_ruangan" style="width: 100%" required>
+                                <select class="form-control select2" name="inap_ruangan" id="inap_ruangan" style="width: 100%" required>
                                     <option value="" selected disabled hidden>Pilih Ruangan</option>
                                     @foreach(\App\Models\Ruangan::where('status',1)->get() as $dk)
                                         @if(!\App\Models\Laporanumum::where('id_pengawas',\Auth::user()->id)->where('status',0)->where('id_ruangan',$dk->id)->first())
@@ -337,313 +338,9 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                             </div>
                         </div>
                     </div>
-                    <div class="row ">
-                        <!-- Pending Requests Card Example -->
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1"> Jumlah Pasien lama</div>
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" id="inap_pasien_lama" name="inap_pasien_lama" onfocus="ranap1a();" onfocusout="ranap1b();" autocomplete="off" required />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/general/pasien.png')}}" id="gbr_inap_pasien_lama" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien baru</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_baru" autocomplete="off" onfocus="ranap2a();" onfocusout="ranap2b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" id="gbr_inap_pasien_baru" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien pindah (ruangan)</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_pindah" autocomplete="off" onfocus="ranap3a();" onfocusout="ranap3b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" id="gbr_inap_pasien_pindah" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien pindahan (ruangan)</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_pindahan" autocomplete="off" onfocus="ranap4a();" onfocusout="ranap4b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" id="gbr_inap_pasien_pindahan" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Meninggal</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_meninggal" autocomplete="off" onfocus="ranap5a();" onfocusout="ranap5b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" id="gbr_inap_pasien_meninggal" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Pulang</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_pulang" autocomplete="off" onfocus="ranap13a();" onfocusout="ranap13b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_inap_pasien_pulang" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                    </div>
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan pasien istimewa</label>
-                                <textarea class="form-control  z-depth-1" name="inap_catatan_istimewa" rows="3" placeholder="Tulis disini..."></textarea>
-                            </div>
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan pasien baru</label>
-                                <textarea class="form-control" name="inap_catatan_baru" rows="3" placeholder="Tulis disini..."></textarea>
-                            </div>
+                        <div class="col-md-12 tablelaporan">
 
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <!-- Pending Requests Card Example -->
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1"> Jumlah Pasien Covid19</div>
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_covid" autocomplete="off" onfocus="ranap6a();" onfocusout="ranap6b();" required />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" id="gbr_inap_pasien_covid" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Suspect Covid19</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_suspect" autocomplete="off" onfocus="ranap7a();" onfocusout="ranap7b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" id="gbr_inap_pasien_suspek_covid" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien restrain</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_restrain" autocomplete="off" onfocus="ranap8a();" onfocusout="ranap8b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" id="gbr_inap_pasien_restrain" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien perilaku kekerasan</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_kekerasan" autocomplete="off" onfocus="ranap9a();" onfocusout="ranap9b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" id="gbr_inap_pasien_perilaku_kekerasan" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien keracunan</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_keracunan" autocomplete="off" onfocus="ranap10a();" onfocusout="ranap10b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" id="gbr_inap_pasien_keracunan" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                         <!-- Earnings (Monthly) Card Example -->
-                         <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien Keterbatasan bahasa</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_bahasa" autocomplete="off" onfocus="ranap11a();" onfocusout="ranap11b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" id="gbr_inap_pasien_keterbatasan_bahasa" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                         <!-- Earnings (Monthly) Card Example -->
-                         <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-md-10">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Pasien difabel</div>
-                                            <div class="h5 mb-0 mr-3  font-weight-bold text-gray-800">
-                                                <input type="number" class="form-control" name="inap_pasien_difabel" autocomplete="off" onfocus="ranap12a();" onfocusout="ranap12b();" required />
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" id="gbr_inap_pasien_difabel" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan Umum</label>
-                                <textarea class="form-control" name="inap_permasalahan" rows="3" placeholder="Tulis disini..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3">Simpan ke Draf Laporan</button>
-
-                            </div>
                         </div>
                     </div>
 
@@ -679,25 +376,28 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <div class="col-lg-12 tableketeranganibs">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs">Tambah Keterangan</button>
+                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs">Input Pasien</button>
                                     <br>
                                 </div>
                             </div>
                             <br>
-                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter IBS</label>
+                           
+                            <h6 style="color:red"><b>Total Pasien (IBS) : {{ \App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() }} orang</b></h6>
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th width="10%">No</th>
+                                            <th>No</th>
+                                            <th>Nama <br> (RM)</th>
                                             <th>Dokter Operasi</th>
                                             <th>Dokter Anestesi</th>
                                             <th>Pendamping</th>
                                             <th>Ruangan Asal</th>
                                             <th>Jam mulai</th>
                                             <th>Jam selesai</th>
-                                            <th>Diagnosa</th>
-                                            <th>Jumlah Pasien</th>
+                                            <th>Diagnosa Pre</th>
+                                            <th>Diagnosa Post</th>
                                             <th width="20%">Aksi</th>
 
                                         </tr>
@@ -708,17 +408,28 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                                     ?>
                                     <tbody>
                                         @foreach(\App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->get() as $data)
+                                        <?php
+                                        $arrdokteroperasi = explode(',',$data->id_dokter_operasi);
+
+                                        
+                                        ?>
                                         <tr>
                                             <td>{{ $no }}</td>
-                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td>
+                                            <td>{{ $data->nama }}<br>({{ $data->rm }})</td>
+                                            <td>
+                                            @foreach($arrdokteroperasi as $key)  
+                                                {{ \App\Models\Dokterirj::where('id',$key)->pluck('nama')->first() }}<br>    
+                                            @endforeach
+
+                                            </td>
                                             <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
                                             <td>{{ $data->pendamping }}</td>
                                             <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
                                             <td>{{ $data->jam_mulai }}</td>
                                             <td>{{ $data->jam_selesai }}</td>
-                                            <td>{{ $data->diagnosa }}</td>
-                                            <td>{{ $data->jumlah_pasien }}</td>
-                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs">Ubah</button>
+                                            <td>{{ $data->diagnosa_pre }}</td>
+                                            <td>{{ $data->diagnosa_post }}</td>
+                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{ $data->nama }}" data-rm="{{ $data->rm }}" data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosapre="{{$data->diagnosa_pre}}" data-diagnosapost="{{$data->diagnosa_post}}" data-toggle="modal" data-target="#editibs">Ubah</button>
                                             <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-hapus ">Hapus</button>
                                                 
                                             </td>
@@ -764,8 +475,8 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
 
 
     <!-- cek dinas pagi sore dan tidak hari libur || cek hari libur custom IRJ buka-->
-    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->check() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first())
-
+    @if (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_sunday() != true || strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first()) 
+    
     @if(\App\Models\Laporanirj::where('status',0)->where('id_pengawas',\Auth::user()->id)->first())
     <div class="card shadow mb-4">
         <!-- Card Header - Accordion -->
@@ -791,12 +502,13 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <div class="col-lg-12 tableketerangan">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Tambah Keterangan</button>
+                                    <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambah">Input Pasien</button>
                                     <br>
                                 </div>
                             </div>
                             <br>
-                            <label  style="color:#000;font-weight:600">Jumlah pasien menurut Dokter </label>
+                            <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('pasien_total')->sum() }} orang</b></h6>
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
@@ -882,17 +594,25 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Tambah Keterangan Jumlah Pasien IBS
+                Input Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
                 <form method="post" action="" id="tambahketeranganibs" role="form">
                 {{ csrf_field() }}
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control" name="nama"  />
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control" name="rm"  />
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" data-placeholder="Pilih Dokter (Bisa lebih dari 1)" required>
+                           
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -901,13 +621,13 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <label>Dokter Anestesi: </label><br>
                         <select class="form-control select2" name="id_dokter_anestesi" id="id_dokter_anestesi" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Pendamping : </label>
+                        <label>Pendamping / Petugas : </label>
                         <input type="text" class="form-control" name="pendamping"  />
                     </div>
                     <div class="form-group">
@@ -920,20 +640,20 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jam Mulai: </label>
+                        <label>Jam Mulai : </label>
                         <input type="time" class="form-control" name="jam_mulai" required />
                     </div>
                     <div class="form-group">
-                        <label>Jam Selesai: </label>
+                        <label>Jam Selesai : </label>
                         <input type="time" class="form-control" name="jam_selesai" required />
                     </div>
                     <div class="form-group">
-                        <label>Diagnosa: </label>
-                        <textarea class="form-control" name="diagnosa" rows="3" placeholder="Tulis disini..."></textarea>
+                        <label>Diagnosa Pre : </label>
+                        <textarea class="form-control" name="diagnosapre" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control" name="jumlah_pasien" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control" name="diagnosapost" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
 
 
@@ -954,7 +674,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Ubah Keterangan Jumlah Pasien IBS
+                Ubah Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
@@ -963,10 +683,18 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                 {{ method_field('PUT') }}
                     <input type="hidden" class="txtidibs" name="idibs">
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control txt-nama" name="nama2"  required/>
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control txt-rm" name="rm2"  required/>
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
+                            
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -975,7 +703,7 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         <label>Dokter Anestesi: </label><br>
                         <select class="form-control select2 txt-anestesi" name="id_dokter_anestesi2" id="id_dokter_anestesi2" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -1003,11 +731,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                     </div>
                     <div class="form-group">
                         <label>Diagnosa: </label>
-                        <textarea class="form-control txt-diagnosa" name="diagnosa2" rows="3" placeholder="Tulis disini..."></textarea>
+                        <textarea class="form-control txt-diagnosapre" name="diagnosapre2" rows="3" placeholder="Tulis disini..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control txt-jumlah" name="jumlah_pasien2" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control txt-diagnosapost" name="diagnosapost2" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
 
 
@@ -1048,11 +776,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control" name="pasien_lama" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control" name="pasien_baru" required />
                     </div>
 
@@ -1089,11 +817,11 @@ $end = \Carbon\Carbon::createFromTimeString(\App\Models\Dinas::where('id',2)->pl
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Lama: </label>
+                        <label>Jumlah Pasien Lama (Rekam Medis Lama): </label>
                         <input type="number" class="form-control txtlama" name="pasien_lama2" required />
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien Baru: </label>
+                        <label>Jumlah Pasien Baru (Rekam Medis Baru): </label>
                         <input type="number" class="form-control txtbaru" name="pasien_baru2" required />
                     </div>
             </div>
@@ -1180,6 +908,43 @@ $("#dataTable2").DataTable({
 
 
     //Rawat Inap
+    $("#inap_ruangan").change(function(){
+  
+        $(".tablelaporan").html("<h1>Mohon Tunggu...</h1>")
+        $.ajax({
+            type : "get",
+            url : 'refresh-laporan-ruangan/'+$("#inap_ruangan").val(),
+            data: {ruangan: $("#inap_ruangan").val()},
+            success : function(data){
+            console.log(data);
+            $(".tablelaporan").html(data);
+            }
+        });
+
+
+    });
+
+    $("#editpasienlama").on('click', function(e) {
+
+        document.getElementById("inap_pasien_lama").readOnly = false;
+        
+    });
+    $("#inap_ruangan").change(function(){
+
+        $(".jumlahpasienlama").html("<h3>Mohon Tunggu...</h3>")
+        $.ajax({
+            type : "get",
+            url : 'refresh-jumlah-pasien-lama/'+$("#inap_ruangan").val(),
+            data: {ruangan: $("#inap_ruangan").val()},
+            success : function(data){
+            console.log(data);
+            $(".jumlahpasienlama").html(data);
+            }
+        });
+
+    });
+
+
     function ranap1a() {
         document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
     }
@@ -1475,26 +1240,40 @@ $(".btn-tambah").click(function(e){
 <script>
     $("#dataTable2").on('click', '.btn-edit', function() {
         idibs = $(this).val(); //laporan ibs detail
+        nama = $(this).data('nama');
+        rm = $(this).data('rm');
         dokteroperasi = $(this).data('dokteroperasi');
+
+        if((typeof(dokteroperasi) == "string" &&  dokteroperasi.includes(","))){
+            listdokteroperasi = dokteroperasi.split(',');
+        }
+        else{
+            listdokteroperasi = dokteroperasi;
+        }
+        
+
+        console.log(listdokteroperasi);
         dokteranestesi = $(this).data('dokteranestesi');
         pendamping = $(this).data('pendamping');
         ruangan = $(this).data('ruangan');
         jammulai = $(this).data('jammulai');
         jamselesai = $(this).data('jamselesai');
-        diagnosa = $(this).data('diagnosa');
-        jumlahpasien = $(this).data('jumlahpasien');
+        diagnosapre = $(this).data('diagnosapre');
+        diagnosapost = $(this).data('diagnosapost');
 
     });
     $('#editibs').on('show.bs.modal', function() {
         $(".txtidibs").val(idibs);
-        $(".txt-operasi").select2().val(dokteroperasi).trigger("change");
+        $(".txt-nama").val(nama);
+        $(".txt-rm").val(rm);
+        $(".txt-operasi").select2().val(listdokteroperasi).trigger("change");
         $(".txt-anestesi").select2().val(dokteranestesi).trigger("change");
         $(".txt-ruangan").select2().val(ruangan).trigger("change");
         $(".txt-pendamping").val(pendamping);
         $(".txt-mulai").val(jammulai);
         $(".txt-selesai").val(jamselesai);
-        $(".txt-diagnosa").val(diagnosa);
-        $(".txt-jumlah").val(jumlahpasien);
+        $(".txt-diagnosapre").val(diagnosapre);
+        $(".txt-diagnosapost").val(diagnosapost);
     });
 
     $("#dataTable2").on('click', '.btn-hapus', function(e) {
@@ -1553,15 +1332,16 @@ $(".btn-tambahibs").click(function(e){
     $("#tambahibs").modal('hide');
 
     e.preventDefault();
-
-    var id_dokter_operasi = $("#id_dokter_operasi :selected").val();
+    var nama = $("input[name=nama]").val();
+    var rm = $("input[name=rm]").val();
+    var id_dokter_operasi = $('#id_dokter_operasi').val();
     var id_dokter_anestesi = $("#id_dokter_anestesi :selected").val();
     var id_ruangan = $("#id_ruangan :selected").val();
     var pendamping = $("input[name=pendamping]").val();
     var jam_mulai = $("input[name=jam_mulai]").val();
     var jam_selesai = $("input[name=jam_selesai]").val();
-    var diagnosa = $("textarea[name=diagnosa]").val();
-    var jumlah_pasien = $("input[name=jumlah_pasien]").val();
+    var diagnosapre = $("textarea[name=diagnosapre]").val();
+    var diagnosapost = $("textarea[name=diagnosapost]").val();
 
     var x = parseInt($("#hitungketeranganibs").val()) + 1;
     $("#hitungketeranganibs").val(x)
@@ -1569,7 +1349,7 @@ $(".btn-tambahibs").click(function(e){
 
 
 
-    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ pendamping + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
+    console.log(nama +' '+rm+' '+id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ pendamping + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosapre + ' '+ diagnosapost);
     var url = 'tambahibsdetail';
 
     $.ajax({
@@ -1577,25 +1357,29 @@ $(".btn-tambahibs").click(function(e){
     method:'POST',
     data:{
         _token: "{{ csrf_token() }}",
+        nama:nama,
+        rm:rm,
         id_dokter_operasi:id_dokter_operasi,
         id_dokter_anestesi:id_dokter_anestesi,
         pendamping:pendamping,
         id_ruangan : id_ruangan,
         jam_mulai : jam_mulai,
         jam_selesai : jam_selesai,
-        diagnosa : diagnosa,
-        jumlah_pasien : jumlah_pasien
+        diagnosapre : diagnosapre,
+        diagnosapost : diagnosapost
     },
     success:function(response){
         if(response.success){
+            $("input[name=nama]").val("");
+            $("input[name=rm]").val("");
             $("#id_dokter_operasi").val("");
             $("#id_dokter_anestesi").val("");
             $("#id_ruangan").val("");
             $("input[name=jam_mulai]").val("");
             $("input[name=pendamping]").val("");
             $("input[name=jam_selesai]").val("");
-            $("input[name=diagnosa]").val("");
-            $("input[name=jumlah_pasien]").val("");
+            $("input[name=diagnosapre]").val("");
+            $("input[name=diagnosapost]").val("");
             alert(response.message) //Message come from controller
             $.ajax({
                 type : "get",
@@ -1620,7 +1404,7 @@ $(".btn-tambahibs").click(function(e){
 
 // $(document).ready(function() {
 //     $("#editketerangan").submit(function(e) {
- $(".btn-simpanibs").click(function(e){
+    $(".btn-simpanibs").click(function(e){
 
         $("#editibs").modal('hide');
 
@@ -1628,17 +1412,19 @@ $(".btn-tambahibs").click(function(e){
 
 
         var id2 = $("input[name=idibs]").val();
-        var id_dokter_operasi2 = $("#id_dokter_operasi2 :selected").val();
+        var nama2 = $("input[name=nama2]").val();
+        var rm2 = $("input[name=rm2]").val();
+        var id_dokter_operasi2 = $('#id_dokter_operasi2').val();
         var id_dokter_anestesi2 = $("#id_dokter_anestesi2 :selected").val();
         var id_ruangan2 = $("#id_ruangan2 :selected").val();
         var pendamping2 = $("input[name=pendamping2]").val();
         var jam_mulai2 = $("input[name=jam_mulai2]").val();
         var jam_selesai2 = $("input[name=jam_selesai2]").val();
-        var diagnosa2 = $("textarea[name=diagnosa2]").val();
-        var jumlah_pasien2 = $("input[name=jumlah_pasien2]").val();
+        var diagnosapre2 = $("textarea[name=diagnosapre2]").val();
+        var diagnosapost2 = $("textarea[name=diagnosapost2]").val();
 
 
-        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ pendamping2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
+        console.log(nama +' '+rm+' '+id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ pendamping2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosapre2 + ' '+ diagnosapost2);
         var url = 'editibsdetail';
 
         $.ajax({
@@ -1647,14 +1433,16 @@ $(".btn-tambahibs").click(function(e){
         data:{
             _token: "{{ csrf_token() }}",
             id:id2,
+            nama:nama2,
+            rm:rm2,
             id_dokter_operasi:id_dokter_operasi2,
             id_dokter_anestesi:id_dokter_anestesi2,
             pendamping:pendamping2,
             id_ruangan : id_ruangan2,
             jam_mulai : jam_mulai2,
             jam_selesai : jam_selesai2,
-            diagnosa : diagnosa2,
-            jumlah_pasien : jumlah_pasien2
+            diagnosapre : diagnosapre2,
+            diagnosapost : diagnosapost2
         },
         success:function(response){
             if(response.success == true){
@@ -1682,5 +1470,11 @@ $(".btn-tambahibs").click(function(e){
 
 
 </script>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
 
 @stop

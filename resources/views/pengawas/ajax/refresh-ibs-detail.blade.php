@@ -1,28 +1,31 @@
+
                   <div class="row">
                         <div class="col-md-4">
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs2">Tambah Keterangan</button>
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#tambahibs2">Input Pasien</button>
                             <br>
                         </div>
                     </div>
                  
                     <br>
-<label style="color:#000;font-weight:600">Jumlah pasien menurut Dokter IBS</label>
+                    <h6 style="color:red"><b>Total Pasien (IBS) : {{ \App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->count() }} orang</b></h6>
+
 <div class="table-responsive">
     <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
         <thead>
-            <tr>
-                
-            <th width="10%">No</th>
-            <th>Dokter Operasi</th>
-            <th>Dokter Anestesi</th>
-            <th>Pendamping</th>
-            <th>Ruangan Asal</th>
-            <th>Jam mulai</th>
-            <th>Jam selesai</th>
-            <th>Diagnosa</th>
-            <th>Jumlah Pasien</th>
-            <th width="20%">Aksi</th>
-            </tr>
+        <tr>
+                                            <th>No</th>
+                                            <th>Nama <br> (RM)</th>
+                                            <th>Dokter Operasi</th>
+                                            <th>Dokter Anestesi</th>
+                                            <th>Pendamping</th>
+                                            <th>Ruangan Asal</th>
+                                            <th>Jam mulai</th>
+                                            <th>Jam selesai</th>
+                                            <th>Diagnosa Pre</th>
+                                            <th>Diagnosa Post</th>
+                                            <th width="20%">Aksi</th>
+
+                                        </tr>
         </thead>
 
         <?php
@@ -30,17 +33,28 @@
         ?>
         <tbody>
             @foreach(\App\Models\Laporanibsdetail::where('status',0)->where('id_pengawas',\Auth::user()->id)->get() as $data)
+            <?php
+                                        $arrdokteroperasi = explode(',',$data->id_dokter_operasi);
+
+                                        
+                                        ?>
             <tr>
-                            <td>{{ $no }}</td>
-                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td>
+                    <td>{{ $no }}</td>
+                                            <td>{{ $data->nama }}<br>({{ $data->rm }})</td>
+                                            <td>
+                                            @foreach($arrdokteroperasi as $key)  
+                                                {{ \App\Models\Dokterirj::where('id',$key)->pluck('nama')->first() }}<br>    
+                                            @endforeach
+
+                                            </td>
                                             <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
                                             <td>{{ $data->pendamping }}</td>
                                             <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
                                             <td>{{ $data->jam_mulai }}</td>
                                             <td>{{ $data->jam_selesai }}</td>
-                                            <td>{{ $data->diagnosa }}</td>
-                                            <td>{{ $data->jumlah_pasien }}</td>
-                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosa="{{$data->diagnosa}}" data-jumlahpasien="{{$data->jumlah_pasien}}" data-toggle="modal" data-target="#editibs2">Ubah</button>
+                                            <td>{{ $data->diagnosa_pre }}</td>
+                                            <td>{{ $data->diagnosa_post }}</td>
+                                            <td><button value="{{ $data->id }}" class="btn btn-sm btn-success btn-edit " data-nama="{{ $data->nama }}" data-rm="{{ $data->rm }}" data-dokteroperasi="{{$data->id_dokter_operasi}}" data-dokteranestesi="{{$data->id_dokter_anestesi}}" data-pendamping="{{$data->pendamping}}" data-ruangan="{{$data->id_ruangan}}" data-jammulai="{{$data->jam_mulai}}" data-jamselesai="{{$data->jam_selesai}}" data-diagnosapre="{{$data->diagnosa_pre}}" data-diagnosapost="{{$data->diagnosa_post}}" data-toggle="modal" data-target="#editibs2">Ubah</button>
                                             <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-hapus ">Hapus</button>
                                                 
                                             </td>
@@ -64,59 +78,71 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Tambah Keterangan Jumlah Pasien IBS
+                Input Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
                 <form method="post" action="" id="tambahketeranganibs" role="form">
                 {{ csrf_field() }}
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control" name="nama"  />
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control" name="rm"  />
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2" name="id_dokter_operasi" id="id_dokter_operasi" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2" name="id_dokter_operasi3" id="id_dokter_operasi3" style="width: 100%" data-placeholder="Pilih Dokter (Bisa lebih dari 1)"  required>
+                            
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Dokter Anestesi: </label><br>
-                        <select class="form-control select2" name="id_dokter_anestesi" id="id_dokter_anestesi" style="width: 100%" required>
+                        <select class="form-control select2" name="id_dokter_anestesi3" id="id_dokter_anestesi3" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Pendamping : </label>
+                        <label>Pendamping / Petugas : </label>
                         <input type="text" class="form-control" name="pendamping"  />
                     </div>
                     <div class="form-group">
                         <label>Ruangan Asal: </label><br>
-                        <select class="form-control select2" name="id_ruangan" id="id_ruangan" style="width: 100%" required>
+                        <select class="form-control select2" name="id_ruangan3" id="id_ruangan3" style="width: 100%">
                             <option value="" selected disabled hidden>Pilih Ruangan</option>
                             @foreach(\App\Models\Ruangan::where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama_ruangan }}</option>
                             @endforeach
                         </select>
+                        
                     </div>
                     <div class="form-group">
-                        <label>Jam Mulai: </label>
+                        <label>Jam Mulai : </label>
                         <input type="time" class="form-control" name="jam_mulai" required />
                     </div>
                     <div class="form-group">
-                        <label>Jam Selesai: </label>
+                        <label>Jam Selesai : </label>
                         <input type="time" class="form-control" name="jam_selesai" required />
                     </div>
                     <div class="form-group">
-                        <label>Diagnosa: </label>
-                        <textarea class="form-control" name="diagnosa" rows="3" placeholder="Tulis disini..."></textarea>
+                        <label>Diagnosa Pre : </label>
+                        <textarea class="form-control" name="diagnosapre" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control" name="jumlah_pasien" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control" name="diagnosapost" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
+            
+ 
+                    
 
 
             </div>
@@ -136,7 +162,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                Ubah Keterangan Jumlah Pasien IBS
+                Ubah Pasien IBS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding:30px">
@@ -145,19 +171,27 @@
                 {{ method_field('PUT') }}
                     <input type="hidden" class="txtidibs" name="idibs">
                     <div class="form-group">
+                        <label>Nama : </label>
+                        <input type="text" class="form-control txt-nama" name="nama2"  required/>
+                    </div>
+                    <div class="form-group">
+                        <label>RM : </label>
+                        <input type="text" class="form-control txt-rm" name="rm2"  required/>
+                    </div>
+                    <div class="form-group">
                         <label>Dokter Operasi: </label><br>
-                        <select class="form-control select2 txt-operasi" name="id_dokter_operasi2" id="id_dokter_operasi2" style="width: 100%" required>
-                            <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                        <select multiple="multiple" class="form-control select2 txt-operasi" name="id_dokter_operasi4" id="id_dokter_operasi4" style="width: 100%" required>
+                            
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis','<>',3)->where('id_sdmk_jenis','<>',21)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Dokter Anestesi: </label><br>
-                        <select class="form-control select2 txt-anestesi" name="id_dokter_anestesi2" id="id_dokter_anestesi2" style="width: 100%" required>
+                        <select class="form-control select2 txt-anestesi" name="id_dokter_anestesi4" id="id_dokter_anestesi4" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Dokter</option>
-                            @foreach(\App\Models\Dokterirj::where('status',1)->get() as $mb)
+                            @foreach(\App\Models\Dokterirj::where('status',1)->where('id_sdmk_jenis',8)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama }}</option>
                             @endforeach
                         </select>
@@ -168,7 +202,7 @@
                     </div>
                     <div class="form-group">
                         <label>Ruangan Asal: </label><br>
-                        <select class="form-control select2 txt-ruangan" name="id_ruangan2" id="id_ruangan2" style="width: 100%" required>
+                        <select class="form-control select2 txt-ruangan" name="id_ruangan4" id="id_ruangan4" style="width: 100%" required>
                             <option value="" selected disabled hidden>Pilih Ruangan</option>
                             @foreach(\App\Models\Ruangan::where('status',1)->get() as $mb)
                             <option value="{{ $mb->id }}">{{ $mb->nama_ruangan }}</option>
@@ -185,11 +219,11 @@
                     </div>
                     <div class="form-group">
                         <label>Diagnosa: </label>
-                        <textarea class="form-control txt-diagnosa" name="diagnosa2" rows="3" placeholder="Tulis disini..."></textarea>
+                        <textarea class="form-control txt-diagnosapre" name="diagnosapre2" rows="3" placeholder="Tulis disini..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Pasien : </label>
-                        <input type="number" class="form-control txt-jumlah" name="jumlah_pasien2" required />
+                        <label>Diagnosa Post : </label>
+                        <textarea class="form-control txt-diagnosapost" name="diagnosapost2" rows="3" placeholder="Tulis disini..." required></textarea>
                     </div>
 
 
@@ -202,7 +236,11 @@
     </div>
 </div>
 
+
+
+
 <script>
+
      $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -211,26 +249,38 @@
 
     $("#dataTable2").on('click', '.btn-edit', function() {
         idibs = $(this).val(); //laporan ibs detail
+        nama = $(this).data('nama');
+        rm = $(this).data('rm');
         dokteroperasi = $(this).data('dokteroperasi');
+        
+        if((typeof(dokteroperasi) == "string" &&  dokteroperasi.includes(","))){
+            listdokteroperasi = dokteroperasi.split(',');
+        }
+        else{
+            listdokteroperasi = dokteroperasi;
+        }
+
         dokteranestesi = $(this).data('dokteranestesi');
         pendamping = $(this).data('pendamping');
         ruangan = $(this).data('ruangan');
         jammulai = $(this).data('jammulai');
         jamselesai = $(this).data('jamselesai');
-        diagnosa = $(this).data('diagnosa');
-        jumlahpasien = $(this).data('jumlahpasien');
+        diagnosapre = $(this).data('diagnosapre');
+        diagnosapost = $(this).data('diagnosapost');
 
     });
     $('#editibs2').on('show.bs.modal', function() {
         $(".txtidibs").val(idibs);
-        $(".txt-operasi").select2().val(dokteroperasi).trigger("change");
+        $(".txt-nama").val(nama);
+        $(".txt-rm").val(rm);
+        $(".txt-operasi").select2().val(listdokteroperasi).trigger("change");
         $(".txt-anestesi").select2().val(dokteranestesi).trigger("change");
         $(".txt-ruangan").select2().val(ruangan).trigger("change");
         $(".txt-pendamping").val(pendamping);
         $(".txt-mulai").val(jammulai);
         $(".txt-selesai").val(jamselesai);
-        $(".txt-diagnosa").val(diagnosa);
-        $(".txt-jumlah").val(jumlahpasien);
+        $(".txt-diagnosapre").val(diagnosapre);
+        $(".txt-diagnosapost").val(diagnosapost);
     });
 
     $("#dataTable2").on('click', '.btn-hapus', function(e) {
@@ -292,14 +342,17 @@ $(".btn-tambahibs2").click(function(e){
 
     e.preventDefault();
 
-    var id_dokter_operasi = $("#id_dokter_operasi :selected").val();
-    var id_dokter_anestesi = $("#id_dokter_anestesi :selected").val();
+    var nama = $("input[name=nama]").val();
+    var rm = $("input[name=rm]").val();
+    var id_dokter_operasi = $('#id_dokter_operasi3').val();
+    var id_dokter_anestesi = $("#id_dokter_anestesi3 :selected").val();
+    var id_ruangan = $("#id_ruangan3 :selected").val();
     var pendamping = $("input[name=pendamping]").val();
-    var id_ruangan = $("#id_ruangan :selected").val();
     var jam_mulai = $("input[name=jam_mulai]").val();
     var jam_selesai = $("input[name=jam_selesai]").val();
-    var diagnosa = $("textarea[name=diagnosa]").val();
-    var jumlah_pasien = $("input[name=jumlah_pasien]").val();
+    var diagnosapre = $("textarea[name=diagnosapre]").val();
+    var diagnosapost = $("textarea[name=diagnosapost]").val();
+
 
     var x = parseInt($("#hitungketeranganibs").val()) + 1;
     $("#hitungketeranganibs").val(x)
@@ -307,7 +360,7 @@ $(".btn-tambahibs2").click(function(e){
 
 
 
-    console.log(id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ id_ruangan + ' '+ pendamping +  ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosa + ' '+ jumlah_pasien);
+    console.log(nama +' '+rm+' '+id_dokter_operasi+' '+ id_dokter_anestesi + ' '+ pendamping + ' '+ id_ruangan + ' '+ jam_mulai + ' '+ jam_selesai + ' '+ diagnosapre + ' '+ diagnosapost);
     var url = 'tambahibsdetail';
 
     $.ajax({
@@ -315,25 +368,29 @@ $(".btn-tambahibs2").click(function(e){
     method:'POST',
     data:{
         _token: "{{ csrf_token() }}",
+        nama:nama,
+        rm:rm,
         id_dokter_operasi:id_dokter_operasi,
         id_dokter_anestesi:id_dokter_anestesi,
         pendamping:pendamping,
         id_ruangan : id_ruangan,
         jam_mulai : jam_mulai,
         jam_selesai : jam_selesai,
-        diagnosa : diagnosa,
-        jumlah_pasien : jumlah_pasien
+        diagnosapre : diagnosapre,
+        diagnosapost : diagnosapost
     },
     success:function(response){
         if(response.success){
+            $("input[name=nama]").val("");
+            $("input[name=rm]").val("");
             $("#id_dokter_operasi").val("");
             $("#id_dokter_anestesi").val("");
             $("#id_ruangan").val("");
-            $("input[name=pendamping]").val("");
             $("input[name=jam_mulai]").val("");
+            $("input[name=pendamping]").val("");
             $("input[name=jam_selesai]").val("");
-            $("input[name=diagnosa]").val("");
-            $("input[name=jumlah_pasien]").val("");
+            $("input[name=diagnosapre]").val("");
+            $("input[name=diagnosapost]").val("");
             alert(response.message) //Message come from controller
             $.ajax({
                 type : "get",
@@ -366,17 +423,20 @@ $(".btn-tambahibs2").click(function(e){
 
 
         var id2 = $("input[name=idibs]").val();
-        var id_dokter_operasi2 = $("#id_dokter_operasi2 :selected").val();
-        var id_dokter_anestesi2 = $("#id_dokter_anestesi2 :selected").val();
-        var id_ruangan2 = $("#id_ruangan2 :selected").val();
+        var nama2 = $("input[name=nama2]").val();
+        var rm2 = $("input[name=rm2]").val();
+        var id_dokter_operasi2 = $('#id_dokter_operasi4').val();
+        var id_dokter_anestesi2 = $("#id_dokter_anestesi4 :selected").val();
+        var id_ruangan2 = $("#id_ruangan4 :selected").val();
         var pendamping2 = $("input[name=pendamping2]").val();
         var jam_mulai2 = $("input[name=jam_mulai2]").val();
         var jam_selesai2 = $("input[name=jam_selesai2]").val();
-        var diagnosa2 = $("textarea[name=diagnosa2]").val();
-        var jumlah_pasien2 = $("input[name=jumlah_pasien2]").val();
+        var diagnosapre2 = $("textarea[name=diagnosapre2]").val();
+        var diagnosapost2 = $("textarea[name=diagnosapost2]").val();
 
 
-        console.log(id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ id_ruangan2 +  ' '+ pendamping2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosa2 + ' '+ jumlah_pasien2);
+
+        console.log(nama +' '+rm+' '+id_dokter_operasi2+' '+ id_dokter_anestesi2 + ' '+ pendamping2 + ' '+ id_ruangan2 + ' '+ jam_mulai2 + ' '+ jam_selesai2 + ' '+ diagnosapre2 + ' '+ diagnosapost2);
         var url = 'editibsdetail';
 
         $.ajax({
@@ -385,14 +445,16 @@ $(".btn-tambahibs2").click(function(e){
         data:{
             _token: "{{ csrf_token() }}",
             id:id2,
+            nama:nama2,
+            rm:rm2,
             id_dokter_operasi:id_dokter_operasi2,
             id_dokter_anestesi:id_dokter_anestesi2,
             pendamping:pendamping2,
             id_ruangan : id_ruangan2,
             jam_mulai : jam_mulai2,
             jam_selesai : jam_selesai2,
-            diagnosa : diagnosa2,
-            jumlah_pasien : jumlah_pasien2
+            diagnosapre : diagnosapre2,
+            diagnosapost : diagnosapost2
         },
         success:function(response){
             if(response.success == true){
@@ -419,4 +481,17 @@ $(".btn-tambahibs2").click(function(e){
 
 
 
+</script>
+<script>
+    $(document).ready(function() {
+    $(".js-example-basic-single").select2();
+});
+</script>
+
+<script>
+    
+// In your Javascript (external .js resource or <script> tag)
+$(document).ready(function() {
+    $('.select2').select2();
+});
 </script>

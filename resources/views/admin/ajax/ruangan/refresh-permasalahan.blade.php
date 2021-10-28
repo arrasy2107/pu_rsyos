@@ -1,0 +1,1 @@
+<p>{{\App\Models\Laporanumum::where('id',$idlaporanumum)->where('id_ruangan',$idruangan)->pluck('permasalahan_umum')->first()  }}</p>
