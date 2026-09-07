@@ -1,939 +1,333 @@
-@extends('master.masteradmin')
+@extends('master.master')
+
+@section('page_title', 'Dashboard Laporan')
+
 @section('custom_style')
-<link href="https://cdn.datatables.net/1.11.0/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.bootstrap5.min.css" rel="stylesheet">
 <style>
- th{
-        background-color:slategrey;
-        color:white;
+    /* Custom override for DataTables */
+    table.dataTable {
+        border-collapse: collapse !important;
+    }
+
+    table.dataTable thead th {
+        background: var(--color-primary-800) !important;
+        color: white !important;
+        border-bottom: none !important;
         white-space: nowrap;
     }
+
     .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
-  overflow-x: scroll !important;
-}
-.dataTables_scrollBody {
-    overflow-x: scroll !important;
-}
+        overflow-x: scroll !important;
+    }
+
+    .icon-hover-container {
+        transition: var(--transition-fast);
+    }
+
+    .icon-hover-container:hover {
+        transform: scale(1.05);
+    }
+
+    /* ── KPI Strip ── */
+    .pu-kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+        .pu-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 576px) {
+        .pu-kpi-strip { grid-template-columns: 1fr; }
+    }
+
+    .pu-kpi-card {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 1px 6px rgba(0,0,0,.07);
+        border-left: 4px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .pu-kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0,0,0,.1);
+    }
+
+    .pu-kpi-card.kpi-igd   { border-left-color: var(--bs-primary); }
+    .pu-kpi-card.kpi-umum  { border-left-color: var(--bs-success); }
+    .pu-kpi-card.kpi-ibs   { border-left-color: var(--bs-warning); }
+    .pu-kpi-card.kpi-irj   { border-left-color: var(--bs-info); }
+
+    .pu-kpi-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .pu-kpi-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--color-neutral-900, #1a1a2e);
+    }
+
+    .pu-kpi-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--color-neutral-500, #6c757d);
+        margin-top: 2px;
+    }
+
+    /* ── Status Badge ── */
+    .pu-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .35rem .85rem;
+        border-radius: 50rem;
+        font-size: .78rem;
+        font-weight: 600;
+        letter-spacing: .03em;
+    }
+
+    /* ── Tab Panel ── */
+    .pu-review-tabs .nav-tabs {
+        border-bottom: 2px solid var(--color-neutral-200, #e9ecef);
+        gap: .25rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .pu-review-tabs .nav-tabs .nav-link {
+        border: none;
+        border-bottom: 3px solid transparent;
+        border-radius: 0;
+        padding: .65rem 1.1rem;
+        font-size: .875rem;
+        font-weight: 600;
+        color: var(--color-neutral-600, #6c757d);
+        white-space: nowrap;
+        transition: color .15s, border-color .15s;
+    }
+
+    .pu-review-tabs .nav-tabs .nav-link:hover {
+        color: var(--color-primary, #0d6efd);
+        border-bottom-color: var(--color-primary-200, #b6d4fe);
+    }
+
+    .pu-review-tabs .nav-tabs .nav-link.active {
+        color: var(--color-primary, #0d6efd);
+        border-bottom-color: var(--color-primary, #0d6efd);
+        background: transparent;
+    }
+
+    .pu-review-tabs .tab-content {
+        background: #fff;
+        border: 1px solid var(--color-neutral-200, #dee2e6);
+        border-top: none;
+        border-radius: 0 0 .75rem .75rem;
+        padding: 1.5rem;
+    }
+
+    .pu-tab-badge {
+        font-size: .65rem;
+        padding: .2em .55em;
+        margin-left: .35rem;
+        vertical-align: middle;
+    }
+
+        /* Select2 overrides to match new design system */
+    .select2-container .select2-selection--single {
+        height: 42px !important;
+        border: 1.5px solid var(--color-neutral-300) !important;
+        border-radius: var(--radius-md) !important;
+        font-family: var(--font-family) !important;
+        font-size: var(--font-size-sm) !important;
+    }
+
+    .select2-selection__rendered {
+        line-height: 40px !important;
+        padding-left: 2.5rem !important;
+        /* Space for icon */
+        color: var(--color-neutral-900) !important;
+    }
+
+    .select2-selection__arrow {
+        height: 40px !important;
+    }
+
+    .select2-container--default .select2-selection--single:focus,
+    .select2-container--open .select2-selection--single {
+        border-color: var(--color-accent) !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        outline: none !important;
+    }
+
+    .select2-dropdown {
+        border: 1.5px solid var(--color-neutral-300) !important;
+        border-radius: var(--radius-md) !important;
+        box-shadow: var(--shadow-md) !important;
+        font-family: var(--font-family) !important;
+        font-size: var(--font-size-sm) !important;
+    }
 </style>
-@stop 
+@stop
+
 @section('content')
-<?php
-    $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
-?>
-<div class="container-fluid">
+<x-page-header title="Laporan Pengawas Umum Terbaru" subtitle="Tanggal: {{ date('d F Y', strtotime($laporanDate)) }} | Dinas: {{ strtoupper($dinasName) }}">
+    <x-slot name="actions">
+        {{-- Status Verifikasi --}}
+        @php
+            $vBidang = $laporanStatus?->verified_bidang ?? 0;
+            $vDirektur = $laporanStatus?->verified ?? 0;
+        @endphp
+        @if($vDirektur && $vBidang)
+            <span class="pu-status-badge bg-success-subtle text-success border border-success-subtle">
+                <i class="fas fa-check-double"></i> Terverifikasi Direktur
+            </span>
+        @elseif($vBidang)
+            <span class="pu-status-badge bg-info-subtle text-info border border-info-subtle">
+                <i class="fas fa-check"></i> Terverifikasi Keperawatan
+            </span>
+        @else
+            <span class="pu-status-badge bg-warning-subtle text-dark border border-warning-subtle">
+                <i class="fas fa-spinner fa-spin me-1"></i> Menunggu Verifikasi
+            </span>
+        @endif
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Laporan Pengawas Umum Terbaru</h1>
-        Tanggal : {{date('d F Y', strtotime(\App\Models\Laporan::pluck('created_at')->last()))}} | Dinas : {{ strtoupper(\App\Models\Dinas::where('id',\App\Models\Laporan::pluck('id_dinas')->last())->pluck('dinas')->first()) }}
-    </div>
-
-    <h5 class="mb-4">Pengawas Umum : {{ \App\Models\User::where('id',\App\Models\Laporan::where('id',$lastIDLaporan)->pluck('id_pengawas')->first())->pluck('nama')->first()  }}</h5>
-    <!-- Collapsable Card Example -->
-    <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-            <h6 class="m-0 font-weight-bold ">Laporan Instalasi Gawat Darurat (IGD)</h6>
-        </a>
-        <!-- Card Content - Collapse -->
-        <div class="collapse show" id="collapseCardExample">
-            <div class="card-body">
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    
-                    <h6 style="color:red"><b>Total Pasien (IGD) : {{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien')->first() }} orang</b></h6>
-
-                </div>
-                <div class="row ">
-
-
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd1a()" onmouseout="igd1b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Dirawat</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_rawat')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}" id="gbr_igd_pasien"  height="64px" width="64px">
-                                       </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd2a()" onmouseout="igd2b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Pulang</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pulang')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_igd_pasien_pulang"  height="64px" width="64px">    
-                                  
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd3a()" onmouseout="igd3b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Emergency</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_emergency')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-emergency.png')}}" id="gbr_igd_pasien_emergency"  height="64px" width="64px">
-                                       
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd4a()" onmouseout="igd4b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien non Emergency</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_non_emergency')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}" id="gbr_igd_pasien_non_emergency"  height="64px" width="64px">
-                                       
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pending Requests Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd5a()" onmouseout="igd5b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-uppercase mb-1"> Pasien pasien rujuk dan tolak rawat</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_tidak_bisa_rawat')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}" id="gbr_igd_pasien_tidak_rawat" height="64px" width="64px">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pending Requests Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body" onmouseover="igd6a()" onmouseout="igd6b()">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien "DOA" dan pasien meninggal</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_doa')->first() }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                    <img src="{{asset('sb-admin/icon/igd/pasien-doa.png')}}" id="gbr_igd_pasien_doa" height="64px" width="64px">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body" onmouseover="igd7a();" onmouseout="igd7b();">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute')->first() }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img src="{{asset('sb-admin/icon/igd/sisrute.png')}}" id="gbr_igd_pasien_sisrute" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body" onmouseover="igd8a();" onmouseout="igd8b();">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang diterima</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute_diterima')->first() }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img src="{{asset('sb-admin/icon/igd/sisrute-terima.png')}}" id="gbr_igd_pasien_sisrute_diterima" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body" onmouseover="igd9a();" onmouseout="igd9b();">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-
-                                            <div class="text-xs font-weight-bold  text-uppercase mb-1">jumlah Rujukan Sisrute yang ditolak</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_sisrute_ditolak')->first() }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <img src="{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}" id="gbr_igd_pasien_sisrute_ditolak" height="64px" width="64px">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Alasan pasien tidak bisa dirawat</label>
-                                <textarea class="form-control  z-depth-1" name="igd_alasan" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('alasan_tidak_bisa_rawat')->first() }}</textarea>
-                            </div>
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan</label>
-                                <textarea class="form-control" name="igd_permasalahan" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('permasalahan')->first() }}</textarea>
-                            </div>
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Lain - lain</label>
-                                <textarea class="form-control" name="igd_lainlain" rows="3"  readonly>{{ \App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('lain_lain')->first() }}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label style="color:#000;font-weight:600">Dokter Jaga: </label>
-                                <select class="form-control" name="igd_dokterjaga" disabled>
-                                    <option value="" selected disabled hidden>Pilih Dokter</option>
-                                    @foreach(\App\Models\Dokter::where('status',1)->get() as $dk)
-                                    @if(\App\Models\Laporanigd::where('id_laporan',$lastIDLaporan)->pluck('id_dokter')->first() == $dk->id) 
-                                    <option value="{{ $dk->id }}" selected>{{ $dk->nama_dokter }}</option>
-                                    @else
-                                    <option value="{{ $dk->id }}">{{ $dk->nama_dokter }}</option>
-                                    @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                          
-                        </div>
-                    </div>  
+        {{-- Info Pengawas --}}
+        <div class="d-flex align-items-center bg-white px-4 py-2 rounded shadow-sm border border-gray-200 ms-2">
+            <div class="me-3 text-end">
+                <div class="text-xs text-gray-500 text-uppercase fw-bold">Pengawas Bertugas</div>
+                <div class="fw-bold text-gray-800">{{ $pengawasName }}</div>
+            </div>
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm" style="width:40px;height:40px;font-size:1rem;">
+                {{ strtoupper(substr($pengawasName ?? 'U', 0, 1)) }}
             </div>
         </div>
-    </div>
+    </x-slot>
+</x-page-header>
 
-
-
-
-
-    <!-- Collapsable Card Example -->
-    <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseCardExample2" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample2">
-            <h6 class="m-0 font-weight-bold ">Laporan Umum / Ruangan</h6>
-        </a>
-        <!-- Card Content - Collapse -->
-        <div class="collapse show" id="collapseCardExample2">
-            <div class="card-body">
-                
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label style="color:#000;font-weight:600"> Ruangan </label>
-                                <select class="form-control select2" name="inap_ruangan" id="inap_ruangan" required>
-                                    <option value="" selected disabled hidden>Pilih Ruangan</option>
-                                    @foreach(\App\Models\Ruangan::where('status',1)->get() as $dk)
-                                    <option value="{{ $dk->id }}">{{ $dk->nama_ruangan }}</option>
-                                  
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 tablelaporan">
-
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h5>Laporan Umum Semua Ruangan</h5>
-                            <h6 style="color:red"><b>Total Pasien (Ruangan) : {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_total_pasien')->sum() }} orang</b></h6>
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTableRuangan" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr style="background-color:green;color:white">
-
-                                        <th >TOTAL</th>
-                                        <th >{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_lama')->sum() }}</th>
-                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_baru')->sum() }}</th>
-                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pindah')->sum() }}</th>
-                                        <th> {{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pindahan')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_meninggal')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_pulang')->sum() }}</th>
-
-                                        <th><b>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_total_pasien')->sum() }}</b></th>
-
-                                        <th>-</th>
-                                        <th>-</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_covid')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_suspek_covid')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_restrain')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_perilaku_kekerasan')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_keracunan')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_keterbatasan_bahasa')->sum() }}</th>
-                                        <th>{{ \App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->pluck('jumlah_pasien_difabel')->sum() }}</th>
-                                        <th>-</th>
-                                    </tr>
-                                    <tr>
-                                        
-                                        <th >Ruangan</th>
-                                        <th> Lama</th>
-                                        <th> Baru</th>
-                                        
-                                        <th> Pindah</th>
-                                        <th> Pindahan</th>
-                                        <th>Meninggal</th>
-                                        <th>Pulang</th>
-                                        <th><b>Total Pasien</b></th>
-
-                                        <th>Catatan Pasien Istimewa</th>
-                                        <th>Catatan Pasien Baru</th>
-                                        <th>Covid</th>
-                                        <th>Suspect Covid</th>
-                                        <th>Restrain</th>
-                                        <th>Perilaku Kekerasan</th>
-                                        <th>Keracunan</th>
-                                        <th>Keterbatasan Bahasa</th>
-                                        <th>Difabel</th>
-                                        <th>Permasalahan Umum</th>
-                                    </tr>
-                                </thead>
-                                
-                                <?php
-                                $no = 1;
-                                ?>
-                                <tbody>
-                                    @foreach(\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->get() as $data)
-                                    <tr>
-                                        
-                                        <td style="white-space: nowrap;word-wrap: break-word;">{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first()  }}</td>
-                                        <td> {{$data->jumlah_pasien_lama}}</td>
-                                        <td> {{$data->jumlah_pasien_baru}}</td>
-                                        
-                                        <td> {{$data->jumlah_pasien_pindah}}</td>
-                                        <td> {{$data->jumlah_pasien_pindahan}}</td>
-                                        <td>{{$data->jumlah_pasien_meninggal}}</td>
-                                        <td>{{$data->jumlah_pasien_pulang}}</td>
-                                        <td><b>{{$data->jumlah_total_pasien}}</b></td>
-
-                                        @if(\App\Models\Catatanpasien::where('id_laporan_umum',$data->id)->where('id_ruangan',$data->id_ruangan)->where('id_jenis_pasien',1)->first())
-                                        <td><a href="#" data-id="{{ $data->id }}"  data-ruangan="{{$data->id_ruangan}}" class="btn-istimewa" data-toggle="modal" data-target="#istimewa" >Lihat</a></td>
-                                        @else
-                                        <td>-</td>
-                                        @endif
-
-                                        @if(\App\Models\Catatanpasien::where('id_laporan_umum',$data->id)->where('id_ruangan',$data->id_ruangan)->where('id_jenis_pasien',2)->first())
-                                        <td><a href="#" data-id="{{ $data->id }}"  data-ruangan="{{$data->id_ruangan}}" class="btn-baru" data-toggle="modal" data-target="#baru" >Lihat</a></td>
-                                        @else
-                                        <td>-</td>
-                                        @endif
-
-                                        <td>{{$data->jumlah_pasien_covid}}</td>
-                                        <td>{{$data->jumlah_pasien_suspek_covid}}</td>
-                                        <td>{{$data->jumlah_pasien_restrain}}</td>
-                                        <td>{{$data->jumlah_pasien_perilaku_kekerasan}}</td>
-                                        <td>{{$data->jumlah_pasien_keracunan}}</td>
-                                        <td>{{$data->jumlah_pasien_keterbatasan_bahasa}}</td>
-                                        <td>{{$data->jumlah_pasien_difabel}}</td>
-                                        @if($data->permasalahan_umum)
-                                        <td><a href="#" data-id="{{ $data->id }}" data-ruangan="{{$data->id_ruangan}}"  class="btn-permasalahan" data-toggle="modal" data-target="#permasalahan" >Lihat</a></td>
-                                        @else
-                                        <td>-</td>
-                                        @endif
-
-                                    </tr>
-                                    <?php
-                                    $no++;
-                                    ?>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-
-            </div>
+{{-- ========================================== --}}
+{{-- KPI STRIP --}}
+{{-- ========================================== --}}
+<div class="pu-kpi-strip animate-fade-in-up">
+    {{-- IGD --}}
+    <div class="pu-kpi-card kpi-igd">
+        <div class="pu-kpi-icon bg-primary-subtle text-primary">
+            <i class="fas fa-ambulance"></i>
+        </div>
+        <div>
+            <div class="pu-kpi-value">{{ $totalIGD }}</div>
+            <div class="pu-kpi-label">IGD</div>
         </div>
     </div>
-
-<!-- IBS -->
-   <!-- Collapsable Card Example -->
-   <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseIBS" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIBS">
-            <h6 class="m-0 font-weight-bold ">Instalasi Bedah Sentral (IBS)</h6>
-        </a>
-        <!-- Card Content - Collapse -->
-        <div class="collapse show" id="collapseIBS">
-            <div class="card-body">
-                <!-- Content Row -->
-                
-                    <div class="row ">
-                        <div class="col-lg-12 tableketerangan">
-                        <?php
-                            $getIDibs = \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('id')->first();
-                        ?>
-                        @if($getIDibs)
-                        <h6 style="color:red"><b>Total Pasien (IBS) : {{ \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('total_pasien')->first() }} orang</b></h6>
-                        @else
-                        <h6 style="color:red"><b>Total Pasien (IBS) : 0 orang</b></h6>
-                        
-                        @endif
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTableIBS" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama <br> (RM)</th>
-                                            <th>Dokter Operasi</th>
-                                            <th>Dokter Anestesi</th>
-                                            <th>Pendamping</th>
-                                            <th>Ruangan Asal</th>
-                                            <th>Jam mulai</th>
-                                            <th>Jam selesai</th>
-                                            <th>Diagnosa Pre</th>
-                                            <th>Diagnosa Post</th>
-                                  
-
-                                        </tr>
-                                    </thead>
-                                    
-                                    <?php
-                                    $no = 1;
-                                    ?>
-                                    <tbody>
-                                        @foreach(\App\Models\Laporanibsdetail::where('id_laporan_ibs',$getIDibs)->get() as $data)
-                                        <?php
-                                        $arrdokteroperasi = explode(',',$data->id_dokter_operasi);
-
-                                        
-                                        ?>
-                                        <tr>
-                                            <td>{{ $no }}</td>
-                                            <td>{{ $data->nama }}<br>({{ $data->rm }})</td>
-                                            <td>
-                                            @foreach($arrdokteroperasi as $key)  
-                                                {{ \App\Models\Dokterirj::where('id',$key)->pluck('nama')->first() }}<br>    
-                                            @endforeach
-
-                                            </td>
-                                            <!-- <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_operasi)->pluck('nama')->first() }}</td> -->
-                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_anestesi)->pluck('nama')->first() }}</td>
-                                            <td>{{ $data->pendamping }}</td>
-                                            <td>{{ \App\Models\Ruangan::where('id',$data->id_ruangan)->pluck('nama_ruangan')->first() }}</td>
-                                            <td>{{ $data->jam_mulai }}</td>
-                                            <td>{{ $data->jam_selesai }}</td>
-                                            <td>{{ $data->diagnosa_pre }}</td>
-                                            <td>{{ $data->diagnosa_post }}</td>
-                                            
-                                        </tr>
-                                        <?php
-                                        $no++;
-                                        ?>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-lg-12">
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Catatan IBS untuk Dinas berikutnya</label>
-                                <textarea class="form-control  z-depth-1" name="ibs_catatan" rows="3" disabled >{{ \App\Models\Laporanibs::where('id_laporan',$lastIDLaporan)->pluck('catatan')->first() }}</textarea>
-                            </div>
-                           
-                          
-                        </div>
-                    </div>
-
-
-
-            </div>
+    {{-- Rawat Inap / Umum --}}
+    <div class="pu-kpi-card kpi-umum">
+        <div class="pu-kpi-icon bg-success-subtle text-success">
+            <i class="fas fa-procedures"></i>
+        </div>
+        <div>
+            <div class="pu-kpi-value">{{ $totalUmum }}</div>
+            <div class="pu-kpi-label">Rawat Inap</div>
         </div>
     </div>
-
-
-
-
-    <!-- Collapsable Card Example -->
-<div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
-        <a href="#collapseIRJ" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseIRJ">
-            <h6 class="m-0 font-weight-bold ">Instalasi Rawat Jalan (IRJ)</h6>
-        </a>
-        <!-- Card Content - Collapse -->
-        <div class="collapse show" id="collapseIRJ">
-            <div class="card-body">
-                <!-- Content Row -->
-                
-                    <div class="row ">
-                        <div class="col-lg-12 tableketerangan">
-                        <?php
-                            $getIDirj = \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('id')->first();
-                        ?>
-                        @if($getIDirj)
-                        <h6 style="color:red"><b>Total Pasien (IRJ) : {{ \App\Models\Laporanirjdetail::where('id_laporan_irj',$getIDirj)->pluck('pasien_total')->sum() }} orang</b></h6>
-                        @else
-                        <h6 style="color:red"><b>Total Pasien (IRJ) : 0 orang</b></h6>
-                        
-                        @endif
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTableIRJ" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th width="10%">No</th>
-                                            <th>SDMK Jenis</th>
-                                            <th>Nama Dokter</th>
-                                            <th>Pasien Lama</th>
-                                            <th>Pasien Baru</th>
-                                            <th>Total</th>
-                                           
-                                        </tr>
-                                    </thead>
-                                    
-                                    <?php
-                                    $no = 1;
-                                    ?>
-                                    <tbody>
-                                        @foreach(\App\Models\Laporanirjdetail::where('status',1)->where('id_laporan_irj',\App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('id')->first())->get() as $data)
-                                        <tr>
-                                            <td>{{ $no }}</td>
-                                            <td>{{ \App\Models\sdmk_jenis::where('id',\App\Models\Dokterirj::where('id',$data->id_dokter_irj)->pluck('id_sdmk_jenis')->first())->pluck('jenis')->first() }}</td>
-                                            <td>{{ \App\Models\Dokterirj::where('id',$data->id_dokter_irj)->pluck('nama')->first() }}</td>
-                                            <td>{{ $data->pasien_lama }}</td>
-                                            <td>{{ $data->pasien_baru }}</td>
-                                            <td>{{ $data->pasien_total }}</td>
-                                         
-
-                                        </tr>
-                                        <?php
-                                        $no++;
-                                        ?>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-lg-12">
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Masalah</label>
-                                <textarea class="form-control  z-depth-1" name="irj_masalah" rows="3" disabled >{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('masalah')->first() }}</textarea>
-                            </div>
-                            <div class="form-group shadow-textarea">
-                                <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Langkah atasi masalah</label>
-                                <textarea class="form-control" name="irj_langkah" rows="3" disabled >{{ \App\Models\Laporanirj::where('id_laporan',$lastIDLaporan)->pluck('langkah_atasi_masalah')->first() }}</textarea>
-                            </div>
-                            
-                          
-                        </div>
-                    </div>
-
-
-
-            </div>
+    {{-- IBS --}}
+    <div class="pu-kpi-card kpi-ibs">
+        <div class="pu-kpi-icon bg-warning-subtle text-warning">
+            <i class="fas fa-syringe"></i>
+        </div>
+        <div>
+            <div class="pu-kpi-value">{{ $totalIBS }}</div>
+            <div class="pu-kpi-label">IBS</div>
         </div>
     </div>
-
-
-</div>
-<!-- /.container-fluid -->
-
-
-
-<!-- Rincian umum -->
-<div id="istimewa" class="modal fade" role="dialog"  >
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h4>Catatan Pasien Istimewa</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                
-            </div>
-            <div class="modal-body" style="padding:30px">
-                <div class="row ">
-                    <div class="col-lg-12 tableistimewa">
-                
-                    </div>
-                </div>
-            </div>
-         
+    {{-- IRJ --}}
+    <div class="pu-kpi-card kpi-irj">
+        <div class="pu-kpi-icon bg-info-subtle text-info">
+            <i class="fas fa-stethoscope"></i>
         </div>
-        
-    </div>
-</div>
-
-<div id="baru" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Catatan Pasien Baru</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tablebaru">
-                
-                </div>
-            </div>
-            </div>
-           
+        <div>
+            <div class="pu-kpi-value">{{ $totalIRJ }}</div>
+            <div class="pu-kpi-label">Rawat Jalan (IRJ)</div>
         </div>
     </div>
 </div>
 
+{{-- ========================================== --}}
+{{-- TAB PANEL --}}
+{{-- ========================================== --}}
+<div class="pu-review-tabs animate-fade-in-up">
+    <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-igd" data-bs-toggle="tab" data-bs-target="#panel-igd"
+                type="button" role="tab" aria-controls="panel-igd" aria-selected="true">
+                <i class="fas fa-ambulance me-2 text-primary"></i>IGD
+                <span class="badge rounded-pill bg-primary pu-tab-badge">{{ $totalIGD }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-umum" data-bs-toggle="tab" data-bs-target="#panel-umum"
+                type="button" role="tab" aria-controls="panel-umum" aria-selected="false">
+                <i class="fas fa-procedures me-2 text-success"></i>Umum / Ruangan
+                <span class="badge rounded-pill bg-success pu-tab-badge">{{ $totalUmum }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-ibs" data-bs-toggle="tab" data-bs-target="#panel-ibs"
+                type="button" role="tab" aria-controls="panel-ibs" aria-selected="false">
+                <i class="fas fa-syringe me-2 text-warning"></i>IBS
+                <span class="badge rounded-pill bg-warning text-dark pu-tab-badge">{{ $totalIBS }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-irj" data-bs-toggle="tab" data-bs-target="#panel-irj"
+                type="button" role="tab" aria-controls="panel-irj" aria-selected="false">
+                <i class="fas fa-stethoscope me-2 text-info"></i>IRJ
+                <span class="badge rounded-pill bg-info pu-tab-badge">{{ $totalIRJ }}</span>
+            </button>
+        </li>
+    </ul>
 
-<div id="permasalahan" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Permasalahan</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tablemasalah">
-                
-                </div>
-            </div>
-            </div>
-           
+    <div class="tab-content" id="dashboardTabsContent">
+        <div class="tab-pane fade show active" id="panel-igd" role="tabpanel" aria-labelledby="tab-igd">
+            @include('admin.partials.igd')
+        </div>
+        <div class="tab-pane fade" id="panel-umum" role="tabpanel" aria-labelledby="tab-umum">
+            @include('admin.partials.umum-ruangan')
+        </div>
+        <div class="tab-pane fade" id="panel-ibs" role="tabpanel" aria-labelledby="tab-ibs">
+            @include('admin.partials.ibs')
+        </div>
+        <div class="tab-pane fade" id="panel-irj" role="tabpanel" aria-labelledby="tab-irj">
+            @include('admin.partials.irj')
         </div>
     </div>
 </div>
 
+{{-- ========================================== --}}
+{{-- MODALS --}}
+{{-- ========================================== --}}
+@include('admin.partials.dashboard-modals')
 
 @stop
+
 @section('custom_script')
-<script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
-<script>
-    $("#dataTableIRJ").DataTable({
-        "pageLength": 5,
-        "ordering" : false,
-        lengthMenu: [[5], [5]]
-    });
-    $("#dataTableIBS").DataTable({
-        "pageLength": 5,
-        "ordering" : false,
-        lengthMenu: [[5], [5]]
-    });
-$("#inap_ruangan").change(function(){
-  
-     $(".tablelaporan").html("<h1>Mohon Tunggu...</h1>")
-     $.ajax({
-       type : "get",
-       url : 'refresh-laporan-umum-pu/'+$("#inap_ruangan").val(),
-        data: {ruangan: $("#inap_ruangan").val()},
-       success : function(data){
-         console.log(data);
-         $(".tablelaporan").html(data);
-       }
-     });
-   
-
-});
-
-</script>
-<script>
-    //IGD
-    
-
-    
-    function igd1a() {
-        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-dirawat.png')}}');
-    }
-
-    function igd1b() {
-        document.getElementById("gbr_igd_pasien").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-dirawat.png')}}');
-    }
-
-    function igd2a() {
-        document.getElementById("gbr_igd_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-pulang.png')}}');
-    }
-
-    function igd2b() {
-        document.getElementById("gbr_igd_pasien_pulang").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-pulang.png')}}');
-    }
-    
-    function igd3a() {
-        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-emergency.png')}}');
-    }
-
-    function igd3b() {
-        document.getElementById("gbr_igd_pasien_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-emergency.png')}}');
-    }
-    
-    function igd4a() {
-        document.getElementById("gbr_igd_pasien_non_emergency").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-non-emergency.png')}}');
-    }
-
-    function igd4b() {
-        document.getElementById("gbr_igd_pasien_non_emergency").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-non-emergency.png')}}');
-    }
-
-    function igd5a() {
-        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-tidak-bisa-dirawat.png')}}');
-    }
-
-    function igd5b() {
-        document.getElementById("gbr_igd_pasien_tidak_rawat").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-tidak-bisa-dirawat.png')}}');
-    }
-    
-    function igd6a() {
-        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/pasien-doa.png')}}');
-    }
-
-    function igd6b() {
-        document.getElementById("gbr_igd_pasien_doa").setAttribute('src', '{{asset('sb-admin/icon/igd/pasien-doa.png')}}');
-    }
-
-    function igd7a() {
-        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute.png')}}');
-    }
-
-    function igd7b() {
-        document.getElementById("gbr_igd_pasien_sisrute").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute.png')}}');
-    }
-
-    function igd8a() {
-        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-terima.png')}}');
-    }
-
-    function igd8b() {
-        document.getElementById("gbr_igd_pasien_sisrute_diterima").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-terima.png')}}');
-    }
-
-    function igd9a() {
-        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/warna/igd/sisrute-tolak.png')}}');
-    }
-
-    function igd9b() {
-        document.getElementById("gbr_igd_pasien_sisrute_ditolak").setAttribute('src', '{{asset('sb-admin/icon/igd/sisrute-tolak.png')}}');
-    }
-
-
-    //Rawat Inap
-    function ranap1a() {
-        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/warna/general/pasien.png')}}');
-    }
-
-    function ranap1b() {
-        document.getElementById("gbr_inap_pasien_lama").setAttribute('src', '{{asset('sb-admin/icon/general/pasien.png')}}');
-    }
-
-    function ranap2a() {
-        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-baru.png')}}');
-    }
-
-    function ranap2b() {
-        document.getElementById("gbr_inap_pasien_baru").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-baru.png')}}');
-    }
-
-    function ranap3a() {
-        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindah.png')}}');
-    }
-
-    function ranap3b() {
-        document.getElementById("gbr_inap_pasien_pindah").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}');
-    }
-
-    function ranap4a() {
-        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-pindahan.png')}}');
-    }
-
-    function ranap4b() {
-        document.getElementById("gbr_inap_pasien_pindahan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}');
-    }
-
-    function ranap5a() {
-        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-meninggal.png')}}');
-    }
-
-    function ranap5b() {
-        document.getElementById("gbr_inap_pasien_meninggal").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}');
-    }
-
-    function ranap6a() {
-        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-covid.png')}}');
-    }
-
-    function ranap6b() {
-        document.getElementById("gbr_inap_pasien_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-covid.png')}}');
-    }
-
-    function ranap7a() {
-        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-suspect-covid.png')}}');
-    }
-
-    function ranap7b() {
-        document.getElementById("gbr_inap_pasien_suspek_covid").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}');
-    }
-
-    function ranap8a() {
-        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-restrain.png')}}');
-    }
-
-    function ranap8b() {
-        document.getElementById("gbr_inap_pasien_restrain").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}');
-    }
-
-    function ranap9a() {
-        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-perilaku-kekerasan.png')}}');
-    }
-
-    function ranap9b() {
-        document.getElementById("gbr_inap_pasien_perilaku_kekerasan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}');
-    }
-
-    function ranap10a() {
-        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keracunan.png')}}');
-    }
-
-    function ranap10b() {
-        document.getElementById("gbr_inap_pasien_keracunan").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}');
-    }
-
-    function ranap11a() {
-        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-keterbatasan-bahasa.png')}}');
-    }
-
-    function ranap11b() {
-        document.getElementById("gbr_inap_pasien_keterbatasan_bahasa").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}');
-    }
-
-    function ranap12a() {
-        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/warna/ranap/pasien-difabel.png')}}');
-    }
-
-    function ranap12b() {
-        document.getElementById("gbr_inap_pasien_difabel").setAttribute('src', '{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}');
-    }
-</script>
-
-<script>
-    // $("#dataTable").DataTable({
-
-    // });
-    $(document).ready(function() {
-        var table = $('#dataTableRuangan').removeAttr('width').DataTable({
-            scrollX: true,
-            
-            ordering: false,
-            paging: false,
-            searching: false,
-            info: false,
-            columnDefs: [{
-                width: 150,
-                targets: 0
-            }],
-            fixedColumns: true
-        });
-    });
-
-
-</script>
-<script>
-// 
-$("#dataTableRuangan").on('click','.btn-istimewa',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tableistimewa").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-istimewa/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableistimewa").html(data);
-                            }   
-                    });
-
-    });
-
-    $("#dataTableRuangan").on('click','.btn-baru',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tablebaru").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-baru/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tablebaru").html(data);
-                            }   
-                    });
-
-    });
-
-    $("#dataTableRuangan").on('click','.btn-permasalahan',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tablemasalah").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-permasalahan/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tablemasalah").html(data);
-                            }   
-                    });
-
-    });
-</script>
+@include('admin.partials.dashboard-scripts')
 @stop

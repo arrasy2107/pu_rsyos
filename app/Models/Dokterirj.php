@@ -12,4 +12,9 @@ class Dokterirj extends Model
     protected $primaryKey = "id";
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    public function jenisSdmk()
+    {
+        return $this->belongsTo(sdmk_jenis::class, 'id_sdmk_jenis', 'id');
+    }
 }

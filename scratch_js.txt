@@ -1,0 +1,194 @@
+            // ==========================================
+            // JS CATATAN PASIEN: Modal handlers
+            // ==========================================
+            let id_istimewa, kamar_istimewa, nama_istimewa, rm_istimewa, diagnosa_istimewa, dpjp_istimewa, kondisi_istimewa;
+            let id_baru, kamar_baru, nama_baru, rm_baru, diagnosa_baru, dpjp_baru, kondisi_baru;
+
+            // Set ruangan ID ketika AJAX meload form
+            $(document).on('change', '#inap_ruangan', function() {
+                $('#formTambahIstimewa input[name=ruangan]').val($(this).val());
+                $('#formEditIstimewa input[name=ruangan]').val($(this).val());
+                $('#formTambahBaru input[name=ruangan]').val($(this).val());
+                $('#formEditBaru input[name=ruangan]').val($(this).val());
+            });
+
+            // Handle modal untuk Catatan Pasien Istimewa - edit button
+            $(document).on('click', '#dataTableistimewa .btn-edit', function() {
+                id_istimewa = $(this).data('id');
+                kamar_istimewa = $(this).data('kamar');
+                nama_istimewa = $(this).data('nama');
+                rm_istimewa = $(this).data('rm');
+                diagnosa_istimewa = $(this).data('diagnosa');
+                dpjp_istimewa = $(this).data('dpjp');
+                kondisi_istimewa = $(this).data('kondisi');
+            });
+
+            $('#editistimewa').on('show.bs.modal', function() {
+                $(".txtidistimewa").val(id_istimewa);
+                $(".txt-kamar").val(kamar_istimewa);
+                $(".txt-nama").val(nama_istimewa);
+                $(".txt-rm").val(rm_istimewa);
+                $(".txt-diagnosa").val(diagnosa_istimewa);
+                $(".txt-dpjp").select2().val(dpjp_istimewa).trigger("change");
+                $(".txt-kondisi").val(kondisi_istimewa);
+            });
+
+            // Handle modal untuk Catatan Pasien Baru - edit button
+            $(document).on('click', '#dataTablebaru .btn-edit', function() {
+                id_baru = $(this).data('id');
+                kamar_baru = $(this).data('kamar');
+                nama_baru = $(this).data('nama');
+                rm_baru = $(this).data('rm');
+                diagnosa_baru = $(this).data('diagnosa');
+                dpjp_baru = $(this).data('dpjp');
+                kondisi_baru = $(this).data('kondisi');
+            });
+
+            $('#editbaru').on('show.bs.modal', function() {
+                $(".txtidbaru").val(id_baru);
+                $(".txt-kamar").val(kamar_baru);
+                $(".txt-nama").val(nama_baru);
+                $(".txt-rm").val(rm_baru);
+                $(".txt-diagnosa").val(diagnosa_baru);
+                $(".txt-dpjp").select2().val(dpjp_baru).trigger("change");
+                $(".txt-kondisi").val(kondisi_baru);
+            });
+
+            // Functions for refreshing Catatan tables
+            function refreshCatatanIstimewa(ruangan) {
+                if(!ruangan) ruangan = $('#inap_ruangan').val();
+                if(!ruangan) return;
+                if (window.Livewire) {
+                    Livewire.dispatch('refreshCatatanIstimewa');
+                    return;
+                }
+                $.ajax({
+                    type: "get",
+                    url: 'refresh-catatan-pasien-istimewa/' + ruangan,
+                    success: function(data) {
+                        $(".tableistimewa").html(data);
+                    }
+                });
+            }
+
+            function refreshCatatanBaru(ruangan) {
+                if(!ruangan) ruangan = $('#inap_ruangan').val();
+                if(!ruangan) return;
+                if (window.Livewire) {
+                    Livewire.dispatch('refreshCatatanBaru');
+                    return;
+                }
+                $.ajax({
+                    type: "get",
+                    url: 'refresh-catatan-pasien-baru/' + ruangan,
+                    success: function(data) {
+                        $(".tablebaru").html(data);
+                    }
+                });
+            }
+
+            // AJAX Submit Handlers for Istimewa
+            $("#formTambahIstimewa").on("submit", function(e) {
+                e.preventDefault();
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $("#tambahistimewa").modal('hide');
+                            form[0].reset();
+                            form.find(".select2").val("").trigger("change");
+                            alert(response.message);
+                            refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
+                        } else alert(response.message);
+                    },
+                    error: function(error) { console.log(error); }
+                });
+            });
+
+            $("#formEditIstimewa").on("submit", function(e) {
+                e.preventDefault();
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'PUT',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $("#editistimewa").modal('hide');
+                            alert(response.message);
+                            refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
+                        } else alert(response.message);
+                    },
+                    error: function(error) { console.log(error); }
+                });
+            });
+
+            // AJAX Submit Handlers for Baru
+            $("#formTambahBaru").on("submit", function(e) {
+                e.preventDefault();
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $("#tambahbaru").modal('hide');
+                            form[0].reset();
+                            form.find(".select2").val("").trigger("change");
+                            alert(response.message);
+                            refreshCatatanBaru(form.find('input[name=ruangan]').val());
+                        } else alert(response.message);
+                    },
+                    error: function(error) { console.log(error); }
+                });
+            });
+
+            $("#formEditBaru").on("submit", function(e) {
+                e.preventDefault();
+                let form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'PUT',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $("#editbaru").modal('hide');
+                            alert(response.message);
+                            refreshCatatanBaru(form.find('input[name=ruangan]').val());
+                        } else alert(response.message);
+                    },
+                    error: function(error) { console.log(error); }
+                });
+            });
+
+            // Delete Handlers for Catatan
+            $(document).on('click', '#dataTableistimewa .btn-hapus, #dataTablebaru .btn-hapus', function(e) {
+                e.preventDefault();
+                let id = $(this).data('id');
+                let tableId = $(this).closest('table').attr('id');
+                let isIstimewa = (tableId === 'dataTableistimewa');
+                
+                if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
+                    $.ajax({
+                        url: 'deletecatatanpasien',
+                        method: 'GET',
+                        data: { id: id },
+                        success: function(response) {
+                            if (response.success) {
+                                alert(response.message);
+                                if (isIstimewa) {
+                                    refreshCatatanIstimewa();
+                                } else {
+                                    refreshCatatanBaru();
+                                }
+                            } else alert("Error");
+                        },
+                        error: function(error) { console.log(error); }
+                    });
+                }
+            });
+

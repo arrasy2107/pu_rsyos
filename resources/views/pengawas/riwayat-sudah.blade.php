@@ -1,456 +1,477 @@
-@extends('master.masterpengawas')
+@extends('master.master')
+
+@section('page_title', 'Riwayat Sudah Diverifikasi')
+
 @section('content')
-@if (Session::has('success-add'))
-<div class="alert alert-success alert-call">
-    <p>{{ Session::get('success-add') }}</p>
-</div>
-@endif
-@if (Session::has('success-edit'))
-<div class="alert alert-success alert-call2">
-    <p>{{ Session::get('success-edit') }}</p>
-</div>
-@endif
-@if (Session::has('success-delete'))
-<div class="alert alert-success alert-call3">
-    <p>{{ Session::get('success-delete') }}</p>
-</div>
-@endif
-@if (Session::has('fail-delete'))
-<div class="alert alert-danger alert-call4">
-    <p>{{ Session::get('fail-delete') }}</p>
-</div>
-@endif
-<?php 
 
-
-setlocale(LC_TIME, 'id_ID');
-\Carbon\Carbon::setLocale('id');
-\Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
-$t = new Grei\TanggalMerah();
-
-
-
-?>
 <div class="container-fluid">
 
-<!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Riwayat Laporan Sebulan terakhir (Sudah diverifikasi Direktur)</h1>
+    <x-alert />
 
-<!-- DataTales Example -->
-<div class="card shadow mb-4">
+    <?php
+    setlocale(LC_TIME, 'id_ID');
+    \Carbon\Carbon::setLocale('id');
+    $t = new Grei\TanggalMerah();
+    $date = date_default_timezone_set('Asia/Jakarta');
+    $today = date('Y-m-d H:i:s');
+    $laporans = \App\Models\Laporan::with(['dinas', 'pengawas'])
+        ->where('id_pengawas', \Auth::id())
+        ->where('verified', 1)
+        ->where('verified_bidang', 1)
+        ->where('status', 1)
+        ->whereBetween('created_at', [date('Y-m-d', strtotime('-1 month')), $today])
+        ->orderBy('updated_at', 'DESC')
+        ->get();
+    ?>
 
-    <div class="card-body">
-        <div class ="row">
-            <div class="col-md-3">
-                <label for="tglmulai">Tanggal Mulai</label>
-                <div class="form-group">
+    <x-page-header title="Riwayat Laporan Sebulan Terakhir" subtitle="Laporan yang telah diverifikasi oleh Direktur dalam 30 hari terakhir">
+        <x-slot name="actions">
+            <span class="badge bg-success px-3 py-2 shadow-sm" style="font-size: 0.875rem;">
+                <i class="fas fa-check-double me-2"></i> Sudah Terverifikasi
+            </span>
+        </x-slot>
+    </x-page-header>
 
-                <input type="date" id="tanggal" class="form-control" name="tglmulai" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <label for="tglmulai">Tanggal Selesai</label>
-                <div class="form-group">
-
-                <input type="date" id="tanggal2" class="form-control" name="tglselesai" />
-                </div>
-            </div>
-        
-            <div class="col-md-1">
-                <label for="tglmulai" style="color:white">Lihat</label>
-                <div class="form-group">
-
-                <button type="button" id="lihat" class="btn btn-primary btn-sm" name="lihat">Lihat</button>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 tablehistory">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th width="10%">No</th>
-                                <th width="15%">Tanggal</th>
-                                <th width="10%">Jam</th>
-                                <th>Dinas</th>
-                                <th>Pengawas Umum</th>
-                                <th >Tanda Tangan</th>
-                                <th width="20%">Laporan</th>
-
-                            </tr>
-                        </thead>
-                        
-                        <?php
-                        $date = date_default_timezone_set('Asia/Jakarta');
-                        $today = date('Y-m-d H:i:s');
-                        $no = 1;
-                        ?>
-                        
-                        <tbody>
-                            @foreach(\App\Models\Laporan::whereBetween('created_at',[date("Y-m-d", strtotime("-1 month")),$today])->where('verified',1)->orderBy('updated_at','DESC')->where('status',1)->get() as $data)
-                            <?php
-                            $t->set_date( date('Ymd', strtotime($data->created_at)));
-                            ?>
-                            <tr>
-                                <td>{{ $no }}</td>
-                                <td>{{ $data->created_at->isoFormat('dddd, D MMMM Y')}}</td>
-                                <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
-                                <td>{{ strtoupper(\App\Models\Dinas::where('id',$data->id_dinas)->pluck('dinas')->first()) }}</td>
-                                <td>{{ \App\Models\User::where('id',$data->id_pengawas)->pluck('nama')->first() }}</td>
-                                <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
-                                
-                                <td>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-toggle="modal" data-target="#igd">IGD</button>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum " data-jenis="2" data-toggle="modal" data-target="#umum">Umum</button>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-warning btn-ibs " style="color:#000" data-jenis="4" data-toggle="modal" data-target="#ibs">IBS</button>
-                                    @if($data->id_dinas != 3 && $t->check() != true)
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj " data-jenis="3" data-toggle="modal" data-target="#irj">IRJ</button>
-                                    @endif
-                                </td>
-
-                            </tr>
-                            <?php
-                            $no++;
-                            ?>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-                
-    </div>
-</div>
-
-</div>
-<div id="igd" class="modal fade" role="dialog">
-    
-    <div class="modal-dialog modal-xl">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-        <div class="modal-header">
-                <h4>Instalasi Gawat Darurat (IGD)</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tableigd">
-                
-                </div>
-            </div>
-            </div>
-          
-           
-        </div>
-    </div>
-</div>
-<div id="umum" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-xl" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Umum / Ruangan</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tableumum">
-                
-                </div>
-            </div>
-            </div>
-           
-        </div>
-    </div>
-</div>
-<div id="ibs" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-xl" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Instalasi Bedah Sentral (IBS)</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tableibs">
-                
-                </div>
-            </div>
-            </div>
-           
-        </div>
-    </div>
-</div>
-<div id="irj" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-xl">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-        <div class="modal-header">
-                <h4>Instalasi Rawat Jalan (IRJ)</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tableirj">
-                
-                </div>
-            </div>
-            </div>
-           
-        </div>
-    </div>
-</div>
-
-<!-- Rincian umum -->
-<div id="istimewa" class="modal fade" role="dialog"  >
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h4>Catatan Pasien Istimewa</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                
-            </div>
-            <div class="modal-body" style="padding:30px">
-                <div class="row ">
-                    <div class="col-lg-12 tableistimewa">
-                
+    {{-- Filter Card --}}
+    <x-data-card title="Filter Rentang Tanggal" icon="fas fa-filter" class="mb-4">
+        <div class="row align-items-end">
+            <div class="col-md-4">
+                <div class="form-group mb-0">
+                    <label class="fw-bold text-dark small text-uppercase">Tanggal Mulai</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-white border-right-0"><i class="fas fa-calendar-alt text-primary"></i></span>
+                        </div>
+                        <input type="date" id="tanggal" class="form-control border-left-0" name="tglmulai" />
                     </div>
                 </div>
             </div>
-         
-        </div>
-        
-    </div>
-</div>
-
-<div id="baru" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Catatan Pasien Baru</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tablebaru">
-                
+            <div class="col-md-4">
+                <div class="form-group mb-0">
+                    <label class="fw-bold text-dark small text-uppercase">Tanggal Selesai</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-white border-right-0"><i class="fas fa-calendar-check text-success"></i></span>
+                        </div>
+                        <input type="date" id="tanggal2" class="form-control border-left-0" name="tglselesai" />
+                    </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <button type="button" id="lihat" class="btn btn-primary w-100 shadow-sm">
+                    <i class="fas fa-search me-2"></i> Cari Laporan
+                </button>
             </div>
-           
         </div>
-    </div>
-</div>
+    </x-data-card>
 
-
-<div id="permasalahan" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" >
-
-        <!-- Modal content-->
-        <div class="modal-content">
-
-        <div class="modal-header">
-                <h4>Permasalahan</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+    {{-- Data Table Card --}}
+    <x-data-card title="Laporan Terverifikasi (30 Hari Terakhir)" icon="fas fa-clipboard-check" headerClass="text-success">
+        <x-slot name="actions">
+            <span class="text-muted small"><i class="fas fa-info-circle me-1"></i> Gunakan filter di atas untuk mempersempit pencarian</span>
+        </x-slot>
+        <div class="col-md-12 tablehistory p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th width="5%" class="text-center ps-4">No</th>
+                            <th width="18%">Tanggal</th>
+                            <th width="8%">Jam</th>
+                            <th width="10%">Dinas</th>
+                            <th>Pengawas Umum</th>
+                            <th width="14%">Tanda Tangan</th>
+                            <th width="22%" class="text-center">Detail Laporan</th>
+                        </tr>
+                    </thead>
+                    <?php $no = 1; ?>
+                    <tbody>
+                        @forelse($laporans as $data)
+                        <?php $t->set_date(date('Ymd', strtotime($data->created_at))); ?>
+                        <tr>
+                            <td class="text-center align-middle ps-4 fw-bold text-muted">{{ $no++ }}</td>
+                            <td class="align-middle">
+                                <div class="fw-bold text-dark">{{ $data->created_at->isoFormat('dddd') }}</div>
+                                <div class="text-muted small">{{ $data->created_at->isoFormat('D MMMM Y') }}</div>
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge bg-light border px-2 py-1">{{ date('H:i', strtotime($data->created_at)) }}</span>
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge bg-primary px-2 py-1 text-uppercase" style="font-size: 0.7rem;">
+                                    {{ $data->dinas->dinas ?? '-' }}
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.75rem; flex-shrink: 0;">
+                                        {{ strtoupper(substr($data->pengawas->nama ?? 'P', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ $data->pengawas->nama ?? '' }}</div>
+                                        <div><span class="badge bg-success" style="font-size: 0.65rem;"><i class="fas fa-check me-1"></i>Terverifikasi</span></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <img style="max-width:120px; height:auto;" class="img-fluid rounded border shadow-sm" src="{{asset('signature/'.$data->signature)}}" alt="Tanda Tangan">
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="d-flex flex-wrap justify-content-center" style="gap: 4px;">
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd" data-bs-toggle="modal" data-bs-target="#igd" title="IGD">
+                                        <i class="fas fa-ambulance me-1"></i>IGD
+                                    </button>
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum" data-bs-toggle="modal" data-bs-target="#umum" title="Ruangan">
+                                        <i class="fas fa-procedures me-1"></i>Umum
+                                    </button>
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-warning text-dark btn-ibs" data-bs-toggle="modal" data-bs-target="#ibs" title="IBS">
+                                        <i class="fas fa-syringe me-1"></i>IBS
+                                    </button>
+                                    @if($data->id_dinas != 3 && $t->check() != true)
+                                    <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj" data-bs-toggle="modal" data-bs-target="#irj" title="IRJ">
+                                        <i class="fas fa-stethoscope me-1"></i>IRJ
+                                    </button>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 text-gray-300"></i>
+                                    <p class="mb-0 fw-bold">Tidak ada laporan yang sudah diverifikasi dalam sebulan terakhir.</p>
+                                    <p class="small">Coba ubah rentang tanggal pencarian di atas.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-body" style="padding:30px">
-            <div class="row ">
-                <div class="col-lg-12 tablemasalah">
-                
+        </div>
+    </x-data-card>
+
+    {{-- MODALS --}}
+    <!-- Modal IGD -->
+    <div id="igd" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header pu-card-gradient-header text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-ambulance me-2"></i> Detail Laporan — Instalasi Gawat Darurat (IGD)</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tableigd">
+                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
                 </div>
             </div>
-            </div>
-           
         </div>
     </div>
+
+    <!-- Modal Umum/Ruangan -->
+    <div id="umum" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-procedures me-2"></i> Detail Laporan — Umum / Ruangan</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tableumum">
+                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-success"></i></div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal IBS -->
+    <div id="ibs" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-syringe me-2"></i> Detail Laporan — Instalasi Bedah Sentral (IBS)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tableibs">
+                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-warning"></i></div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal IRJ -->
+    <div id="irj" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-stethoscope me-2"></i> Detail Laporan — Instalasi Rawat Jalan (IRJ)</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tableirj">
+                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pasien Istimewa -->
+    <div id="istimewa" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-star me-2 text-warning"></i> Catatan Pasien Istimewa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tableistimewa">
+                        @livewire('dashboard.catatan-pasien-istimewa-modal', [], key('catatan-pasien-istimewa-sudah'))
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pasien Baru -->
+    <div id="baru" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-user-plus me-2 text-success"></i> Catatan Pasien Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tablebaru">
+                        @livewire('dashboard.catatan-pasien-baru-modal', [], key('catatan-pasien-baru-sudah'))
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Permasalahan -->
+    <div id="permasalahan" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-2 text-danger"></i> Permasalahan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    <div class="tablemasalah">
+                        @livewire('dashboard.permasalahan-modal', [], key('catatan-pasien-permasalahan-sudah'))
+                    </div>
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @stop
+
+    @section('custom_script')
+    <script>
+        $(function() {
+            $("#dataTable").DataTable({
+                "ordering": false,
+                "language": {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
+                },
+                "columnDefs": [{
+                    "orderable": false,
+                    "targets": [0, 6]
+                }]
+            });
+
+            setTimeout(function() {
+                $(".alert-call, .alert-call2, .alert-call3, .alert-call4").fadeOut(500);
+            }, 3500);
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+
+        let id1, id2, id3, id4;
+
+        $("#dataTable").on('click', '.btn-igd', function() {
+            id1 = $(this).val();
+        });
+        $("#dataTable").on('click', '.btn-umum', function() {
+            id2 = $(this).val();
+        });
+        $("#dataTable").on('click', '.btn-irj', function() {
+            id3 = $(this).val();
+        });
+        $("#dataTable").on('click', '.btn-ibs', function() {
+            id4 = $(this).val();
+        });
+
+        function loadModal(selector, url, data) {
+            $(selector).html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Memuat data...</p></div>');
+            $.ajax({
+                type: "get",
+                url: url,
+                data: data,
+                success: function(res) {
+                    $(selector).html(res);
+                }
+            });
+        }
+
+        $('#igd').on('show.bs.modal', function() {
+            if (window.Livewire) {
+                Livewire.dispatch('openLaporanDetailModal', {
+                    type: 'igd',
+                    idlaporan: id1
+                });
+            } else {
+                loadModal('.tableigd', 'refresh-detail-laporan-igd/' + id1, {
+                    idlaporan: id1
+                });
+            }
+        });
+
+        $('#umum').on('show.bs.modal', function() {
+            if (window.Livewire) {
+                Livewire.dispatch('openLaporanDetailModal', {
+                    type: 'umum',
+                    idlaporan: id2
+                });
+            } else {
+                loadModal('.tableumum', 'refresh-detail-laporan-umum/' + id2, {
+                    idlaporan: id2
+                });
+            }
+        });
+
+        $('#irj').on('show.bs.modal', function() {
+            if (window.Livewire) {
+                Livewire.dispatch('openLaporanDetailModal', {
+                    type: 'irj',
+                    idlaporan: id3
+                });
+            } else {
+                loadModal('.tableirj', 'refresh-detail-laporan-irj/' + id3, {
+                    idlaporan: id3
+                });
+            }
+        });
+
+        $('#ibs').on('show.bs.modal', function() {
+            if (window.Livewire) {
+                Livewire.dispatch('openLaporanDetailModal', {
+                    type: 'ibs',
+                    idlaporan: id4
+                });
+            } else {
+                loadModal('.tableibs', 'refresh-detail-laporan-ibs/' + id4, {
+                    idlaporan: id4
+                });
+            }
+        });
+
+        // Filter by date range
+        $("#lihat").click(function() {
+            if (!$("#tanggal").val() || !$("#tanggal2").val()) {
+                alert('Lengkapi tanggal mulai dan tanggal selesai dahulu.');
+            } else {
+                $(".tablehistory").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary"></i><p class="mt-3 text-muted fw-bold">Sedang memuat data laporan...</p></div>');
+                $.ajax({
+                    type: "get",
+                    url: 'refresh-history/' + $("#tanggal").val() + '/' + $("#tanggal2").val(),
+                    data: {
+                        tanggal: $("#tanggal").val(),
+                        tanggal2: $("#tanggal2").val()
+                    },
+                    success: function(data) {
+                        $(".tablehistory").html(data);
+                        // Re-initialize DataTable in the AJAX response if needed
+                    }
+                });
+            }
+        });
+
+        // Sub-modal triggers from AJAX-loaded content (use Livewire when available)
+        $(document).on('click', "#dataTableRuangan .btn-istimewa", function() {
+            let idlaporan = $(this).data('id'),
+                ruangan = $(this).data('ruangan');
+            if (window.Livewire) {
+                Livewire.dispatch('openIstimewaModal', {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+                $('#istimewa').modal('show');
+            } else {
+                loadModal('.tableistimewa', 'refresh-istimewa/' + idlaporan + '/' + ruangan, {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+            }
+        });
+
+        $(document).on('click', "#dataTableRuangan .btn-baru", function() {
+            let idlaporan = $(this).data('id'),
+                ruangan = $(this).data('ruangan');
+            if (window.Livewire) {
+                Livewire.dispatch('openBaruModal', {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+                $('#baru').modal('show');
+            } else {
+                loadModal('.tablebaru', 'refresh-baru/' + idlaporan + '/' + ruangan, {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+            }
+        });
+
+        $(document).on('click', "#dataTableRuangan .btn-permasalahan", function() {
+            let idlaporan = $(this).data('id'),
+                ruangan = $(this).data('ruangan');
+            if (window.Livewire) {
+                Livewire.dispatch('openPermasalahanModal', {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+                $('#permasalahan').modal('show');
+            } else {
+                loadModal('.tablemasalah', 'refresh-permasalahan/' + idlaporan + '/' + ruangan, {
+                    idlaporan: idlaporan,
+                    idruangan: ruangan
+                });
+            }
+        });
+    </script>
+
 </div>
-@stop
-@section('custom_script')
-<script>
-    $("#dataTable").DataTable({
-        "ordering":false
-    });
-
-
-
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        }
-    });
-
-
-
-
-    $("#dataTable").on('click', '.btn-igd', function() {
-        id1 = $(this).val();
-     
-
-    });
-    $("#dataTable").on('click', '.btn-umum', function() {
-        id2 = $(this).val();
-   
-
-    });
-    $("#dataTable").on('click', '.btn-irj', function() {
-        id3 = $(this).val();
-
-    });
-    $("#dataTable").on('click', '.btn-ibs', function() {
-        id4 = $(this).val();
-
-    });
-
-    $('#igd').on('show.bs.modal', function() {
-           $.ajax({
-                            type : "get",
-                            url : 'refresh-detail-laporan-igd/'+id1,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : id1},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableigd").html(data);
-                            }   
-                    });
-
-
-    });
-
-    $('#umum').on('show.bs.modal', function() {
-           $.ajax({
-                            type : "get",
-                            url : 'refresh-detail-laporan-umum/'+id2,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : id2},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableumum").html(data);
-                            }   
-                    });
-
-
-    });
-
-    $('#irj').on('show.bs.modal', function() {
-           $.ajax({
-                            type : "get",
-                            url : 'refresh-detail-laporan-irj/'+id3,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : id3},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableirj").html(data);
-                            }   
-                    });
-
-
-    });
-
-    $('#ibs').on('show.bs.modal', function() {
-           $.ajax({
-                            type : "get",
-                            url : 'refresh-detail-laporan-ibs/'+id4,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : id4},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableibs").html(data);
-                            }   
-                    });
-
-
-    });
-
-       // 
- $("#dataTableRuangan").on('click','.btn-istimewa',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tableistimewa").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-istimewa/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tableistimewa").html(data);
-                            }   
-                    });
-
-    });
-
-    $("#dataTableRuangan").on('click','.btn-baru',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tablebaru").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-baru/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tablebaru").html(data);
-                            }   
-                    });
-
-    });
-
-    $("#dataTableRuangan").on('click','.btn-permasalahan',function(){
-        idlaporan =  $(this).data('id');
-        ruangan =  $(this).data('ruangan');
-        $(".tablemasalah").html('<h4>Mohon Tunggu...</h4>');
-        $.ajax({
-                            type : "get",
-                            url : 'refresh-permasalahan/'+idlaporan+'/'+ruangan,
-                            data: { "_token": "{{ csrf_token() }}", idlaporan : idlaporan, idruangan:ruangan},
-                            success : function(data){
-                            //console.log(data);
-                            $(".tablemasalah").html(data);
-                            }   
-                    });
-
-    });
-
-
-    $("#lihat").click(function() {
-
-    if (!$("#tanggal").val() || !$("#tanggal2").val()) {
-    alert('lengkapi tanggal dahulu');
-    } else {
-    $(".tablehistory").html("<h1>Mohon Tunggu...</h1>")
-    $.ajax({
-        type: "get",
-        url: 'refresh-history/' + $("#tanggal").val() + '/' + $("#tanggal2").val(),
-        data: {
-        tanggal2: $("#tanggal2").val(),
-        tanggal: $("#tanggal").val(),
-        },
-        success: function(data) {
-        console.log(data);
-        $(".tablehistory").html(data);
-        }
-    });
-    }
-
-    });
-
-
-    (function($) {
-        $(".alert-call").fadeOut(2500);
-        $(".alert-call2").fadeOut(2500);
-        $(".alert-call3").fadeOut(2500);
-        $(".alert-call4").fadeOut(2500);
-    })(jQuery);
-</script>
-
 @stop

@@ -31,15 +31,17 @@ class UserController extends Controller
   {
     $lok = \App\Models\User::where('username', $r->username)->where('status',1)->first();
   
-    if ($r->passlama != '12345678') {
+    if (!$lok) {
+        return redirect()->back()->withErrors(['Username tidak ditemukan atau tidak aktif']);
+    }
+
+    if (!Hash::check($r->passlama, $lok->password)) {
       return redirect()->back()->withErrors(['Password sebelumnya tidak sesuai']);
     } else {
       $lok->password = bcrypt($r->password);
       $lok->save();
     
       return redirect()->back()->with('success-change', 'Password berhasil diubah');
-    
-      
     }
   }
 

@@ -11,4 +11,9 @@ class Laporanumum extends Model
     protected $table = "laporan_umum";
     protected $primaryKey = "id";
     protected $guarded = ['id'];
+
+    public function ruangan()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan', 'id');
+    }
 }

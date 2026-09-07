@@ -30,7 +30,7 @@
                <div class="card-body">
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success  alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert">×</button>  
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>  
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif

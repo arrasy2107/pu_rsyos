@@ -1,0 +1,125 @@
+/* ================================================
+   RESPONSIVE TABLE STYLING
+   Auto-fit column widths based on content
+   ================================================ */
+
+/* Base table styling for responsive columns */
+.table-responsive .table {
+    table-layout: auto;
+    width: 100% !important;
+    min-width: 720px;
+}
+
+.table-responsive .table thead th,
+.table-responsive .table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* No column width - let content determine size */
+.table-responsive .table th,
+.table-responsive .table td {
+    width: auto;
+    min-width: fit-content;
+}
+
+/* Number column - minimal width */
+.table thead th:first-child,
+.table tbody td:first-child {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Action column - appropriate size for buttons */
+.table thead th:last-child,
+.table tbody td:last-child {
+    width: 1%;
+    min-width: max-content;
+    white-space: nowrap;
+}
+
+/* Badge styling - prevent text wrapping */
+.badge {
+    white-space: nowrap;
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Button group styling */
+.d-flex.gap-2 {
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+/* Responsive behavior for small screens */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+
+    .table thead th:first-child,
+    .table tbody td:first-child {
+        width: auto;
+        padding: 0.5rem 0.25rem;
+    }
+
+    .btn-sm {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .d-flex.gap-2 {
+        gap: 0.25rem !important;
+    }
+}
+
+/* Compact table variant */
+.table.table-compact td,
+.table.table-compact th {
+    padding: 0.5rem;
+}
+
+/* Ensure text in cells doesn't overflow */
+.table tbody td {
+    max-width: 100%;
+}
+
+/* Force badge to not break lines */
+.table .badge {
+    white-space: nowrap;
+    display: inline-block;
+}
+
+/* Styling for better readability */
+.table thead {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Container should handle overflow nicely */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Keep table headers sticky on scroll */
+@supports (position: sticky) {
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 10;
+    }
+}

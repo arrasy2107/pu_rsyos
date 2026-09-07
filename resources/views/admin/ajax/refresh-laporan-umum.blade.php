@@ -16,9 +16,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
 
             <div class="card-body" onmouseover="ranap1a();" onmouseout="ranap1b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Lama</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_lama')->first()}} </div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Lama</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_lama')->first()}} </div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/general/pasien.png')}}" id="gbr_inap_pasien_lama" height="64px" width="64px">
@@ -33,9 +33,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap2a();" onmouseout="ranap2b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Baru</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_baru')->first()}}</div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Baru</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_baru')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-baru.png')}}" id="gbr_inap_pasien_baru" height="64px" width="64px">
@@ -50,10 +50,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap3a();" onmouseout="ranap3b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Pindah (ruangan)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_pindah')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Pindah (ruangan)</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_pindah')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-pindah.png')}}" id="gbr_inap_pasien_pindah" height="64px" width="64px">
@@ -68,10 +68,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap4a();" onmouseout="ranap4b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Pindahan (ruangan)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_pindahan')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Pindahan (ruangan)</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_pindahan')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-pindahan.png')}}" id="gbr_inap_pasien_pindahan" height="64px" width="64px">
@@ -85,10 +85,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap5a();" onmouseout="ranap5b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Meninggal</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_meninggal')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Meninggal</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_meninggal')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-meninggal.png')}}" id="gbr_inap_pasien_meninggal" height="64px" width="64px">
@@ -103,10 +103,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap13a();" onmouseout="ranap13b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Pulang</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_meninggal')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Pulang</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_meninggal')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/igd/pasien-pulang.png')}}" id="gbr_inap_pasien_pulang" height="64px" width="64px">
@@ -220,9 +220,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
 
             <div class="card-body" onmouseover="ranap6a();" onmouseout="ranap6b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Covid19</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_covid')->first()}}</div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Covid19</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_covid')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" id="gbr_inap_pasien_covid" height="64px" width="64px">
@@ -237,9 +237,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap7a();" onmouseout="ranap7b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien suspect Covid19</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_suspek_covid')->first()}}</div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien suspect Covid19</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_suspek_covid')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" id="gbr_inap_pasien_suspek_covid" height="64px" width="64px">
@@ -254,10 +254,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap8a();" onmouseout="ranap8b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien restrain</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_restrain')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien restrain</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_restrain')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-restrain.png')}}" id="gbr_inap_pasien_restrain" height="64px" width="64px">
@@ -272,10 +272,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap9a();" onmouseout="ranap9b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Perilaku kekerasan</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_perilaku_kekerasan')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Perilaku kekerasan</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_perilaku_kekerasan')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-perilaku-kekerasan.png')}}" id="gbr_inap_pasien_perilaku_kekerasan" height="64px" width="64px">
@@ -289,10 +289,10 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap10a();" onmouseout="ranap10b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
+                    <div class="col me-2">
 
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Keracunan</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_keracunan')->first()}}</div>
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Keracunan</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_keracunan')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-keracunan.png')}}" id="gbr_inap_pasien_keracunan" height="64px" width="64px">
@@ -307,9 +307,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap11a();" onmouseout="ranap11b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Keterbatasan Bahasa</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_keterbatasan_bahasa')->first()}}</div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Keterbatasan Bahasa</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_keterbatasan_bahasa')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-keterbatasan-bahasa.png')}}" id="gbr_inap_pasien_keterbatasan_bahasa" height="64px" width="64px">
@@ -324,9 +324,9 @@ $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body" onmouseover="ranap12a();" onmouseout="ranap12b();">
                 <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1"> Pasien Difabel</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_difabel')->first()}}</div>
+                    <div class="col me-2">
+                        <div class="text-xs fw-bold  text-uppercase mb-1"> Pasien Difabel</div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{\App\Models\Laporanumum::where('id_laporan',$lastIDLaporan)->where('id_ruangan',$ruangan)->pluck('jumlah_pasien_difabel')->first()}}</div>
                     </div>
                     <div class="col-auto">
                         <img src="{{asset('sb-admin/icon/ranap/pasien-difabel.png')}}" id="gbr_inap_pasien_difabel" height="64px" width="64px">

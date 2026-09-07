@@ -1,0 +1,214 @@
+        <div id="tambahistimewa" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2 text-primary"></i> Input Catatan Pasien Istimewa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="tambahcatatanpasien" id="formTambahIstimewa" role="form" autocomplete="off">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="jenis_pasien" value="1">
+                            <input type="hidden" name="ruangan" value="">
+
+                            <div class="form-group">
+                                <label class="fw-bold">Kamar</label>
+                                <input type="text" class="form-control" name="kamar" placeholder="Contoh: 01A" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Nama Pasien</label>
+                                <input type="text" class="form-control" name="nama" placeholder="Nama lengkap pasien" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">No. Rekam Medis (RM)</label>
+                                <input type="text" class="form-control" name="rm" placeholder="Nomor RM" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Diagnosa</label>
+                                <textarea class="form-control" name="diagnosa" rows="2" placeholder="Tuliskan diagnosa" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Dokter DPJP</label>
+                                <select class="form-control select2" name="dpjp" style="width: 100%" required>
+                                    <option value="" selected disabled hidden>Pilih Dokter DPJP...</option>
+                                    @foreach(\App\Models\Dokterirj::where('status',1)->get() as $dok)
+                                    <option value="{{ $dok->id }}">{{ $dok->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="fw-bold">Kondisi Pasien</label>
+                                <textarea class="form-control" name="kondisi" rows="2" placeholder="Tuliskan kondisi pasien" required></textarea>
+                            </div>
+                            <div class="text-end mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Catatan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Edit Catatan Pasien Istimewa -->
+        <div id="editistimewa" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2 text-info"></i> Edit Catatan Pasien Istimewa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="editcatatanpasien" id="formEditIstimewa" role="form" autocomplete="off">
+                            {{ csrf_field() }}
+                            {{ method_field('PUT') }}
+                            <input type="hidden" class="txtidistimewa" name="id">
+                            <input type="hidden" name="jenis_pasien" value="1">
+                            <input type="hidden" name="ruangan" value="">
+
+                            <div class="form-group">
+                                <label class="fw-bold">Kamar</label>
+                                <input type="text" class="form-control txt-kamar" name="kamar" placeholder="Contoh: 01A" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Nama Pasien</label>
+                                <input type="text" class="form-control txt-nama" name="nama" placeholder="Nama lengkap pasien" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">No. Rekam Medis (RM)</label>
+                                <input type="text" class="form-control txt-rm" name="rm" placeholder="Nomor RM" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Diagnosa</label>
+                                <textarea class="form-control txt-diagnosa" name="diagnosa" rows="2" placeholder="Tuliskan diagnosa" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Dokter DPJP</label>
+                                <select class="form-control select2 txt-dpjp" name="dpjp" style="width: 100%" required>
+                                    <option value="" selected disabled hidden>Pilih Dokter DPJP...</option>
+                                    @foreach(\App\Models\Dokterirj::where('status',1)->get() as $dok)
+                                    <option value="{{ $dok->id }}">{{ $dok->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="fw-bold">Kondisi Pasien</label>
+                                <textarea class="form-control txt-kondisi" name="kondisi" rows="2" placeholder="Tuliskan kondisi pasien" required></textarea>
+                            </div>
+                            <div class="text-end mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-info"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tambah Catatan Pasien Baru -->
+        <div id="tambahbaru" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2 text-primary"></i> Input Catatan Pasien Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="tambahcatatanpasien" id="formTambahBaru" role="form" autocomplete="off">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="jenis_pasien" value="2">
+                            <input type="hidden" name="ruangan" value="">
+
+                            <div class="form-group">
+                                <label class="fw-bold">Kamar</label>
+                                <input type="text" class="form-control" name="kamar" placeholder="Contoh: 01A" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Nama Pasien</label>
+                                <input type="text" class="form-control" name="nama" placeholder="Nama lengkap pasien" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">No. Rekam Medis (RM)</label>
+                                <input type="text" class="form-control" name="rm" placeholder="Nomor RM" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Diagnosa</label>
+                                <textarea class="form-control" name="diagnosa" rows="2" placeholder="Tuliskan diagnosa" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Dokter DPJP</label>
+                                <select class="form-control select2" name="dpjp" style="width: 100%" required>
+                                    <option value="" selected disabled hidden>Pilih Dokter DPJP...</option>
+                                    @foreach(\App\Models\Dokterirj::where('status',1)->get() as $dok)
+                                    <option value="{{ $dok->id }}">{{ $dok->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="fw-bold">Kondisi Pasien</label>
+                                <textarea class="form-control" name="kondisi" rows="2" placeholder="Tuliskan kondisi pasien" required></textarea>
+                            </div>
+                            <div class="text-end mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Simpan Catatan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Edit Catatan Pasien Baru -->
+        <div id="editbaru" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2 text-info"></i> Edit Catatan Pasien Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="editcatatanpasien" id="formEditBaru" role="form" autocomplete="off">
+                            {{ csrf_field() }}
+                            {{ method_field('PUT') }}
+                            <input type="hidden" class="txtidbaru" name="id">
+                            <input type="hidden" name="jenis_pasien" value="2">
+                            <input type="hidden" name="ruangan" value="">
+
+                            <div class="form-group">
+                                <label class="fw-bold">Kamar</label>
+                                <input type="text" class="form-control txt-kamar" name="kamar" placeholder="Contoh: 01A" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Nama Pasien</label>
+                                <input type="text" class="form-control txt-nama" name="nama" placeholder="Nama lengkap pasien" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">No. Rekam Medis (RM)</label>
+                                <input type="text" class="form-control txt-rm" name="rm" placeholder="Nomor RM" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Diagnosa</label>
+                                <textarea class="form-control txt-diagnosa" name="diagnosa" rows="2" placeholder="Tuliskan diagnosa" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="fw-bold">Dokter DPJP</label>
+                                <select class="form-control select2 txt-dpjp" name="dpjp" style="width: 100%" required>
+                                    <option value="" selected disabled hidden>Pilih Dokter DPJP...</option>
+                                    @foreach(\App\Models\Dokterirj::where('status',1)->get() as $dok)
+                                    <option value="{{ $dok->id }}">{{ $dok->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="fw-bold">Kondisi Pasien</label>
+                                <textarea class="form-control txt-kondisi" name="kondisi" rows="2" placeholder="Tuliskan kondisi pasien" required></textarea>
+                            </div>
+                            <div class="text-end mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-info"><i class="fas fa-save me-1"></i> Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>

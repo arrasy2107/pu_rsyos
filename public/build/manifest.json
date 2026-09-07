@@ -1,0 +1,17 @@
+{
+  "resources/css/pu-modern.css": {
+    "file": "assets/pu-modern-CM88Dh-i.css",
+    "name": "pu-modern",
+    "names": [
+      "pu-modern.css"
+    ],
+    "src": "resources/css/pu-modern.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-Bk5SreMH.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

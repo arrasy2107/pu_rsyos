@@ -11,4 +11,14 @@ class Laporan extends Model
     protected $table = "laporan";
     protected $primaryKey = "id";
     protected $guarded = ['id'];
+
+    public function dinas()
+    {
+        return $this->belongsTo(Dinas::class, 'id_dinas', 'id');
+    }
+
+    public function pengawas()
+    {
+        return $this->belongsTo(User::class, 'id_pengawas', 'id');
+    }
 }
