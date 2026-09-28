@@ -10,6 +10,7 @@ use App\Models\Laporanirj;
 use App\Models\Laporanirjdetail;
 use App\Models\Laporanibs;
 use App\Models\Laporanibsdetail;
+use App\Models\Dokterirj;
 use App\Models\Dinas;
 
 class LaporanDetailModal extends Component
@@ -64,8 +65,24 @@ class LaporanDetailModal extends Component
         } elseif ($this->modalType === 'ibs') {
             $laporanIbs = Laporanibs::where('id_laporan', $this->idlaporan)->first();
             $this->rows = $laporanIbs
-                ? Laporanibsdetail::with(['dokterOperasi', 'dokterAnestesi', 'ruangan'])->where('status', 1)->where('id_laporan_ibs', $laporanIbs->id)->get()
+                ? Laporanibsdetail::with(['dokterAnestesi', 'ruangan'])->where('status', 1)->where('id_laporan_ibs', $laporanIbs->id)->get()
                 : collect();
+
+            $dokterIds = $this->rows
+                ->pluck('id_dokter_operasi')
+                ->flatMap(fn($ids) => array_filter(explode(',', (string) $ids)))
+                ->map(fn($id) => (int) trim($id))
+                ->filter()
+                ->unique();
+            $dokterById = Dokterirj::whereIn('id', $dokterIds)->pluck('nama', 'id');
+
+            $this->rows->each(function ($row) use ($dokterById) {
+                $row->dokter_operasi_names = collect(explode(',', (string) $row->id_dokter_operasi))
+                    ->map(fn($id) => $dokterById->get((int) trim($id)))
+                    ->filter()
+                    ->values()
+                    ->all();
+            });
             $this->extra['catatan'] = optional($laporanIbs)->catatan;
         }
     }

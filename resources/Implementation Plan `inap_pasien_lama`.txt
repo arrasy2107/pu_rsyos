@@ -1,0 +1,295 @@
+Implementation Plan `inap_pasien_lama`
+
+### Tahap 1: Tetapkan aturan bisnis
+
+Definisi:
+
+```text
+inap_pasien_lama =
+jumlah_total_pasien dari laporan terkirim sebelumnya
+pada ruangan yang sama
+```
+
+Untuk laporan pertama pada suatu ruangan:
+
+```text
+inap_pasien_lama = 0
+```
+
+Laporan yang dapat menjadi sumber:
+
+- `status = 1`
+- Sudah terkirim
+- Bukan draft
+- Bukan laporan yang dihapus atau dikembalikan
+- Ruangan sama
+- Laporan paling baru berdasarkan periode/waktu laporan
+
+Jangan menggunakan `id = 1` secara langsung, karena satu laporan memiliki banyak ruangan.
+
+---
+
+### Tahap 2: Buat sumber data terpusat
+
+Tambahkan method pada model `Laporanumum`, misalnya:
+
+```php
+public static function saldoPasienLama(int $pengawasId, int $ruanganId): int
+{
+    return (int) static::query()
+        ->where('id_pengawas', $pengawasId)
+        ->where('id_ruangan', $ruanganId)
+        ->where('status', 1)
+        ->latest('updated_at')
+        ->value('jumlah_total_pasien');
+}
+```
+
+Namun, jika saldo harus mengikuti laporan historis lintas pengawas, jangan batasi dengan `id_pengawas`. Hal ini perlu diputuskan secara bisnis:
+
+- **Per ruangan global:** saldo mengambil laporan terakhir siapa pun pengawasnya.
+- **Per pengawas:** saldo hanya mengambil laporan terakhir pengawas aktif.
+
+Untuk konteks rumah sakit, rekomendasi saya adalah **per ruangan global**, karena saldo pasien adalah kondisi ruangan, bukan milik personal pengawas.
+
+---
+
+### Tahap 3: Sediakan nilai dari controller
+
+Jangan melakukan query carry-forward langsung di Blade.
+
+Pada method `laporan()`:
+
+```php
+$pasienLamaPerRuangan = Laporanumum::query()
+    ->where('status', 1)
+    ->whereIn('id_ruangan', $ruangans->pluck('id'))
+    ->orderByDesc('updated_at')
+    ->get()
+    ->keyBy('id_ruangan');
+```
+
+Kemudian kirim ke view atau gunakan saat partial ruangan dimuat.
+
+Untuk endpoint:
+
+```php
+/refresh-laporan-ruangan/{ruangan}
+```
+
+controller sebaiknya mengembalikan view dengan:
+
+```php
+$pasienLama = Laporanumum::query()
+    ->where('id_ruangan', $ruangan)
+    ->where('status', 1)
+    ->latest('updated_at')
+    ->value('jumlah_total_pasien') ?? 0;
+```
+
+---
+
+### Tahap 4: Isi field readonly dari server
+
+Pada `refresh-laporan-ruangan.blade.php`, ubah menjadi:
+
+```blade
+<input
+    type="number"
+    class="form-control"
+    id="inap_pasien_lama"
+    name="inap_pasien_lama"
+    value="{{ $pasienLama }}"
+    readonly
+    required
+>
+```
+
+User pengawas tetap tidak dapat mengubah nilai tersebut.
+
+Hapus atau nonaktifkan logic yang membuka field:
+
+```javascript
+document.getElementById("inap_pasien_lama").readOnly = false;
+```
+
+Termasuk handler:
+
+```javascript
+#editpasienlama
+```
+
+Karena saldo pasien lama harus dihitung sistem, bukan diedit manual.
+
+---
+
+### Tahap 5: Jangan percaya nilai dari browser
+
+Walaupun field dibuat `readonly`, nilai HTML tetap dapat dimanipulasi melalui browser.
+
+Karena itu pada `draftlaporanUmum()`:
+
+1. Jangan gunakan `$r->inap_pasien_lama` sebagai sumber utama.
+2. Ambil ulang saldo dari database berdasarkan `id_ruangan`.
+3. Gunakan nilai database untuk menyimpan `jumlah_pasien_lama`.
+
+Contoh:
+
+```php
+$pasienLama = Laporanumum::query()
+    ->where('id_ruangan', $validated['inap_ruangan'])
+    ->where('status', 1)
+    ->latest('updated_at')
+    ->value('jumlah_total_pasien') ?? 0;
+
+$sup->jumlah_pasien_lama = $pasienLama;
+```
+
+Validasi request dapat tetap menerima field tersebut untuk kompatibilitas form, tetapi nilainya tidak boleh dipercaya.
+
+---
+
+### Tahap 6: Perbaiki proses edit draft
+
+Pada `editDraftlaporanUmum()`:
+
+- Jangan menerima perubahan `inap_pasien_lama` dari request.
+- Ambil ulang nilai carry-forward dari database.
+- Jika user memindahkan draft ke ruangan lain, hitung ulang berdasarkan ruangan baru.
+- Pastikan tidak ada draft aktif ganda untuk ruangan yang sama.
+
+```php
+$pasienLama = Laporanumum::query()
+    ->where('id_ruangan', $validated['inap_ruangan'])
+    ->where('status', 1)
+    ->latest('updated_at')
+    ->value('jumlah_total_pasien') ?? 0;
+
+$sup->jumlah_pasien_lama = $pasienLama;
+```
+
+---
+
+### Tahap 7: Tentukan perilaku rollback
+
+Rollback laporan sebelumnya harus memengaruhi saldo laporan berikutnya.
+
+Aturan yang disarankan:
+
+- Laporan rollback tidak boleh menjadi sumber saldo.
+- Detail laporan dikembalikan ke draft.
+- Setelah laporan diperbaiki dan dikirim ulang, laporan baru menjadi sumber saldo.
+- Laporan lama diberi status arsip/rollback, bukan tetap dianggap laporan terkirim.
+
+Saat ini status numerik masih digunakan. Sebaiknya tambahkan status yang lebih jelas:
+
+```php
+STATUS_DRAFT = 0;
+STATUS_SUBMITTED = 1;
+STATUS_DELETED = 2;
+STATUS_RETURNED = 3;
+STATUS_ARCHIVED = 4;
+```
+
+Minimal, query saldo harus mengecualikan laporan yang sudah dikembalikan.
+
+---
+
+### Tahap 8: Tangani laporan pertama
+
+Jika belum ada laporan terkirim untuk ruangan tersebut:
+
+```text
+pasien lama = 0
+```
+
+Tetapi karena enam field utama wajib diisi, nilai `0` harus ditampilkan sebagai nilai default yang valid, bukan kosong.
+
+Jadi:
+
+```blade
+value="{{ $pasienLama ?? 0 }}"
+```
+
+---
+
+### Tahap 9: Hapus jalur legacy yang membingungkan
+
+Saat ini terdapat beberapa jalur:
+
+- `refresh-laporan-ruangan`
+- `refresh-laporan-ruangan-draf`
+- `refresh-jumlah-pasien-lama`
+- Livewire `ruangan-report`
+- partial Blade AJAX lama
+
+Perlu ditentukan satu jalur utama:
+
+- Input laporan baru: satu endpoint/controller.
+- Edit draft: satu endpoint/controller.
+- Dashboard admin: Livewire read-only.
+
+Partial legacy `refresh-jumlah-pasien-lama.blade.php` sebaiknya dihapus atau tidak lagi dipakai setelah jalur utama selesai diperbaiki.
+
+---
+
+### Tahap 10: Tambahkan test
+
+Test wajib:
+
+1. Laporan pertama pada ruangan menghasilkan `inap_pasien_lama = 0`.
+2. Laporan kedua mengambil `jumlah_total_pasien` laporan pertama.
+3. Laporan kedua tidak dapat mengubah `inap_pasien_lama` melalui request palsu.
+4. Saldo mengambil laporan terakhir untuk ruangan yang sama.
+5. Saldo tidak mengambil laporan dari ruangan lain.
+6. Draft tidak menjadi sumber saldo.
+7. Laporan rollback tidak menjadi sumber saldo.
+8. Edit draft menghitung ulang saldo berdasarkan ruangan.
+9. Nilai pasien lama tetap tampil pada field readonly.
+10. AJAX tetap mengirim dan menyimpan laporan dengan benar.
+
+Contoh skenario:
+
+```text
+Laporan A, Ruangan 1:
+lama  = 20
+baru  = 5
+pindah = 2
+pindahan = 1
+meninggal = 0
+pulang = 3
+
+total = 21
+```
+
+Laporan B, Ruangan 1 harus otomatis:
+
+```text
+pasien lama = 21
+```
+
+Jika request mencoba mengirim:
+
+```text
+inap_pasien_lama = 999
+```
+
+sistem tetap harus menyimpan:
+
+```text
+pasien lama = 21
+```
+
+## Urutan Pengerjaan
+
+1. Buat helper/service saldo pasien lama.
+2. Perbaiki query sumber berdasarkan ruangan dan laporan terkirim terakhir.
+3. Kirim nilai ke partial input aktif.
+4. Hapus kemampuan edit manual.
+5. Hitung ulang nilai di controller saat create dan edit.
+6. Sesuaikan rollback agar tidak menjadi sumber saldo.
+7. Rapikan jalur partial legacy.
+8. Tambahkan feature test.
+9. Uji alur AJAX, Livewire, dan submit laporan.
+
+Prioritas terpenting adalah **menghitung ulang `inap_pasien_lama` di server**, karena nilai `readonly` di browser tidak cukup untuk menjaga integritas data.

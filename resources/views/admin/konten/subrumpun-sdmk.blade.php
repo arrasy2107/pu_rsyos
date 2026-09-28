@@ -29,7 +29,7 @@
         <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th width="5%">No</th>
                     <th>Nama Subrumpun</th>
                     <th>Aksi</th>
                 </tr>
@@ -46,9 +46,14 @@
                                 data-nama="{{$data->subrumpun}}" data-bs-toggle="modal" data-bs-target="#edit" title="Edit Data">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <a href="{{ route('deletesubrumpunsdmk',$data->id) }}" class="btn btn-sm btn-danger btn-delete" title="Hapus Data">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
+                            <form action="{{ route('deletesubrumpunsdmk', $data->id) }}" method="POST"
+                                class="d-inline"
+                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" title="Hapus Data">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -146,12 +151,6 @@
             $(".txt-nama").val(nama);
         });
 
-        $("#dataTable").on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            const url = this.href;
-            PUAlert.confirm({ text: 'Apakah Anda yakin ingin menghapus data ini?', confirmButtonText: 'Ya, hapus' })
-                .then(function(confirmed) { if (confirmed) window.location.href = url; });
-        });
 
         setTimeout(function() {
             $(".alert-call").fadeOut(500);

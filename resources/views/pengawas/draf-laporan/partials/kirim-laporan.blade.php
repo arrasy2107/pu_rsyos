@@ -1,7 +1,7 @@
-{{-- 5. FINAL SUBMISSION (SIGNATURE) --}}
+{{-- 5. FINAL SUBMISSION (QR CODE) --}}
 <div class="card shadow-sm mb-4 animate-fade-in-up border-left-info">
     <div class="card-header bg-white py-3">
-        <h6 class="m-0 fw-bold"><i class="fas fa-file-signature me-2 text-info"></i> Pengiriman Laporan Akhir</h6>
+        <h6 class="m-0 fw-bold"><i class="fas fa-qrcode me-2 text-info"></i> Pengiriman Laporan Akhir</h6>
     </div>
 
     @if($visitedRoomsCount < $totalRoomsCount || !$hasIgdReport)
@@ -19,10 +19,9 @@
                             <option value="" selected>Pilih Dinas</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="fw-bold">Tanda Tangan {{\Auth::user()->nama}}</label>
-                        <div class="kbw-signature" style="background-color: #eaecf4;"></div>
-                        <button class="btn btn-danger btn-sm mt-2" disabled>Hapus Tanda Tangan</button>
+                    <div class="alert alert-secondary py-2 mt-3">
+                        <i class="fas fa-qrcode me-2"></i>
+                        QR Code verifikasi akan digenerate otomatis saat laporan dikirim.
                     </div>
                     <div class="custom-control custom-checkbox mb-3">
                         <input type="checkbox" class="custom-control-input" id="checkDisabled" disabled>
@@ -37,7 +36,7 @@
 <div class="card-body bg-light">
     <div class="row">
         <div class="col-lg-6">
-            <form method="post" action="{{ route('kirimLaporan') }}" enctype="multipart/form-data">
+            <form method="post" action="{{ route('kirimLaporan') }}">
                 {{ csrf_field() }}
                 <div class="bg-white p-4 border rounded shadow-sm">
                     <div class="form-group">
@@ -50,16 +49,20 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="fw-bold text-dark d-flex justify-content-between align-items-center">
-                            <span>Tanda Tangan {{\Auth::user()->nama}}</span>
-                            <button id="clear" class="btn btn-outline-danger btn-sm" type="button"><i class="fas fa-eraser me-1"></i> Bersihkan</button>
-                        </label>
-                        <div id="sig" class="shadow-sm"></div>
-                        <textarea id="signature64" name="signed" style="display: none" required></textarea>
+                    {{-- Informasi QR Code --}}
+                    <div class="alert alert-info mt-3 mb-3 d-flex align-items-start gap-3">
+                        <i class="fas fa-qrcode fa-2x text-info mt-1 flex-shrink-0"></i>
+                        <div>
+                            <div class="fw-bold mb-1">Tanda Tangan Digital (QR Code)</div>
+                            <small class="text-muted">
+                                Setelah laporan dikirim, sistem akan menghasilkan <b>QR Code verifikasi</b> yang terikat dengan
+                                identitas Anda sebagai <b>{{ \Auth::user()->nama }}</b>. QR Code ini dapat dipindai oleh siapapun
+                                untuk memverifikasi keaslian laporan ini.
+                            </small>
+                        </div>
                     </div>
 
-                    <div class="custom-control custom-checkbox mt-4 mb-4">
+                    <div class="custom-control custom-checkbox mt-3 mb-4">
                         <input type="checkbox" class="custom-control-input" id="exampleCheck1" required>
                         <label class="custom-control-label fw-bold text-dark pt-1" style="line-height: 1.5;" for="exampleCheck1">
                             Saya, <b>{{\Auth::user()->nama}}</b>, bertanggung jawab penuh atas laporan ini dan memastikan bahwa seluruh data yang diinputkan adalah benar dan valid.
@@ -74,12 +77,13 @@
         </div>
         <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
             <div class="text-center text-muted">
-                <i class="fas fa-clipboard-check fa-6x mb-4 text-gray-300"></i>
-                <h4 class="fw-bold text-gray-500">Laporan Siap Dikirim</h4>
-                <p>Pastikan Anda telah memeriksa kembali seluruh data pada draft sebelum menandatangani laporan.</p>
+                <i class="fas fa-qrcode fa-6x mb-4 text-info"></i>
+                <h4 class="fw-bold text-gray-500">QR Code Verifikasi</h4>
+                <p>QR Code akan digenerate otomatis setelah laporan berhasil dikirim.<br>
+                <small>Siapapun dapat memindai QR Code untuk memverifikasi keaslian laporan.</small></p>
             </div>
         </div>
     </div>
 </div>
 @endif
-</div>
+</div>

@@ -3,7 +3,7 @@
     'title'       => 'Konfirmasi Hapus',
     'message'     => 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
     'actionUrl'   => '#',
-    'actionMethod'=> 'GET',   // GET | POST | DELETE
+    'actionMethod'=> 'POST',  // GET | POST | DELETE
     'actionLabel' => 'Hapus',
     'actionClass' => 'btn-danger',
     'cancelLabel' => 'Batal',

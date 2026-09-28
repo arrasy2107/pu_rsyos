@@ -17,14 +17,14 @@ class RuanganReport extends Component
         $this->ruangan = $ruangan;
     }
 
-    public function setRuangan($id)
+    public function setRuangan($id = null)
     {
         $this->ruangan = $id;
     }
 
     public function render()
     {
-        $lastIDLaporan = Laporan::pluck('id')->last();
+        $lastIDLaporan = Laporan::latest('id')->value('id');
 
         $data = null;
         if ($this->ruangan && $lastIDLaporan) {

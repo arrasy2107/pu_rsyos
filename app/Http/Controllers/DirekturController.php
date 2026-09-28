@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DirekturController extends Controller
 {
@@ -12,19 +13,37 @@ class DirekturController extends Controller
 
   private function authorizeRoles(array $roles)
   {
-    if (!Auth::check() || !in_array(Auth::user()->id_role, $roles)) {
+    if (!Auth::check()) {
+      abort(403);
+    }
+
+    $role = (int) Auth::user()->id_role;
+
+    // Super admin (id_role = 0) diizinkan mengakses semua
+    if ($role === 0) {
+      return;
+    }
+
+    if (!in_array($role, $roles, true)) {
       abort(403);
     }
   }
 
   public function dashboard()
   {
+    $kasursDashboard = \App\Models\Kasur::with('kamar.ruangan')
+      ->orderBy('id_kamar')
+      ->orderBy('kode_kasur')
+      ->get();
+    $kasurStatusSummary = $kasursDashboard->groupBy('status_operasional')->map->count();
+
     $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
     $laporanDate = \App\Models\Laporan::pluck('created_at')->last();
+    $laporanStatus = $lastIDLaporan ? \App\Models\Laporan::find($lastIDLaporan) : null;
     $dinasId = \App\Models\Laporan::pluck('id_dinas')->last();
-    $dinasName = \App\Models\Dinas::where('id', $dinasId)->pluck('dinas')->first();
+    $dinasName = \App\Models\Dinas::where('id', $dinasId)->pluck('dinas')->first() ?? '-';
     $pengawasId = \App\Models\Laporan::where('id', $lastIDLaporan)->pluck('id_pengawas')->first();
-    $pengawasName = \App\Models\User::where('id', $pengawasId)->pluck('nama')->first();
+    $pengawasName = \App\Models\User::where('id', $pengawasId)->pluck('nama')->first() ?? '-';
 
     // Top-level stats
     $totalIGD = \App\Models\Laporanigd::where('id_laporan', $lastIDLaporan)->pluck('jumlah_pasien')->first() ?? 0;
@@ -47,6 +66,7 @@ class DirekturController extends Controller
     return view('admin.dashboard.dashboard', compact(
       'lastIDLaporan',
       'laporanDate',
+      'laporanStatus',
       'dinasId',
       'dinasName',
       'pengawasId',
@@ -63,7 +83,9 @@ class DirekturController extends Controller
       'masalahIrj',
       'langkahIrj',
       'getIDibs',
-      'getIDirj'
+      'getIDirj',
+      'kasursDashboard',
+      'kasurStatusSummary'
     ));
   }
 
@@ -74,7 +96,7 @@ class DirekturController extends Controller
 
     $r->validate([
       'nama' => 'required|string|max:255',
-      'username' => 'required|string|max:255',
+      'username' => 'required|string|alpha_dash|max:255',
       'role' => 'required|integer'
     ]);
 
@@ -117,7 +139,7 @@ class DirekturController extends Controller
     $r->validate([
       'id' => 'required|integer',
       'nama' => 'required|string|max:255',
-      'username' => 'required|string|max:255',
+      'username' => 'required|string|alpha_dash|max:255',
       'role' => 'required|integer'
     ]);
 
@@ -163,15 +185,20 @@ class DirekturController extends Controller
       $query->where('id_role', self::PENGAWAS_ROLE);
     }
     $sup = $query->firstOrFail();
+
+    // Simpan identitas sebelum dihapus agar log tetap informatif
+    $namaAsli     = $sup->nama;
+    $usernameAsli = $sup->username;
+
     $sup->username = 0;
-    $sup->status = 0;
+    $sup->status   = 0;
     $sup->save();
 
     //log data
     $log = new \App\Models\Log;
     $log->id_user = \Auth::user()->id;
     $log->id_log_jenis = 7;
-    $log->keterangan = 'Hapus Pengguna : ' . $sup->nama . ' (' . $sup->username . ')';
+    $log->keterangan = 'Hapus Pengguna : ' . $namaAsli . ' (' . $usernameAsli . ')';
     $log->created_at = date('Y-m-d H:i:s');
     $log->updated_at =  date('Y-m-d H:i:s');
     $log->save();
@@ -185,9 +212,8 @@ class DirekturController extends Controller
 
     $this->authorizeRoles([1]);
 
-    $sup = \App\Models\User::where('id', $id)->first();
-    $password = '12345678';
-    $sup->password = bcrypt($password);
+    $sup = \App\Models\User::findOrFail($id);
+    $sup->password = bcrypt('12345678');
     $sup->save();
 
     //log data
@@ -199,7 +225,7 @@ class DirekturController extends Controller
     $log->updated_at =  date('Y-m-d H:i:s');
     $log->save();
 
-    return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
+    return redirect()->back()->with('success-delete', 'Password berhasil direset ke default');
   }
 
   //RUANGAN
@@ -271,7 +297,7 @@ class DirekturController extends Controller
   public function deleteruangan($id)
   {
 
-    $this->authorizeRoles([1, 3]);
+    $this->authorizeRoles([0, 1, 3]);
 
     $sup = \App\Models\Ruangan::where('id', $id)->first();
     $sup->status = 0;
@@ -287,6 +313,38 @@ class DirekturController extends Controller
     $log->save();
 
     return redirect()->back()->with('success-delete', 'Berhasil menghapus data');
+  }
+
+  public function statusruangan($id)
+  {
+    $this->authorizeRoles([1, 3]);
+
+    $ruangan = \App\Models\Ruangan::findOrFail($id);
+    $ruangan->status = !$ruangan->status;
+    $ruangan->save();
+
+    if (!$ruangan->status) {
+      $ruangan->kamar()->update(['status' => false]);
+      foreach ($ruangan->kamar as $kamar) {
+        $kamar->kasur()->update(['status' => false]);
+      }
+    }
+
+    return redirect()->back()->with('success-add', 'Status unit berhasil diubah');
+  }
+
+  public function bulkStatusRuangan(Request $request)
+  {
+    $this->authorizeRoles([1, 3]);
+    $status = $request->boolean('status');
+
+    Ruangan::query()->update(['status' => $status]);
+    if (!$status) {
+      Kamar::query()->update(['status' => false]);
+      Kasur::query()->update(['status' => false]);
+    }
+
+    return back()->with('success-add', 'Status seluruh unit berhasil diubah');
   }
 
 
@@ -743,7 +801,9 @@ class DirekturController extends Controller
 
   public function verifikasilaporan(Request $r)
   {
-    $this->authorizeRoles([1, 3]);
+    if (!Auth::check() || !in_array((int) Auth::user()->id_role, [1, 3], true)) {
+      abort(403);
+    }
 
     $r->validate([
       'verifikasi' => 'required|array',
@@ -792,5 +852,120 @@ class DirekturController extends Controller
     );
     //return redirect()->back()->with('success-add', 'Berhasil verifikasi laporan');
 
+    }
+
+  public function administrasiLaporan(Request $request)
+  {
+    $this->authorizeRoles([0]);
+
+    $laporanQuery = \App\Models\Laporan::with(['dinas', 'pengawas'])->where('status', 1);
+
+    if ($request->filled('tanggal_mulai')) {
+      $laporanQuery->whereDate('created_at', '>=', $request->date('tanggal_mulai'));
+    }
+
+    if ($request->filled('tanggal_selesai')) {
+      $laporanQuery->whereDate('created_at', '<=', $request->date('tanggal_selesai'));
+    }
+
+    if ($request->filled('status_verifikasi')) {
+      if ($request->status_verifikasi === 'belum_bidang') {
+        $laporanQuery->where('verified_bidang', 0)->where('verified', 0);
+      } elseif ($request->status_verifikasi === 'belum_direktur') {
+        $laporanQuery->where('verified_bidang', 1)->where('verified', 0);
+      } elseif ($request->status_verifikasi === 'selesai') {
+        $laporanQuery->where('verified', 1);
+      }
+    }
+
+    $laporans = $laporanQuery->latest('created_at')->paginate(20)->withQueryString();
+
+    return view('admin.laporan.administrasi', compact('laporans'));
   }
+
+  public function kembalikanLaporan(Request $request, int $id)
+  {
+    $this->authorizeRoles([0]);
+
+    $validated = $request->validate([
+      'alasan' => ['required', 'string', 'min:10', 'max:1000'],
+    ]);
+
+    $laporan = \App\Models\Laporan::where('status', 1)->findOrFail($id);
+
+    DB::transaction(function () use ($laporan, $validated) {
+      $laporanId = $laporan->id;
+
+      \App\Models\Laporanigd::where('id_laporan', $laporanId)
+        ->update(['id_laporan' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+
+      $laporanUmumIds = \App\Models\Laporanumum::where('id_laporan', $laporanId)->pluck('id');
+      \App\Models\Catatanpasien::whereIn('id_laporan_umum', $laporanUmumIds)
+        ->update(['id_laporan_umum' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+      \App\Models\Laporanumum::whereIn('id', $laporanUmumIds)
+        ->update([
+          'id_laporan' => null,
+          'status' => \App\Models\Laporanumum::STATUS_DRAFT,
+          'updated_at' => now('Asia/Jakarta'),
+        ]);
+
+      $laporanIrjIds = \App\Models\Laporanirj::where('id_laporan', $laporanId)->pluck('id');
+      \App\Models\Laporanirjdetail::whereIn('id_laporan_irj', $laporanIrjIds)
+        ->update(['id_laporan_irj' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+      \App\Models\Laporanirj::whereIn('id', $laporanIrjIds)
+        ->update(['id_laporan' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+
+      $laporanIbsIds = \App\Models\Laporanibs::where('id_laporan', $laporanId)->pluck('id');
+      \App\Models\Laporanibsdetail::whereIn('id_laporan_ibs', $laporanIbsIds)
+        ->update(['id_laporan_ibs' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+      \App\Models\Laporanibs::whereIn('id', $laporanIbsIds)
+        ->update(['id_laporan' => null, 'status' => 0, 'updated_at' => now('Asia/Jakarta')]);
+
+      $laporan->update([
+        'status' => 0,
+        'verified_bidang' => 0,
+        'verified' => 0,
+        'updated_at' => now('Asia/Jakarta'),
+      ]);
+
+      $log = new \App\Models\Log;
+      $log->id_user = Auth::id();
+      $log->id_log_jenis = 14;
+      $log->keterangan = 'Mengembalikan laporan id ' . $laporanId . ' kepada pengawas. Alasan: ' . $validated['alasan'];
+      $log->created_at = now('Asia/Jakarta');
+      $log->updated_at = now('Asia/Jakarta');
+      $log->save();
+    });
+
+    return redirect()->route('administrasi-laporan')->with('success-change', 'Laporan berhasil dikembalikan untuk diperbaiki.');
+  }
+
+    /**
+     * Simpan konfigurasi akses menu untuk user tertentu.
+     * Hanya bisa diakses oleh super_admin (id_role = 0).
+     */
+    public function updateAksesMenu(Request $request, $id)
+    {
+        $this->authorizeRoles([0]);
+
+        $user = \App\Models\User::findOrFail($id);
+
+        // Ambil array menu yang dicentang, default ke array kosong jika tidak ada
+        $menus = $request->input('menus', []);
+
+        $user->akses_menu = empty($menus) ? null : array_values($menus);
+        $user->save();
+
+        // Catat di log
+        $log = new \App\Models\Log;
+        $log->id_user     = \Auth::user()->id;
+        $log->id_log_jenis = 1; // Gunakan jenis log yang tersedia
+        $log->keterangan  = 'Update akses menu untuk user: ' . $user->nama . ' (' . $user->username . ')';
+        $log->created_at  = date('Y-m-d H:i:s');
+        $log->updated_at  = date('Y-m-d H:i:s');
+        $log->save();
+
+        return redirect()->route('data-pengguna')
+            ->with('success-edit', 'Akses menu untuk ' . $user->nama . ' berhasil diperbarui.');
+    }
 }

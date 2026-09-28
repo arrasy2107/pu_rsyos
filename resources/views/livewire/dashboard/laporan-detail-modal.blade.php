@@ -8,7 +8,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <h6>Tanggal : {{ $laporan->created_at->format('d F Y') }}</h6>
+            <h6>Tanggal : {{ $laporan->created_at->isoFormat('D MMMM Y') }}</h6>
             <h6>Dinas : {{ strtoupper(optional($laporan->dinas)->dinas ?? '-') }}</h6>
             @if($modalType === 'igd')
             <h6 style="color:red"><b>Total Pasien (IGD) : {{ $rows->sum('jumlah_pasien') }} orang</b></h6>
@@ -31,14 +31,20 @@
             box-shadow: 0 1px 0 #dee2e6;
         }
         .table-laporan-detail th.sticky-col {
+            position: sticky;
             left: 0;
             z-index: 11;
+            min-width: 150px;
+            white-space: nowrap;
+            background-color: #f8f9fa;
             box-shadow: 1px 1px 0 #dee2e6;
         }
         .table-laporan-detail td.sticky-col {
             position: sticky;
             left: 0;
             z-index: 9;
+            min-width: 150px;
+            white-space: nowrap;
             background-color: #fff;
             box-shadow: 1px 0 0 #dee2e6;
         }
@@ -153,7 +159,13 @@
                     <tr>
                         <td>{{ $idx + 1 }}</td>
                         <td class="sticky-col">{{ $item->nama }}<br><small>({{ $item->rm }})</small></td>
-                        <td>{{ optional($item->dokterOperasi)->nama ?? '-' }}</td>
+                        <td>
+                            @forelse($item->dokter_operasi_names ?? [] as $namaDokter)
+                                <div>{{ $namaDokter }}</div>
+                            @empty
+                                -
+                            @endforelse
+                        </td>
                         <td>{{ optional($item->dokterAnestesi)->nama ?? '-' }}</td>
                         <td>{{ $item->pendamping }}</td>
                         <td>{{ optional($item->ruangan)->nama_ruangan ?? '-' }}</td>

@@ -12,4 +12,13 @@ class Ruangan extends Model
     protected $primaryKey = "id";
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    public function kamar()
+    {
+        return $this->hasMany(Kamar::class, 'id_ruangan');
+    }
 }

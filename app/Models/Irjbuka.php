@@ -11,4 +11,8 @@ class Irjbuka extends Model
     protected $primaryKey = "id";
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
 }

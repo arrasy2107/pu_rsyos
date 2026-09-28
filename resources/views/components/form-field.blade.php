@@ -3,6 +3,8 @@ $type = $type ?? 'text';
 $autocomplete = $autocomplete ?? 'off';
 $placeholder = $placeholder ?? '';
 $icon = $icon ?? 'fas fa-pencil-alt';
+$value = $value ?? null;
+$readonly = $readonly ?? false;
 @endphp
 
 <div class="form-group pu-login-form-group">
@@ -18,6 +20,8 @@ $icon = $icon ?? 'fas fa-pencil-alt';
             name="{{ $name }}"
             autocomplete="{{ $autocomplete }}"
             placeholder="{{ $placeholder }}"
+            @if($value !== null) value="{{ $value }}" @endif
+            @readonly($readonly)
             required>
         @if(!empty($append))
         <button type="button" class="btn-input-icon" id="{{ $append }}" aria-label="Toggle password visibility">

@@ -11,31 +11,58 @@ $data = $data ?? null;
         </div>
     </div>
 
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h5 mb-0 text-gray-800">Total Pasien : {{ $data ? $data->jumlah_total_pasien : 0 }}</h1>
-    </div>
+    @if($data)
+        @php
+            $summaryItems = [
+                ['label' => 'Total Pasien', 'value' => $data->jumlah_total_pasien ?? 0, 'class' => 'primary', 'icon' => 'fa-users'],
+                ['label' => 'Pasien Lama', 'value' => $data->jumlah_pasien_lama ?? 0, 'class' => 'info', 'icon' => 'fa-user-clock'],
+                ['label' => 'Pasien Baru', 'value' => $data->jumlah_pasien_baru ?? 0, 'class' => 'success', 'icon' => 'fa-user-plus'],
+                ['label' => 'Pasien Masuk', 'value' => ($data->jumlah_pasien_baru ?? 0) + ($data->jumlah_pasien_pindah ?? 0) + ($data->jumlah_pasien_pindahan ?? 0), 'class' => 'warning', 'icon' => 'fa-arrow-right'],
+                ['label' => 'Pasien Keluar', 'value' => ($data->jumlah_pasien_pulang ?? 0) + ($data->jumlah_pasien_meninggal ?? 0), 'class' => 'danger', 'icon' => 'fa-arrow-right-from-bracket'],
+            ];
+            $specialItems = [
+                ['label' => 'Covid', 'value' => $data->jumlah_pasien_covid ?? 0],
+                ['label' => 'Suspect Covid', 'value' => $data->jumlah_pasien_suspek_covid ?? 0],
+                ['label' => 'Restrain', 'value' => $data->jumlah_pasien_restrain ?? 0],
+                ['label' => 'Difabel', 'value' => $data->jumlah_pasien_difabel ?? 0],
+            ];
+        @endphp
 
-    <div class="row">
-        @if($data)
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col me-2">
-                            <div class="text-xs fw-bold text-uppercase mb-1"> Pasien Lama</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">{{ $data->jumlah_pasien_lama }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <img src="{{ asset('sb-admin/icon/general/pasien.png') }}" height="64" width="64">
-                        </div>
-                    </div>
+        <div class="ruangan-report-summary">
+            @foreach($summaryItems as $item)
+            <div class="ruangan-report-stat ruangan-report-stat-{{ $item['class'] }}">
+                <div class="ruangan-report-stat-icon"><i class="fas {{ $item['icon'] }}" aria-hidden="true"></i></div>
+                <div>
+                    <div class="ruangan-report-stat-label">{{ $item['label'] }}</div>
+                    <div class="ruangan-report-stat-value">{{ $item['value'] }}</div>
                 </div>
             </div>
+            @endforeach
         </div>
-        <!-- Repeat other cards similar to original partial but using $data fields -->
-        {{-- For brevity include only a few; expand as needed --}}
-        @else
-        <div class="col-12 text-muted py-4 text-center">Pilih ruangan untuk melihat laporan.</div>
-        @endif
-    </div>
+
+        <div class="ruangan-report-secondary">
+            <div class="ruangan-report-secondary-heading">
+                <span><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Kondisi Khusus</span>
+                @if($data->permasalahan_umum)
+                    <span class="ruangan-report-note">Ada permasalahan</span>
+                @endif
+            </div>
+            <div class="ruangan-report-special-list">
+                @foreach($specialItems as $item)
+                <div class="ruangan-report-special-item">
+                    <span>{{ $item['label'] }}</span>
+                    <strong>{{ $item['value'] }}</strong>
+                </div>
+                @endforeach
+            </div>
+            @if($data->permasalahan_umum)
+            <div class="ruangan-report-problem">
+                <span class="ruangan-report-problem-label">Permasalahan Umum</span>
+                <span>{{ $data->permasalahan_umum }}</span>
+            </div>
+            @endif
+        </div>
+    @else
+        <div class="ruangan-report-empty text-muted">Pilih ruangan untuk melihat laporan.</div>
+    @endif
 </div>

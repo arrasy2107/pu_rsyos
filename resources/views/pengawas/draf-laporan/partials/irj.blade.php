@@ -48,9 +48,13 @@
 
                     @if($irjDraf)
                     <div class="d-flex justify-content-end mt-4">
-                        <a href="{{ route('deleteDraftlaporanIRJ', $irjDraf->id) }}" id="batalirj" class="btn btn-outline-danger me-2">
-                            <i class="fas fa-trash-alt me-1"></i> Batalkan Laporan
-                        </a>
+                        <form method="POST" action="{{ route('deleteDraftlaporanIRJ', $irjDraf->id) }}" id="batalirj-form" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" id="batalirj" class="btn btn-outline-danger me-2">
+                                <i class="fas fa-trash-alt me-1"></i> Batalkan Laporan
+                            </button>
+                        </form>
                         <button id="editirj" type="button" class="btn btn-primary btn-edit-irj me-2">
                             <i class="fas fa-edit me-1"></i> Ubah Laporan
                         </button>

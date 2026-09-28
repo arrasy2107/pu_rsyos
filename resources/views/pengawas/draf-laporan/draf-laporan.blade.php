@@ -3,7 +3,7 @@
 @section('page_title', 'Draf Laporan')
 
 @section('custom_style')
-<link href="{{asset('sb-admin/css/signature.css')}}" rel="stylesheet">
+
 <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
@@ -42,17 +42,6 @@
         text-decoration: none;
     }
 
-    .kbw-signature {
-        width: 100%;
-        height: 200px;
-        border: 2px dashed var(--color-neutral-300);
-        border-radius: var(--radius-md);
-    }
-
-    #sig canvas {
-        width: 100% !important;
-        height: auto;
-    }
 
     input[readonly],
     textarea[readonly] {

@@ -27,7 +27,7 @@ $laporan = \App\Models\Laporanumum::where('status', 0)
                         <div class="col-md-10">
                             <div class="text-xs fw-bold text-uppercase mb-1">Jumlah Pasien Lama</div>
                             <div class="h5 mb-0 me-3 fw-bold text-gray-800">
-                                <input type="number" class="form-control" name="inap_pasien_lama" id="inap_pasien_lama" autocomplete="off" value="{{ optional($laporan)->jumlah_pasien_lama ?? 0 }}" readonly />
+                                <input type="number" class="form-control" name="inap_pasien_lama" id="inap_pasien_lama" autocomplete="off" value="{{ $pasienLama ?? 0 }}" readonly aria-readonly="true" tabindex="-1" />
                             </div>
                         </div>
                         <div class="col-md-2 text-end">

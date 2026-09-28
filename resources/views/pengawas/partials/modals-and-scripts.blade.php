@@ -678,10 +678,6 @@
         });
     });
 
-    $(document).on('click', "#editpasienlama", function(e) {
-        document.getElementById("inap_pasien_lama").readOnly = false;
-    });
-
     // Helper functions for rawat inap icons
     function ranapIcon(id, file, state) {
         let prefix = state === 'a' ? '/warna/ranap/' : '/ranap/';
@@ -690,14 +686,6 @@
         if (id === "gbr_inap_pasien_pulang") prefix = state === 'a' ? '/warna/igd/' : '/igd/';
 
         document.getElementById(id).setAttribute('src', ASSET_BASE + prefix + file);
-    }
-
-    function ranap1a() {
-        ranapIcon("gbr_inap_pasien_lama", "pasien.png", 'a');
-    }
-
-    function ranap1b() {
-        ranapIcon("gbr_inap_pasien_lama", "pasien.png", 'b');
     }
 
     function ranap2a() {
@@ -817,9 +805,10 @@
         }, function() {
             $.ajax({
                 url: 'deleteirjdetail',
-                method: 'GET',
+                method: 'DELETE',
                 data: {
-                    id: del_id
+                    id: del_id,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if (response.success) {
@@ -921,9 +910,10 @@
         }, function() {
             $.ajax({
                 url: 'deleteibsdetail',
-                method: 'GET',
+                method: 'DELETE',
                 data: {
-                    id: del_id
+                    id: del_id,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if (response.success) {
@@ -963,6 +953,12 @@
                     alert(response.message);
                     refreshIBS();
                 } else alert(response.message);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Gagal menyimpan data IBS.');
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Gagal menyimpan perubahan data IBS.');
             }
         });
     });
@@ -1132,8 +1128,8 @@
                     refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
                 } else alert(response.message);
             },
-            error: function(error) {
-                console.log(error);
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Gagal menyimpan catatan pasien.');
             }
         });
     });
@@ -1152,8 +1148,8 @@
                     refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
                 } else alert(response.message);
             },
-            error: function(error) {
-                console.log(error);
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Gagal mengubah catatan pasien.');
             }
         });
     });
@@ -1175,8 +1171,8 @@
                     refreshCatatanBaru(form.find('input[name=ruangan]').val());
                 } else alert(response.message);
             },
-            error: function(error) {
-                console.log(error);
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Gagal menyimpan catatan pasien.');
             }
         });
     });
@@ -1195,8 +1191,8 @@
                     refreshCatatanBaru(form.find('input[name=ruangan]').val());
                 } else alert(response.message);
             },
-            error: function(error) {
-                console.log(error);
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Gagal mengubah catatan pasien.');
             }
         });
     });
@@ -1214,9 +1210,10 @@
         }, function() {
             $.ajax({
                 url: 'deletecatatanpasien',
-                method: 'GET',
+                method: 'DELETE',
                 data: {
-                    id: id
+                    id: id,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if (response.success) {
@@ -1228,8 +1225,8 @@
                         }
                     } else alert("Error");
                 },
-                error: function(error) {
-                    console.log(error);
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Gagal menghapus catatan pasien.');
                 }
             });
         });

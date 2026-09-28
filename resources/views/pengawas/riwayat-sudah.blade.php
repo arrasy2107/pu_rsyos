@@ -33,15 +33,12 @@
     </x-page-header>
 
     {{-- Filter Card --}}
-    <x-data-card title="Filter Rentang Tanggal" icon="fas fa-filter" class="mb-4">
+    <x-data-card title="" class="mb-4">
         <div class="row align-items-end">
             <div class="col-md-4">
                 <div class="form-group mb-0">
                     <label class="fw-bold text-dark small text-uppercase">Tanggal Mulai</label>
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-white border-right-0"><i class="fas fa-calendar-alt text-primary"></i></span>
-                        </div>
                         <input type="date" id="tanggal" class="form-control border-left-0" name="tglmulai" />
                     </div>
                 </div>
@@ -50,23 +47,23 @@
                 <div class="form-group mb-0">
                     <label class="fw-bold text-dark small text-uppercase">Tanggal Selesai</label>
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-white border-right-0"><i class="fas fa-calendar-check text-success"></i></span>
-                        </div>
                         <input type="date" id="tanggal2" class="form-control border-left-0" name="tglselesai" />
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <button type="button" id="lihat" class="btn btn-primary w-100 shadow-sm">
-                    <i class="fas fa-search me-2"></i> Cari Laporan
-                </button>
+                <div class="form-group mb-0">
+                    <label class="text-muted small fw-bold d-none d-md-block" style="visibility: hidden;">Aksi</label>
+                    <button type="button" id="lihat" class="btn btn-primary w-100 shadow-sm">
+                        <i class="fas fa-search me-2"></i> Cari Laporan
+                    </button>
+                </div>
             </div>
         </div>
     </x-data-card>
 
     {{-- Data Table Card --}}
-    <x-data-card title="Laporan Terverifikasi (30 Hari Terakhir)" icon="fas fa-clipboard-check" headerClass="text-success">
+    <x-data-card title="Sudah Diverifikasi" icon="fas fa-clipboard-check" headerClass="text-success">
         <x-slot name="actions">
             <span class="text-muted small"><i class="fas fa-info-circle me-1"></i> Gunakan filter di atas untuk mempersempit pencarian</span>
         </x-slot>
@@ -76,12 +73,12 @@
                     <thead class="thead-light">
                         <tr>
                             <th width="5%" class="text-center ps-4">No</th>
-                            <th width="18%">Tanggal</th>
-                            <th width="8%">Jam</th>
-                            <th width="10%">Dinas</th>
+                            <th width="18%">Waktu Laporan</th>
+                            <th width="15%">Dinas</th>
                             <th>Pengawas Umum</th>
-                            <th width="14%">Tanda Tangan</th>
-                            <th width="22%" class="text-center">Detail Laporan</th>
+                            <th width="13%">Verifikasi Keperawatan</th>
+                            <th width="13%">Verifikasi Direktur</th>
+                            <th width="10%" class="text-center">Lihat Detail</th>
                         </tr>
                     </thead>
                     <?php $no = 1; ?>
@@ -92,10 +89,7 @@
                             <td class="text-center align-middle ps-4 fw-bold text-muted">{{ $no++ }}</td>
                             <td class="align-middle">
                                 <div class="fw-bold text-dark">{{ $data->created_at->isoFormat('dddd') }}</div>
-                                <div class="text-muted small">{{ $data->created_at->isoFormat('D MMMM Y') }}</div>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge bg-light border px-2 py-1">{{ date('H:i', strtotime($data->created_at)) }}</span>
+                                <div class="text-muted small">{{ $data->created_at->isoFormat('D MMMM Y, HH:mm') }}</div>
                             </td>
                             <td class="align-middle">
                                 <span class="badge bg-primary px-2 py-1 text-uppercase" style="font-size: 0.7rem;">
@@ -113,26 +107,16 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">
-                                <img style="max-width:120px; height:auto;" class="img-fluid rounded border shadow-sm" src="{{asset('signature/'.$data->signature)}}" alt="Tanda Tangan">
+                            <td class="align-middle text-center">
+                                <span class="badge bg-success">Terverifikasi</span>
                             </td>
                             <td class="align-middle text-center">
-                                <div class="d-flex flex-wrap justify-content-center" style="gap: 4px;">
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd" data-bs-toggle="modal" data-bs-target="#igd" title="IGD">
-                                        <i class="fas fa-ambulance me-1"></i>IGD
-                                    </button>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum" data-bs-toggle="modal" data-bs-target="#umum" title="Ruangan">
-                                        <i class="fas fa-procedures me-1"></i>Umum
-                                    </button>
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-warning text-dark btn-ibs" data-bs-toggle="modal" data-bs-target="#ibs" title="IBS">
-                                        <i class="fas fa-syringe me-1"></i>IBS
-                                    </button>
-                                    @if($data->id_dinas != 3 && $t->check() != true)
-                                    <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj" data-bs-toggle="modal" data-bs-target="#irj" title="IRJ">
-                                        <i class="fas fa-stethoscope me-1"></i>IRJ
-                                    </button>
-                                    @endif
-                                </div>
+                                <span class="badge bg-success">Terverifikasi</span>
+                            </td>
+                            <td class="align-middle text-center">
+                                <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-outline-primary btn-summary" data-bs-toggle="modal" data-bs-target="#laporanSummary" title="Lihat detail laporan" aria-label="Lihat detail laporan">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </td>
                         </tr>
                         @empty
@@ -153,6 +137,24 @@
     </x-data-card>
 
     {{-- MODALS --}}
+    <!-- Modal Ringkasan Laporan Terpilih -->
+    <div id="laporanSummary" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2"></i> Ringkasan Laporan Terpilih</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-4">
+                    @livewire('dashboard.laporan-summary-modal', key('laporan-summary-sudah'))
+                </div>
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal IGD -->
     <div id="igd" class="modal fade" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -163,7 +165,7 @@
                 </div>
                 <div class="modal-body bg-light p-4">
                     <div class="tableigd">
-                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+                        @livewire('dashboard.laporan-detail-modal', ['modalType' => 'igd'], key('laporan-detail-igd-sudah'))
                     </div>
                 </div>
                 <div class="modal-footer bg-white">
@@ -183,7 +185,7 @@
                 </div>
                 <div class="modal-body bg-light p-4">
                     <div class="tableumum">
-                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-success"></i></div>
+                        @livewire('dashboard.laporan-detail-modal', ['modalType' => 'umum'], key('laporan-detail-umum-sudah'))
                     </div>
                 </div>
                 <div class="modal-footer bg-white">
@@ -203,7 +205,7 @@
                 </div>
                 <div class="modal-body bg-light p-4">
                     <div class="tableibs">
-                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-warning"></i></div>
+                        @livewire('dashboard.laporan-detail-modal', ['modalType' => 'ibs'], key('laporan-detail-ibs-sudah'))
                     </div>
                 </div>
                 <div class="modal-footer bg-white">
@@ -223,7 +225,7 @@
                 </div>
                 <div class="modal-body bg-light p-4">
                     <div class="tableirj">
-                        <div class="text-center py-4"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+                        @livewire('dashboard.laporan-detail-modal', ['modalType' => 'irj'], key('laporan-detail-irj-sudah'))
                     </div>
                 </div>
                 <div class="modal-footer bg-white">
@@ -320,19 +322,38 @@
             }
         });
 
-        let id1, id2, id3, id4;
+        $("#dataTable").on('click', '.btn-summary', function() {
+            Livewire.dispatch('openLaporanSummary', {
+                idlaporan: $(this).val()
+            });
+        });
 
-        $("#dataTable").on('click', '.btn-igd', function() {
-            id1 = $(this).val();
-        });
-        $("#dataTable").on('click', '.btn-umum', function() {
-            id2 = $(this).val();
-        });
-        $("#dataTable").on('click', '.btn-irj', function() {
-            id3 = $(this).val();
-        });
-        $("#dataTable").on('click', '.btn-ibs', function() {
-            id4 = $(this).val();
+        $(document).on('click', '.btn-summary-detail', function() {
+            const type = $(this).data('type');
+            const idlaporan = $(this).data('id');
+            const modal = {
+                igd: '#igd',
+                umum: '#umum',
+                ibs: '#ibs',
+                irj: '#irj'
+            } [type];
+
+            Livewire.dispatch('openLaporanDetailModal', {
+                type: type,
+                idlaporan: idlaporan
+            });
+
+            $(modal).off('shown.bs.modal.summaryStack').on('shown.bs.modal.summaryStack', function() {
+                const summary = document.getElementById('laporanSummary');
+                const detail = document.getElementById(modal.substring(1));
+                $(summary).css('z-index', 1050);
+                $(detail).css('z-index', 1060);
+                $('.modal-backdrop').last().css('z-index', 1055);
+            }).off('hidden.bs.modal.summaryStack').on('hidden.bs.modal.summaryStack', function() {
+                $('#laporanSummary').css('z-index', 1055);
+                $(this).css('z-index', '');
+                $('.modal-backdrop').css('z-index', 1040);
+            }).modal('show');
         });
 
         function loadModal(selector, url, data) {
@@ -343,61 +364,12 @@
                 data: data,
                 success: function(res) {
                     $(selector).html(res);
+                },
+                error: function() {
+                    $(selector).html('<div class="alert alert-danger mb-0">Detail tambahan gagal dimuat. Silakan coba lagi.</div>');
                 }
             });
         }
-
-        $('#igd').on('show.bs.modal', function() {
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'igd',
-                    idlaporan: id1
-                });
-            } else {
-                loadModal('.tableigd', 'refresh-detail-laporan-igd/' + id1, {
-                    idlaporan: id1
-                });
-            }
-        });
-
-        $('#umum').on('show.bs.modal', function() {
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'umum',
-                    idlaporan: id2
-                });
-            } else {
-                loadModal('.tableumum', 'refresh-detail-laporan-umum/' + id2, {
-                    idlaporan: id2
-                });
-            }
-        });
-
-        $('#irj').on('show.bs.modal', function() {
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'irj',
-                    idlaporan: id3
-                });
-            } else {
-                loadModal('.tableirj', 'refresh-detail-laporan-irj/' + id3, {
-                    idlaporan: id3
-                });
-            }
-        });
-
-        $('#ibs').on('show.bs.modal', function() {
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'ibs',
-                    idlaporan: id4
-                });
-            } else {
-                loadModal('.tableibs', 'refresh-detail-laporan-ibs/' + id4, {
-                    idlaporan: id4
-                });
-            }
-        });
 
         // Filter by date range
         $("#lihat").click(function() {

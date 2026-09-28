@@ -470,7 +470,7 @@
 
             $.ajax({
                 url: url,
-                method: 'GET',
+                method: 'DELETE',
                 data: {
                     _token: "{{ csrf_token() }}",
                     id: id,

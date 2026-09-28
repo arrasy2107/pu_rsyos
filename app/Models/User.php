@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'id_role',
         'status',
+        'akses_menu',
     ];
 
     /**
@@ -42,5 +43,28 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'akses_menu'        => 'array',
     ];
+
+    /**
+     * Cek apakah user memiliki akses ke menu tertentu.
+     * Super admin (id_role=0) selalu mendapat akses penuh.
+     *
+     * @param  string  $menu  Nama slug menu, e.g. 'data-ruangan'
+     * @return bool
+     */
+    public function hasMenuAccess(string $menu): bool
+    {
+        // Super admin mendapat akses ke semua menu
+        if ($this->id_role === 0) {
+            return true;
+        }
+
+        // Jika akses_menu belum di-set (null), izinkan akses (backward-compat)
+        if (is_null($this->akses_menu)) {
+            return true;
+        }
+
+        return in_array($menu, $this->akses_menu);
+    }
 }

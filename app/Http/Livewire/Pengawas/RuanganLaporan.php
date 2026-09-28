@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Pengawas;
 
+use App\Models\Laporanumum;
 use Livewire\Component;
 
 class RuanganLaporan extends Component
@@ -33,6 +34,9 @@ class RuanganLaporan extends Component
     {
         return view('livewire.pengawas.ruangan-laporan', [
             'ruangan' => $this->ruangan,
+            'pasienLama' => $this->ruangan
+                ? Laporanumum::saldoPasienLama((int) $this->ruangan)
+                : 0,
         ]);
     }
 }

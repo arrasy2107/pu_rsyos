@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PengawasController extends Controller
 {
@@ -124,9 +127,9 @@ class PengawasController extends Controller
     }
 
     //LAPORAN IGD
-    public function draftlaporanIGD(Request $r)
+    public function draftlaporanIGD(Request $r, \App\Services\PengawasIgdService $igdService)
     {
-        $r->validate([
+        $validated = $r->validate([
             'igd_pasien' => ['required', 'integer', 'min:0'],
             'igd_pasien_rawat' => ['required', 'integer', 'min:0'],
             'igd_pasien_emergency' => ['required', 'integer', 'min:0'],
@@ -141,61 +144,18 @@ class PengawasController extends Controller
             'igd_lainlain' => ['nullable', 'string'],
         ]);
 
-        if (\App\Models\Laporanigd::where('status', 0)->where('id_pengawas', \Auth::id())->exists()) {
-            return redirect()->route('draf-laporan')->with('fail-add', 'Laporan IGD aktif sudah ada. Silakan ubah melalui Draf Laporan.');
+        $result = $igdService->createDraft($validated);
+
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
 
-        if($r->igd_pasien - $r->igd_pasien_rawat < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah kunjungan pasien tidak boleh LEBIH KECIL dari jumlah pasien rawat');
-        }
-        else if($r->igd_pasien - $r->igd_pasien_emergency < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah kunjungan pasien tidak boleh LEBIH KECIL dari jumlah pasien Emergency');
-        }
-        else if($r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah Rujukan SISRUTE tidak boleh LEBIH KECIL dari jumlah pasien SISRUTE yang diterima');
-        }
-        else{
-            $sup = new \App\Models\Laporanigd;
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->id_dokter = implode(',', $r->igd_dokterjaga);
-            
-            $sup->jumlah_pasien = $r->igd_pasien;
-            $sup->jumlah_pasien_rawat = $r->igd_pasien_rawat ;	
-            $sup->jumlah_pasien_pulang	= $r->igd_pasien - $r->igd_pasien_rawat;
-            $sup->jumlah_pasien_emergency = $r->igd_pasien_emergency;	
-            $sup->jumlah_pasien_non_emergency = $r->igd_pasien - $r->igd_pasien_emergency;
-            $sup->jumlah_pasien_tidak_bisa_rawat= $r->igd_pasien_tidak_rawat ;
-            // SISRUTE
-            $sup->jumlah_pasien_sisrute= $r->igd_pasien_sisrute ;
-            $sup->jumlah_pasien_sisrute_diterima= $r->igd_pasien_sisrute_diterima ;
-            $sup->jumlah_pasien_sisrute_ditolak= $r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima ;
-            
-            $sup->alasan_tidak_bisa_rawat= $r->igd_alasan ;	
-            $sup->jumlah_pasien_doa= $r->igd_pasien_doa;	
-            $sup->permasalahan = $r->igd_permasalahan ;
-            $sup->lain_lain = $r->igd_lainlain ;
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->created_at = date('Y-m-d H:i:s');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
-    
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 1;
-            $log->keterangan = 'Tambah Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-    
-            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IGD');
-        }
-        
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
-    public function editDraftlaporanIGD(Request $r)
+    public function editDraftlaporanIGD(Request $r, \App\Services\PengawasIgdService $igdService)
     {
-        $r->validate([
+        $validated = $r->validate([
             'id' => ['required', 'integer'],
             'igd_pasien' => ['required', 'integer', 'min:0'],
             'igd_pasien_rawat' => ['required', 'integer', 'min:0'],
@@ -211,201 +171,101 @@ class PengawasController extends Controller
             'igd_lainlain' => ['nullable', 'string'],
         ]);
 
-        if($r->igd_pasien - $r->igd_pasien_rawat < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah kunjungan pasien tidak boleh LEBIH KECIL dari jumlah pasien rawat');
-        }
-        else if($r->igd_pasien - $r->igd_pasien_emergency < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah kunjungan pasien tidak boleh LEBIH KECIL dari jumlah pasien Emergency');
-        }
-        else if($r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima < 0){
-            return redirect()->back()->with('fail-add', 'Jumlah Rujukan SISRUTE tidak boleh LEBIH KECIL dari jumlah pasien SISRUTE yang diterima');
-        }
-        else{
-            $sup = \App\Models\Laporanigd::where('id', $r->id)
-                ->where('id_pengawas', \Auth::id())
-                ->where('status', 0)
-                ->firstOrFail();
-            $sup->id_dokter = implode(',', $r->igd_dokterjaga);
-            
-            $sup->jumlah_pasien = $r->igd_pasien;
-            $sup->jumlah_pasien_rawat = $r->igd_pasien_rawat ;	
-            $sup->jumlah_pasien_pulang	= $r->igd_pasien - $r->igd_pasien_rawat;
-            $sup->jumlah_pasien_emergency = $r->igd_pasien_emergency;	
-            $sup->jumlah_pasien_non_emergency = $r->igd_pasien - $r->igd_pasien_emergency;
-            $sup->jumlah_pasien_tidak_bisa_rawat= $r->igd_pasien_tidak_rawat ;
-            // SISRUTE
-            $sup->jumlah_pasien_sisrute= $r->igd_pasien_sisrute ;
-            $sup->jumlah_pasien_sisrute_diterima= $r->igd_pasien_sisrute_diterima ;
-            $sup->jumlah_pasien_sisrute_ditolak= $r->igd_pasien_sisrute - $r->igd_pasien_sisrute_diterima ;
-            
-            $sup->alasan_tidak_bisa_rawat= $r->igd_alasan ;	
-            $sup->jumlah_pasien_doa= $r->igd_pasien_doa;	
-            $sup->permasalahan = $r->igd_permasalahan ;
-            $sup->lain_lain = $r->igd_lainlain ;
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
+        $result = $igdService->updateDraft($validated);
 
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 1;
-            $log->keterangan = 'Edit Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-            return redirect()->back()->with('success-add', 'Berhasil mengubah data Draft Laporan IGD');
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
+
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
-    public function deleteDraftlaporanIGD($id)
+    public function deleteDraftlaporanIGD($id, \App\Services\PengawasIgdService $igdService)
     {
+        $result = $igdService->deleteDraft((int) $id);
 
-        $sup = \App\Models\Laporanigd::where('id', $id)
-            ->where('id_pengawas', \Auth::id())
-            ->where('status', 0)
-            ->firstOrFail();
-        $sup->status = 2; //Delete Laporan
-        $sup->save();
-
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 1;
-        $log->keterangan = 'Hapus Draft';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menghapus data draf Laporan IGD');
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
     //LAPORAN UMUM
-    public function draftlaporanUmum(Request $r)
+    public function draftlaporanUmum(Request $r, \App\Services\PengawasUmumService $umumService)
     {
-        if(($r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang) < 0){
-            return redirect()->back()->with('fail-add', 'Total Pasien tidak boleh di bawah 0, Coba periksa ulang inputan Anda.');
+        $validated = $r->validate([
+            'inap_ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+            'inap_pasien_baru' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pindah' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pindahan' => ['required', 'integer', 'min:0'],
+            'inap_pasien_meninggal' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pulang' => ['required', 'integer', 'min:0'],
+            'inap_pasien_covid' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_suspect' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_restrain' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_kekerasan' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_keracunan' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_bahasa' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_difabel' => ['nullable', 'integer', 'min:0'],
+            'inap_catatan_istimewa' => ['nullable', 'string', 'max:5000'],
+            'inap_catatan_baru' => ['nullable', 'string', 'max:5000'],
+            'inap_permasalahan' => ['nullable', 'string', 'max:5000'],
+        ], [
+            'inap_pasien_baru.required' => 'Jumlah pasien baru wajib diisi.',
+            'inap_pasien_pindah.required' => 'Jumlah pasien pindah wajib diisi.',
+            'inap_pasien_pindahan.required' => 'Jumlah pasien pindahan wajib diisi.',
+            'inap_pasien_meninggal.required' => 'Jumlah pasien meninggal wajib diisi.',
+            'inap_pasien_pulang.required' => 'Jumlah pasien pulang wajib diisi.',
+        ]);
+
+        $result = $umumService->createDraft($validated);
+
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
-        else{
-            $sup = new \App\Models\Laporanumum;
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->id_ruangan = $r->inap_ruangan;
 
-            $sup->jumlah_pasien_lama = $r->inap_pasien_lama;
-            $sup->jumlah_pasien_baru = $r->inap_pasien_baru;
-            $sup->jumlah_pasien_pindah = $r->inap_pasien_pindah;
-            $sup->jumlah_pasien_pindahan = $r->inap_pasien_pindahan;
-            $sup->jumlah_pasien_meninggal = $r->inap_pasien_meninggal;
-            $sup->jumlah_pasien_pulang = $r->inap_pasien_pulang;
-
-            $sup->catatan_pasien_istimewa = $r->inap_catatan_istimewa;
-            $sup->catatan_pasien_baru = $r->inap_catatan_baru;
-            $sup->jumlah_pasien_covid = $r->inap_pasien_covid;
-            $sup->jumlah_pasien_suspek_covid = $r->inap_pasien_suspect;
-            $sup->jumlah_pasien_restrain = $r->inap_pasien_restrain;
-            $sup->jumlah_pasien_perilaku_kekerasan = $r->inap_pasien_kekerasan;
-            $sup->jumlah_pasien_keracunan = $r->inap_pasien_keracunan;
-            $sup->jumlah_pasien_keterbatasan_bahasa = $r->inap_pasien_bahasa;
-            $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
-            $sup->permasalahan_umum = $r->inap_permasalahan;
-            
-            $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang;/// 
-            
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->created_at = date('Y-m-d H:i:s');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
-
-            // Tambah Catatan Pasien
-            $catatanpasien = \App\Models\Catatanpasien::where('id_pengawas',\Auth::user()->id)->where('id_ruangan',$r->inap_ruangan)->where('status',0)->update(['updated_at' => date('Y-m-d H:i:s'), 'id_laporan_umum' => \App\Models\Laporanumum::where('id_ruangan',$r->inap_ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last()]);
-
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 2;
-            $log->keterangan = 'Tambah Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draf Laporan Rawat Inap');
-        }
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
-    public function editDraftlaporanUmum(Request $r)
+    public function editDraftlaporanUmum(Request $r, \App\Services\PengawasUmumService $umumService)
     {
-        if(($r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang) < 0){
-            return redirect()->back()->with('fail-add', 'Total Pasien tidak boleh di bawah 0, Coba periksa ulang inputan Anda.');
+        $validated = $r->validate([
+            'id' => ['required', 'integer'],
+            'inap_ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+            'inap_pasien_baru' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pindah' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pindahan' => ['required', 'integer', 'min:0'],
+            'inap_pasien_meninggal' => ['required', 'integer', 'min:0'],
+            'inap_pasien_pulang' => ['required', 'integer', 'min:0'],
+            'inap_pasien_covid' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_suspect' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_restrain' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_kekerasan' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_keracunan' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_bahasa' => ['nullable', 'integer', 'min:0'],
+            'inap_pasien_difabel' => ['nullable', 'integer', 'min:0'],
+            'inap_catatan_istimewa' => ['nullable', 'string', 'max:5000'],
+            'inap_catatan_baru' => ['nullable', 'string', 'max:5000'],
+            'inap_permasalahan' => ['nullable', 'string', 'max:5000'],
+        ], [
+            'inap_pasien_baru.required' => 'Jumlah pasien baru wajib diisi.',
+            'inap_pasien_pindah.required' => 'Jumlah pasien pindah wajib diisi.',
+            'inap_pasien_pindahan.required' => 'Jumlah pasien pindahan wajib diisi.',
+            'inap_pasien_meninggal.required' => 'Jumlah pasien meninggal wajib diisi.',
+            'inap_pasien_pulang.required' => 'Jumlah pasien pulang wajib diisi.',
+        ]);
+
+        $result = $umumService->updateDraft($validated);
+
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
-        else{
-            $sup = \App\Models\Laporanumum::where('id',$r->id)->first();
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->id_ruangan = $r->inap_ruangan;
 
-            $sup->jumlah_pasien_lama = $r->inap_pasien_lama;
-            $sup->jumlah_pasien_baru = $r->inap_pasien_baru;
-            $sup->jumlah_pasien_pindah = $r->inap_pasien_pindah;
-            $sup->jumlah_pasien_pindahan = $r->inap_pasien_pindahan;
-            $sup->jumlah_pasien_meninggal = $r->inap_pasien_meninggal;
-            $sup->jumlah_pasien_pulang = $r->inap_pasien_pulang;
-            
-            $sup->catatan_pasien_istimewa = $r->inap_catatan_istimewa;
-            $sup->catatan_pasien_baru = $r->inap_catatan_baru;
-            $sup->jumlah_pasien_covid = $r->inap_pasien_covid;
-            $sup->jumlah_pasien_suspek_covid = $r->inap_pasien_suspect;
-            $sup->jumlah_pasien_restrain = $r->inap_pasien_restrain;
-            $sup->jumlah_pasien_perilaku_kekerasan = $r->inap_pasien_kekerasan;
-            $sup->jumlah_pasien_keracunan = $r->inap_pasien_keracunan;
-            $sup->jumlah_pasien_keterbatasan_bahasa = $r->inap_pasien_bahasa;
-            $sup->jumlah_pasien_difabel = $r->inap_pasien_difabel;
-            $sup->permasalahan_umum = $r->inap_permasalahan;
-            
-            $sup->jumlah_total_pasien = $r->inap_pasien_lama + $r->inap_pasien_baru - $r->inap_pasien_pindah + $r->inap_pasien_pindahan - $r->inap_pasien_meninggal - $r->inap_pasien_pulang;/// 
-            
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->created_at = date('Y-m-d H:i:s');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
-
-             // Edit Catatan Pasien
-             $catatanpasien = \App\Models\Catatanpasien::where('id_pengawas',\Auth::user()->id)->where('id_ruangan',$r->inap_ruangan)->where('status',0)->update(['updated_at' => date('Y-m-d H:i:s'), 'id_laporan_umum' => \App\Models\Laporanumum::where('id_ruangan',$r->inap_ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last()]);
-
-
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 2;
-            $log->keterangan = 'Edit Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-            return redirect()->back()->with('success-add', 'Berhasil mengubah data Draf Laporan Rawat Inap');
-        }
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
-    public function deleteDraftlaporanUmum($id)
+    public function deleteDraftlaporanUmum($id, \App\Services\PengawasUmumService $umumService)
     {
-
-        $sup = \App\Models\Laporanumum::where('id',$id)->first();
-        $sup->status = 2; //Delete Laporan
-        $sup->save();
-
-         // Hapus Catatan Pasien
-         $catatanpasien = \App\Models\Catatanpasien::where('id_pengawas',\Auth::user()->id)->where('id_laporan_umum',$id)->update(['updated_at' => date('Y-m-d H:i:s'), 'status' => 2]);
-
-
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 2;
-        $log->keterangan = 'Hapus Draft';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menghapus data Draf Laporan Rawat Inap');
+        $result = $umumService->deleteDraft((int) $id);
+        
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
 
@@ -539,107 +399,74 @@ class PengawasController extends Controller
   
 
 
-    public function draftlaporanIRJ(Request $r){
-        $sp = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
- 
-        if (!$sp) {
-          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter masih kosong, silahkan isi terlebih dahulu');
-        } else {
-            $sup = new \App\Models\Laporanirj;
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->masalah = $r->irj_masalah;
-            $sup->langkah_atasi_masalah = $r->irj_langkah;
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->created_at = date('Y-m-d H:i:s');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
+    public function draftlaporanIRJ(Request $r, \App\Services\PengawasIrjService $irjService){
+        $result = $irjService->createDraft($r->all());
 
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 3;
-            $log->keterangan = 'Tambah Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
 
+        return redirect()->back()->with('success-add', $result['message']);
     }
-    public function editDraftlaporanIRJ(Request $r){
-        $sp = \App\Models\Laporanirjdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
- 
-        if (!$sp) {
-          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter masih kosong, silahkan isi terlebih dahulu');
-        } else {
-            $sup = \App\Models\Laporanirj::where('id',$r->id)->first();
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->masalah = $r->irj_masalah;
-            $sup->langkah_atasi_masalah = $r->irj_langkah;
-            
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
+    public function editDraftlaporanIRJ(Request $r, \App\Services\PengawasIrjService $irjService){
+        $result = $irjService->updateDraft($r->all());
 
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 3;
-            $log->keterangan = 'Edit Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IRJ');
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
+
+        return redirect()->back()->with('success-add', $result['message']);
     }
-    public function deleteDraftlaporanIRJ($id){
-        $sup = \App\Models\Laporanirj::where('id',$id)->first();
-        $sup->status = 2; //Delete Laporan
-        $sup->save();
-
-        //hapus detail
-        \App\Models\Laporanirjdetail::where('status', 0)->where('id_pengawas',\Auth::user()->id)->delete();
-
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 3;
-        $log->keterangan = 'Hapus Draft';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menghapus data draf Laporan IRJ');
+    public function deleteDraftlaporanIRJ($id, \App\Services\PengawasIrjService $irjService){
+        $result = $irjService->deleteDraft((int) $id);
+        
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
 
     //IBS
     public function tambahibsdetail(Request $r)
     {
-        if( $r->nama == '' || $r->rm == '' || $r->id_dokter_operasi == '' || $r->id_dokter_anestesi == '' || $r->id_ruangan=='' || $r->jam_mulai=='' || $r->jam_selesai=='' || $r->diagnosapre=='' || $r->diagnosapost=='')
-        {
-            return response()->json(
-                [
-                  'success' => false,
-                  'message' => 'Lengkapi data terlebih dahulu'
-                ]
-           );
+        $validator = Validator::make($r->all(), [
+            'nama' => ['required', 'string', 'max:1000'],
+            'rm' => ['required', 'string', 'max:1000'],
+            'id_dokter_operasi' => ['required', 'array', 'min:1'],
+            'id_dokter_operasi.*' => ['integer', 'distinct', 'exists:dokter_irj,id,status,1'],
+            'id_dokter_anestesi' => ['required', 'integer', 'exists:dokter_irj,id,status,1,id_sdmk_jenis,8'],
+            'id_ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+            'pendamping' => ['required', 'string', 'max:1000'],
+            'jam_mulai' => ['required', 'date_format:H:i'],
+            'jam_selesai' => ['required', 'date_format:H:i', 'after_or_equal:jam_mulai'],
+            'diagnosapre' => ['required', 'string', 'max:5000'],
+            'diagnosapost' => ['required', 'string', 'max:5000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
         }
-        else{
+
+        $validated = $validator->validated();
+        if (\App\Models\Laporanibsdetail::where('id_pengawas', \Auth::id())
+            ->where('status', 0)
+            ->where('nama', $validated['nama'])
+            ->where('rm', $validated['rm'])
+            ->exists()) {
+            return response()->json(['success' => false, 'message' => 'Data pasien IBS dengan nama dan RM tersebut sudah ada.'], 422);
+        }
+
+        {
                 $sup = new \App\Models\Laporanibsdetail();
                 $sup->id_pengawas =\Auth::user()->id;
-                $sup->nama = $r->nama;
-                $sup->rm = $r->rm;
-                $sup->id_dokter_operasi = implode(",",$r->id_dokter_operasi);
-                $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
-                $sup->pendamping = $r->pendamping;
-                $sup->id_ruangan = $r->id_ruangan;
-                $sup->jam_mulai = $r->jam_mulai;
-                $sup->jam_selesai = $r->jam_selesai;
-                $sup->diagnosa_pre = $r->diagnosapre;
-                $sup->diagnosa_post = $r->diagnosapost;
+                $sup->nama = $validated['nama'];
+                $sup->rm = $validated['rm'];
+                $sup->id_dokter_operasi = implode(',', $validated['id_dokter_operasi']);
+                $sup->id_dokter_anestesi = $validated['id_dokter_anestesi'];
+                $sup->pendamping = $validated['pendamping'];
+                $sup->id_ruangan = $validated['id_ruangan'];
+                $sup->jam_mulai = $validated['jam_mulai'];
+                $sup->jam_selesai = $validated['jam_selesai'];
+                $sup->diagnosa_pre = $validated['diagnosapre'];
+                $sup->diagnosa_post = $validated['diagnosapost'];
 
                 $date = date_default_timezone_set('Asia/Jakarta');
                 $sup->created_at = date('Y-m-d H:i:s');
@@ -667,30 +494,50 @@ class PengawasController extends Controller
   
     public function editibsdetail(Request $r)
     {
- 
-        if( $r->nama == '' || $r->rm == '' || $r->id_dokter_operasi == '' || $r->id_dokter_anestesi == '' || $r->id_ruangan=='' || $r->jam_mulai=='' || $r->jam_selesai=='' || $r->diagnosapre=='' || $r->diagnosapost=='')
-        {
-            return response()->json(
-                [
-                  'success' => false,
-                  'message' => 'Lengkapi data terlebih dahulu'
-                ]
-           );
+        $validator = Validator::make($r->all(), [
+            'id' => ['required', 'integer'],
+            'nama' => ['required', 'string', 'max:1000'],
+            'rm' => ['required', 'string', 'max:1000'],
+            'id_dokter_operasi' => ['required', 'array', 'min:1'],
+            'id_dokter_operasi.*' => ['integer', 'distinct', 'exists:dokter_irj,id,status,1'],
+            'id_dokter_anestesi' => ['required', 'integer', 'exists:dokter_irj,id,status,1,id_sdmk_jenis,8'],
+            'id_ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+            'pendamping' => ['required', 'string', 'max:1000'],
+            'jam_mulai' => ['required', 'date_format:H:i'],
+            'jam_selesai' => ['required', 'date_format:H:i', 'after_or_equal:jam_mulai'],
+            'diagnosapre' => ['required', 'string', 'max:5000'],
+            'diagnosapost' => ['required', 'string', 'max:5000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
         }
-        
-        else{
-            $sup = \App\Models\Laporanibsdetail::where('id', $r->id)->first();
-            $sup->id_pengawas =\Auth::user()->id;
-            $sup->nama = $r->nama;
-            $sup->rm = $r->rm;
-            $sup->id_dokter_operasi = implode(",",$r->id_dokter_operasi);
-            $sup->id_dokter_anestesi = $r->id_dokter_anestesi;
-            $sup->pendamping = $r->pendamping;
-            $sup->id_ruangan = $r->id_ruangan;
-            $sup->jam_mulai = $r->jam_mulai;
-            $sup->jam_selesai = $r->jam_selesai;
-            $sup->diagnosa_pre = $r->diagnosapre;
-            $sup->diagnosa_post = $r->diagnosapost;
+
+        $validated = $validator->validated();
+        {
+            $sup = \App\Models\Laporanibsdetail::whereKey($r->integer('id'))
+                ->where('id_pengawas', \Auth::id())
+                ->where('status', 0)
+                ->firstOrFail();
+            $duplicate = \App\Models\Laporanibsdetail::where('id_pengawas', \Auth::id())
+                ->where('status', 0)
+                ->where('nama', $validated['nama'])
+                ->where('rm', $validated['rm'])
+                ->whereKeyNot($sup->id)
+                ->exists();
+            if ($duplicate) {
+                return response()->json(['success' => false, 'message' => 'Data pasien IBS dengan nama dan RM tersebut sudah ada.'], 422);
+            }
+            $sup->nama = $validated['nama'];
+            $sup->rm = $validated['rm'];
+            $sup->id_dokter_operasi = implode(',', $validated['id_dokter_operasi']);
+            $sup->id_dokter_anestesi = $validated['id_dokter_anestesi'];
+            $sup->pendamping = $validated['pendamping'];
+            $sup->id_ruangan = $validated['id_ruangan'];
+            $sup->jam_mulai = $validated['jam_mulai'];
+            $sup->jam_selesai = $validated['jam_selesai'];
+            $sup->diagnosa_pre = $validated['diagnosapre'];
+            $sup->diagnosa_post = $validated['diagnosapost'];
             $date = date_default_timezone_set('Asia/Jakarta');
             $sup->updated_at =  date('Y-m-d H:i:s');
             $sup->save();
@@ -718,7 +565,11 @@ class PengawasController extends Controller
     public function deleteibsdetail(Request $r)
     {
   
-      $sup = \App\Models\Laporanibsdetail::where('id', $r->id)->first()->delete();
+      $sup = \App\Models\Laporanibsdetail::whereKey($r->integer('id'))
+          ->where('id_pengawas', \Auth::id())
+          ->where('status', 0)
+          ->firstOrFail();
+      $sup->delete();
     
       //log data
       $log = new \App\Models\Log;
@@ -739,217 +590,97 @@ class PengawasController extends Controller
   
 
 
-    public function draftlaporanIBS(Request $r){
-        $sp = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
- 
-        if (!$sp) {
-          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter IBS masih kosong, silahkan isi terlebih dahulu');
-        } else {
-            $sup = new \App\Models\Laporanibs;
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->total_pasien = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->count();
-            $sup->catatan = $r->ibs_catatan;
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->created_at = date('Y-m-d H:i:s');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
+    public function draftlaporanIBS(Request $r, \App\Services\PengawasIbsService $ibsService){
+        $validated = $r->validate([
+            'ibs_catatan' => ['nullable', 'string', 'max:5000'],
+        ]);
+        
+        $result = $ibsService->createDraft($validated);
 
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 16;
-            $log->keterangan = 'Tambah Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IBS');
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
 
+        return redirect()->back()->with('success-add', $result['message']);
     }
-    public function editDraftlaporanIBS(Request $r){
-        $sp = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->first();
- 
-        if (!$sp) {
-          return redirect()->back()->with('fail-add', 'Jumlah pasien menurut Dokter IBS masih kosong, silahkan isi terlebih dahulu');
-        } else {
-            $sup = \App\Models\Laporanibs::where('id',$r->idibs)->first();
-            $sup->id_pengawas = \Auth::user()->id;
-            $sup->total_pasien = \App\Models\Laporanibsdetail::where('id_pengawas',\Auth::user()->id)->where('status',0)->count();
-            $sup->catatan = $r->ibs_catatan;
-            
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
+    public function editDraftlaporanIBS(Request $r, \App\Services\PengawasIbsService $ibsService){
+        $validated = $r->validate([
+            'idibs' => ['required', 'integer'],
+            'ibs_catatan' => ['nullable', 'string', 'max:5000'],
+        ]);
+        
+        $result = $ibsService->updateDraft($validated);
 
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 16;
-            $log->keterangan = 'Edit Draft';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-
-            return redirect()->back()->with('success-add', 'Berhasil menambah ke Draft Laporan IBS');
+        if (!$result['success']) {
+            return redirect()->back()->with('fail-add', $result['message']);
         }
+
+        return redirect()->back()->with('success-add', $result['message']);
     }
-    public function deleteDraftlaporanIBS($id){
-        $sup = \App\Models\Laporanibs::where('id',$id)->first();
-        $sup->status = 2; //Delete Laporan
-        $sup->save();
-
-        //hapus detail
-        \App\Models\Laporanibsdetail::where('status', 0)->where('id_pengawas',\Auth::user()->id)->delete();
-
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = \Auth::user()->id;
-        $log->id_log_jenis = 16;
-        $log->keterangan = 'Hapus Draft';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
-
-        return redirect()->back()->with('success-add', 'Berhasil menghapus data draf Laporan IBS');
+    public function deleteDraftlaporanIBS($id, \App\Services\PengawasIbsService $ibsService){
+        $result = $ibsService->deleteDraft((int) $id);
+        
+        return redirect()->back()->with('success-add', $result['message']);
     }
 
     // Catatan PASIEN
 
-    public function tambahcatatanpasien(Request $r)
+    public function tambahcatatanpasien(Request $r, \App\Services\PengawasCatatanService $catatanService)
     {
-        if( $r->kamar == '' || $r->nama == '' || $r->rm == '' || $r->diagnosa == '' || $r->dpjp=='' || $r->kondisi=='' || $r->jenis_pasien==''|| $r->ruangan=='')
-        {
-            return response()->json(
-                [
-                  'success' => false,
-                  'message' => 'Lengkapi data terlebih dahulu'
-                ]
-           );
+        $validator = Validator::make($r->all(), [
+            'kamar' => ['required', 'string', 'max:100'],
+            'nama' => ['required', 'string', 'max:1000'],
+            'rm' => ['required', 'string', 'max:1000'],
+            'diagnosa' => ['required', 'string', 'max:5000'],
+            'dpjp' => ['required', 'integer', 'exists:dokter_irj,id,status,1'],
+            'kondisi' => ['required', 'string', 'max:5000'],
+            'jenis_pasien' => ['required', 'integer', 'in:1,2'],
+            'ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
         }
-        else{
-                $sup = new \App\Models\Catatanpasien();
-                $sup->id_pengawas =\Auth::user()->id;
 
-                if(\App\Models\Laporanumum::where('id_ruangan',$r->ruangan)->where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last())
-                {
-                    $sup->id_laporan_umum = \App\Models\Laporanumum::where('id_ruangan',$r->ruangan)->where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last();
-                }
+        $result = $catatanService->createCatatan($validator->validated());
 
-                $sup->id_jenis_pasien = $r->jenis_pasien;
-                $sup->id_ruangan = $r->ruangan;
-                $sup->kamar = $r->kamar;
-                $sup->nama = $r->nama;
-                $sup->rm = $r->rm;
-                $sup->diagnosa = $r->diagnosa;
-                $sup->dpjp = $r->dpjp;
-                $sup->kondisi = $r->kondisi;
-              
-                $date = date_default_timezone_set('Asia/Jakarta');
-                $sup->created_at = date('Y-m-d H:i:s');
-                $sup->updated_at =  date('Y-m-d H:i:s');
-                $sup->save();
-
-                //log data
-                $log = new \App\Models\Log;
-                $log->id_user = \Auth::user()->id;
-                $log->id_log_jenis = 18;
-                $log->keterangan = 'Tambah Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first();
-                $log->created_at = date('Y-m-d H:i:s');
-                $log->updated_at =  date('Y-m-d H:i:s');
-                $log->save();
-        
-                return response()->json(
-                    [
-                    'success' => true,
-                    'message' => 'Berhasil menambah data Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first()
-                    ]
-            );
-        }
-            
+        return response()->json($result);
     }
   
-    public function editcatatanpasien(Request $r)
+    public function editcatatanpasien(Request $r, \App\Services\PengawasCatatanService $catatanService)
     {
- 
-        if( $r->kamar == '' || $r->nama == '' || $r->rm == '' || $r->diagnosa == '' || $r->dpjp=='' || $r->kondisi=='' || $r->jenis_pasien==''|| $r->ruangan=='')
-        {
-            return response()->json(
-                [
-                  'success' => false,
-                  'message' => 'Lengkapi data terlebih dahulu'
-                ]
-           );
-        }
-        
-        else{
-            $sup = \App\Models\Catatanpasien::where('id', $r->id)->first();
-            $sup->id_pengawas =\Auth::user()->id;
+        $validator = Validator::make($r->all(), [
+            'id' => ['required', 'integer'],
+            'kamar' => ['required', 'string', 'max:100'],
+            'nama' => ['required', 'string', 'max:1000'],
+            'rm' => ['required', 'string', 'max:1000'],
+            'diagnosa' => ['required', 'string', 'max:5000'],
+            'dpjp' => ['required', 'integer', 'exists:dokter_irj,id,status,1'],
+            'kondisi' => ['required', 'string', 'max:5000'],
+            'jenis_pasien' => ['required', 'integer', 'in:1,2'],
+            'ruangan' => ['required', 'integer', 'exists:ruangan,id,status,1'],
+        ]);
 
-            if(\App\Models\Laporanumum::where('id_ruangan',$r->ruangan)->where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last())
-            {
-                $sup->id_laporan_umum = \App\Models\Laporanumum::where('id_ruangan',$r->ruangan)->where('status',0)->where('id_pengawas',\Auth::user()->id)->pluck('id')->last();
-            }
-
-            $sup->id_jenis_pasien = $r->jenis_pasien;
-            $sup->id_ruangan = $r->ruangan;
-            $sup->kamar = $r->kamar;
-            $sup->nama = $r->nama;
-            $sup->rm = $r->rm;
-            $sup->diagnosa = $r->diagnosa;
-            $sup->dpjp = $r->dpjp;
-            $sup->kondisi = $r->kondisi;
-            $date = date_default_timezone_set('Asia/Jakarta');
-            $sup->updated_at =  date('Y-m-d H:i:s');
-            $sup->save();
-    
-            //log data
-            $log = new \App\Models\Log;
-            $log->id_user = \Auth::user()->id;
-            $log->id_log_jenis = 18;
-            $log->keterangan = 'Ubah Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first();
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->updated_at =  date('Y-m-d H:i:s');
-            $log->save();
-    
-            return response()->json(
-                [
-                'success' => true,
-                'message' => 'Berhasil mengubah data Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first()
-                ]
-           );
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
         }
-        
-      
+
+        $result = $catatanService->updateCatatan($validator->validated());
+
+        return response()->json($result);
     }
   
-    public function deletecatatanpasien(Request $r)
+    public function deletecatatanpasien(Request $r, \App\Services\PengawasCatatanService $catatanService)
     {
-  
-      $sup = \App\Models\Catatanpasien::where('id', $r->id)->first()->delete();
-    
-      //log data
-      $log = new \App\Models\Log;
-      $log->id_user = \Auth::user()->id;
-      $log->id_log_jenis = 18;
-      $log->keterangan = 'Hapus Data Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first();
-      $log->created_at = date('Y-m-d H:i:s');
-      $log->updated_at =  date('Y-m-d H:i:s');
-      $log->save();
+        $result = $catatanService->deleteCatatan((int) $r->integer('id'), (int) $r->jenis_pasien);
 
-      return response()->json(
-        [
-          'success' => true,
-          'message' => 'Berhasil menghapus data Catatan Pasien '.\App\Models\Jenispasien::where('id',$r->jenis_pasien)->pluck('jenis')->first()
-        ]
-        );
+        return response()->json($result);
     }
 
     public function kirimLaporan(Request $r)
     {
         $validator = Validator::make($r->all(), [
             'dinas' => ['required', 'integer', 'exists:dinas,id'],
-            'signed' => ['required', 'string', 'regex:/^data:image\/(png|jpeg);base64,/'],
         ]);
 
         if ($validator->fails()) {
@@ -969,65 +700,70 @@ class PengawasController extends Controller
             return redirect()->back()->with('fail-add', 'Laporan belum dapat dikirim. Lengkapi laporan IGD dan seluruh Ruangan (Rawat Inap) aktif terlebih dahulu.');
         }
 
-        $folderPath = public_path('signature/');
-        File::ensureDirectoryExists($folderPath);
-        $image_parts = explode(";base64,", $r->signed);
-        if (count($image_parts) !== 2) {
-            return redirect()->back()->with('fail-add', 'Format tanda tangan tidak valid. Silakan tanda tangani kembali.');
-        }
-        $image_type_aux = explode("image/", $image_parts[0]);
-        if (count($image_type_aux) !== 2) {
-            return redirect()->back()->with('fail-add', 'Format tanda tangan tidak valid. Silakan tanda tangani kembali.');
-        }
-        $image_type = $image_type_aux[1];
-        $image_base64 = base64_decode($image_parts[1]);
-        if ($image_base64 === false) {
-            return redirect()->back()->with('fail-add', 'Tanda tangan tidak dapat diproses. Silakan tanda tangani kembali.');
-        }
-        $namafile = uniqid() . '.'.$image_type;
-        $file = $folderPath . $namafile;
-        if (file_put_contents($file, $image_base64) === false) {
-            return redirect()->back()->with('fail-add', 'Tanda tangan gagal disimpan. Silakan coba kembali.');
-        }
+        DB::transaction(function () use ($r, $userId, $igd) {
+            date_default_timezone_set('Asia/Jakarta');
+            $now = date('Y-m-d H:i:s');
 
-        DB::transaction(function () use ($r, $userId, $igd, $namafile) {
-        date_default_timezone_set('Asia/Jakarta');
-        $sup = new \App\Models\Laporan;
-        $sup->id_pengawas = $userId;
-        $sup->id_dinas = $r->dinas;
-        $sup->signature = $namafile;
-        $sup->created_at = date('Y-m-d H:i:s');
-        $sup->updated_at = date('Y-m-d H:i:s');
-        $sup->save();
-        $laporanId = $sup->id;
+            // Simpan laporan utama
+            $sup = new \App\Models\Laporan;
+            $sup->id_pengawas = $userId;
+            $sup->id_dinas    = $r->dinas;
+            $sup->created_at  = $now;
+            $sup->updated_at  = $now;
+            $sup->save();
+            $laporanId = $sup->id;
 
-        //Update Laporan IGD
-        $igd->id_laporan = $laporanId;
-        $igd->status = 1;
-        
-        $igd->updated_at = date('Y-m-d H:i:s');
-        $igd->save();
+            // Generate HMAC-SHA256 token yang terikat ke id laporan + id pengawas
+            $token = hash_hmac('sha256', $laporanId . '|' . $userId . '|' . $now, config('app.key'));
 
-        //Update Laporan Umum
-        $umum = \App\Models\Laporanumum::where('id_pengawas',$userId)->where('status',0)->update(['id_laporan' => $laporanId, 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $catatanpasien = \App\Models\Catatanpasien::where('id_pengawas',$userId)->where('status',0)->update(['updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        //Update Laporan IRJ
-        $irj = \App\Models\Laporanirj::where('id_pengawas',$userId)->where('status',0)->update(['id_laporan' => $laporanId, 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $irjdetail = \App\Models\Laporanirjdetail::where('id_pengawas',$userId)->where('status',0)->update(['id_laporan_irj' => \App\Models\Laporanirj::where('id_pengawas',$userId)->pluck('id')->last(), 'status' => 1]);
+            // Generate QR Code mengarah ke halaman verifikasi publik
+            $verifyUrl  = route('verifikasi.laporan', ['token' => $token]);
+            $qrFilename = 'qr_' . $laporanId . '.svg';
+            $qrPath     = 'qrcodes/' . $qrFilename;
+            QrCode::format('svg')
+                ->size(300)
+                ->margin(1)
+                ->generate($verifyUrl, Storage::disk('public')->path($qrPath));
 
-        //Update Laporan IBS
-        $ibs = \App\Models\Laporanibs::where('id_pengawas',$userId)->where('status',0)->update(['id_laporan' => $laporanId, 'updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
-        $ibsdetail = \App\Models\Laporanibsdetail::where('id_pengawas',$userId)->where('status',0)->update(['id_laporan_ibs' => \App\Models\Laporanibs::where('id_pengawas',$userId)->pluck('id')->last(), 'status' => 1]);
+            // Update laporan dengan token dan nama file QR
+            $sup->qr_token = $token;
+            $sup->qr_code  = $qrFilename;
+            $sup->save();
 
+            // Update Laporan IGD
+            $igd->id_laporan = $laporanId;
+            $igd->status     = 1;
+            $igd->updated_at = $now;
+            $igd->save();
 
-        //log data
-        $log = new \App\Models\Log;
-        $log->id_user = $userId;
-        $log->id_log_jenis = 5;
-        $log->keterangan = 'Kirim Laporan ke Direktur untuk diverifikasi';
-        $log->created_at = date('Y-m-d H:i:s');
-        $log->updated_at =  date('Y-m-d H:i:s');
-        $log->save();
+            // Update Laporan Umum
+            \App\Models\Laporanumum::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['id_laporan' => $laporanId, 'updated_at' => $now, 'status' => 1]);
+            \App\Models\Catatanpasien::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['updated_at' => $now, 'status' => 1]);
+
+            // Update Laporan IRJ
+            \App\Models\Laporanirj::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['id_laporan' => $laporanId, 'updated_at' => $now, 'status' => 1]);
+            $lastIrjId = \App\Models\Laporanirj::where('id_pengawas', $userId)->pluck('id')->last();
+            \App\Models\Laporanirjdetail::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['id_laporan_irj' => $lastIrjId, 'status' => 1]);
+
+            // Update Laporan IBS
+            \App\Models\Laporanibs::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['id_laporan' => $laporanId, 'updated_at' => $now, 'status' => 1]);
+            $lastIbsId = \App\Models\Laporanibs::where('id_pengawas', $userId)->pluck('id')->last();
+            \App\Models\Laporanibsdetail::where('id_pengawas', $userId)->where('status', 0)
+                ->update(['id_laporan_ibs' => $lastIbsId, 'status' => 1]);
+
+            // Log aktivitas
+            $log             = new \App\Models\Log;
+            $log->id_user    = $userId;
+            $log->id_log_jenis = 5;
+            $log->keterangan = 'Kirim Laporan ke Direktur untuk diverifikasi';
+            $log->created_at = $now;
+            $log->updated_at = $now;
+            $log->save();
         });
 
         return redirect()->back()->with('success-add', 'Berhasil Submit Laporan Pengawas Umum');

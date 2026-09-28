@@ -1,0 +1,57 @@
+id ;id_ruangan;nama_kamar;status;keterangan;created_at;updated_at
+13;11;Sudirman 1;1;;auto;auto
+14;11;Sudirman 2;1;;auto;auto
+15;11;Sudirman 3;1;;auto;auto
+16;11;Sudirman 4;1;;auto;auto
+17;11;Sudirman 5;1;;auto;auto
+18;11;Sudirman 6;1;;auto;auto
+19;11;Sudirman 7;1;;auto;auto
+20;11;Sudirman 8;1;;auto;auto
+21;11;Sudirman 9;1;;auto;auto
+22;11;Sudirman 10;1;;auto;auto
+23;11;Sudirman 11;1;;auto;auto
+24;11;Sudirman 12;1;;auto;auto
+25;11;Sudirman 14;1;;auto;auto
+26;15;Herlina 1;1;;auto;auto
+27;15;Herlina 2;1;;auto;auto
+28;15;Herlina 3;1;;auto;auto
+29;15;Herlina 4;1;;auto;auto
+30;15;Herlina 5;1;;auto;auto
+31;15;Herlina 6;1;;auto;auto
+32;3;Dewi Sartika 1;1;;auto;auto
+33;3;Dewi Sartika 2;1;;auto;auto
+34;3;Dewi Sartika 3;1;;auto;auto
+35;3;Dewi Sartika 4;1;;auto;auto
+36;3;Dewi Sartika 5;1;;auto;auto
+37;3;Dewi Sartika 6;1;;auto;auto
+38;3;Dewi Sartika 7;1;;auto;auto
+39;3;Dewi Sartika 8;1;;auto;auto
+40;3;Dewi Sartika 9;1;;auto;auto
+41;3;Dewi Sartika 10;1;;auto;auto
+42;3;Dewi Sartika 11;1;;auto;auto
+43;3;Dewi Sartika 12;1;;auto;auto
+44;2;Ade Irma 1;1;;auto;auto
+45;2;Ade Irma 2;1;;auto;auto
+46;2;Ade Irma 3;1;;auto;auto
+47;2;Ade Irma 4;1;;auto;auto
+48;2;Ade Irma 5;1;;auto;auto
+49;2;Ade Irma 6;1;;auto;auto
+50;2;Ade Irma 7;1;;auto;auto
+51;2;Ade Irma 8;1;;auto;auto
+52;2;Ade Irma 9;1;;auto;auto
+53;2;Ade Irma 10;1;;auto;auto
+54;2;Ade Irma 11;1;;auto;auto
+55;2;Ade Irma 12;1;;auto;auto
+56;1;Adelia 1;1;;auto;auto
+57;1;Adelia 2;1;;auto;auto
+58;1;Adelia 3;1;;auto;auto
+59;1;Adelia 4;1;;auto;auto
+60;1;Adelia 5;1;;auto;auto
+61;1;Adelia 6;1;;auto;auto
+62;1;Alamanda 1;1;;auto;auto
+63;1;Alamanda 2;1;;auto;auto
+64;1;Alamanda 3;1;;auto;auto
+65;1;Alamanda 4;1;;auto;auto
+66;1;Alamanda 5;1;;auto;auto
+67;1;Alamanda 6;1;;auto;auto
+68;1;Alamanda 7;1;;auto;auto

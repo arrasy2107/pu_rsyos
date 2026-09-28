@@ -65,7 +65,7 @@
         <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th width="5%">No</th>
                     <th>Nama Dokter</th>
                     <th>Subrumpun SDMK</th>
                     <th>Jenis SDMK</th>
@@ -87,9 +87,14 @@
                                 data-bs-toggle="modal" data-bs-target="#edit" title="Edit Dokter">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <a href="{{ route('deletedokterigd',$data->id) }}" class="btn btn-sm btn-danger btn-delete" title="Hapus Dokter">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
+                            <form action="{{ route('deletedokterigd', $data->id) }}" method="POST"
+                                class="d-inline"
+                                onsubmit="return confirm('Yakin ingin menghapus dokter ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" title="Hapus Dokter">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -196,12 +201,7 @@
 
         });
 
-        $("#dataTable").on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            const url = this.href;
-            PUAlert.confirm({ text: 'Apakah Anda yakin ingin menghapus data dokter ini?', confirmButtonText: 'Ya, hapus' })
-                .then(function(confirmed) { if (confirmed) window.location.href = url; });
-        });
+
 
         setTimeout(function() {
             $(".alert-call").fadeOut(500);

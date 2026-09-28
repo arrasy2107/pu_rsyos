@@ -69,13 +69,12 @@ $laporans = $laporanQuery->orderBy('created_at', 'DESC')->get();
                         <i class="fas fa-check-square text-primary" title="Pilih Laporan"></i>
                     </th>
                     @endif
-                    <th width="15%">Waktu Laporan</th>
+                    <th width="18%">Waktu Laporan</th>
                     <th>Dinas</th>
                     <th>Pengawas Umum</th>
                     <th>Verifikasi Keperawatan</th>
                     <th>Verifikasi Direktur</th>
-                    <th>Tanda Tangan</th>
-                    <th width="20%">Lihat Detail Laporan</th>
+                    <th width="10%">Lihat Detail</th>
                 </tr>
             </thead>
             <tbody>
@@ -111,27 +110,8 @@ $laporans = $laporanQuery->orderBy('created_at', 'DESC')->get();
                         <span class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i>Menunggu</span>
                         @endif
                     </td>
-                    <td class="text-center align-middle">
-                        <img class="signature-img shadow-sm" src="{{asset('signature/'.$data->signature)}}" alt="Tanda Tangan">
-                    </td>
                     <td class="align-middle">
-                        <div class="btn-action-group">
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd shadow-sm" data-jenis="1" data-bs-toggle="modal" data-bs-target="#igd">
-                                <i class="fas fa-ambulance me-1"></i> IGD
-                            </button>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum shadow-sm" data-jenis="2" data-bs-toggle="modal" data-bs-target="#umum">
-                                <i class="fas fa-procedures me-1"></i> Umum
-                            </button>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-warning btn-ibs shadow-sm text-dark" data-jenis="4" data-bs-toggle="modal" data-bs-target="#ibs">
-                                <i class="fas fa-syringe me-1"></i> IBS
-                            </button>
-
-                            @if($data->id_dinas != 3 && $t->check() != true)
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj shadow-sm" data-jenis="3" data-bs-toggle="modal" data-bs-target="#irj">
-                                <i class="fas fa-stethoscope me-1"></i> IRJ
-                            </button>
-                            @endif
-                        </div>
+                        <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-outline-primary btn-summary" data-bs-toggle="modal" data-bs-target="#laporanSummary" title="Lihat detail laporan" aria-label="Lihat detail laporan"><i class="fas fa-eye"></i></button>
                     </td>
                 </tr>
                 @endforeach
@@ -143,6 +123,13 @@ $laporans = $laporanQuery->orderBy('created_at', 'DESC')->get();
 {{-- ========================================== --}}
 {{-- MODAL DETAIL LAPORAN --}}
 {{-- ========================================== --}}
+
+<div id="laporanSummary" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+        <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2"></i> Ringkasan Laporan Terpilih</h5><button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body bg-light p-4">@livewire('dashboard.laporan-summary-modal', key('laporan-summary-admin-belum'))</div>
+    </div></div>
+</div>
 
 <!-- Modal IGD -->
 <div id="igd" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -334,115 +321,25 @@ $laporans = $laporanQuery->orderBy('created_at', 'DESC')->get();
             }
         });
 
-        // ==========================================
-        // Handle Detail Modals loading
-        // ==========================================
-        $('#igd').on('show.bs.modal', function(event) {
-            const idlaporan = $(event.relatedTarget).val();
-
-            if (!idlaporan) {
-                return;
-            }
-
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'igd',
-                    idlaporan: idlaporan
-                });
-            } else {
-                $(".tableigd").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat data IGD...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: 'refresh-detail-laporan-igd/' + idlaporan,
-                    data: {
-                        idlaporan: idlaporan
-                    },
-                    success: function(data) {
-                        $(".tableigd").html(data);
-                    }
-                });
-            }
+        $('#dataTable').on('click', '.btn-summary', function() {
+            Livewire.dispatch('openLaporanSummary', { idlaporan: $(this).val() });
         });
 
-        $('#umum').on('show.bs.modal', function(event) {
-            const idlaporan = $(event.relatedTarget).val();
-
-            if (!idlaporan) {
-                return;
-            }
-
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'umum',
-                    idlaporan: idlaporan
-                });
-            } else {
-                $(".tableumum").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat data Umum...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: 'refresh-detail-laporan-umum/' + idlaporan,
-                    data: {
-                        idlaporan: idlaporan
-                    },
-                    success: function(data) {
-                        $(".tableumum").html(data);
-                    }
-                });
-            }
-        });
-
-        $('#irj').on('show.bs.modal', function(event) {
-            const idlaporan = $(event.relatedTarget).val();
-
-            if (!idlaporan) {
-                return;
-            }
-
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'irj',
-                    idlaporan: idlaporan
-                });
-            } else {
-                $(".tableirj").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat data IRJ...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: 'refresh-detail-laporan-irj/' + idlaporan,
-                    data: {
-                        idlaporan: idlaporan
-                    },
-                    success: function(data) {
-                        $(".tableirj").html(data);
-                    }
-                });
-            }
-        });
-
-        $('#ibs').on('show.bs.modal', function(event) {
-            const idlaporan = $(event.relatedTarget).val();
-
-            if (!idlaporan) {
-                return;
-            }
-
-            if (window.Livewire) {
-                Livewire.dispatch('openLaporanDetailModal', {
-                    type: 'ibs',
-                    idlaporan: idlaporan
-                });
-            } else {
-                $(".tableibs").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat data IBS...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: 'refresh-detail-laporan-ibs/' + idlaporan,
-                    data: {
-                        idlaporan: idlaporan
-                    },
-                    success: function(data) {
-                        $(".tableibs").html(data);
-                    }
-                });
-            }
+        $(document).on('click', '.btn-summary-detail', function() {
+            const type = $(this).data('type');
+            const modal = { igd: '#igd', umum: '#umum', ibs: '#ibs', irj: '#irj' }[type];
+            Livewire.dispatch('openLaporanDetailModal', { type: type, idlaporan: $(this).data('id') });
+            $(modal).off('shown.bs.modal.summaryStack').on('shown.bs.modal.summaryStack', function() {
+                const summary = document.getElementById('laporanSummary');
+                const detail = document.getElementById(modal.substring(1));
+                $(summary).css('z-index', 1050);
+                $(detail).css('z-index', 1060);
+                $('.modal-backdrop').last().css('z-index', 1055);
+            }).off('hidden.bs.modal.summaryStack').on('hidden.bs.modal.summaryStack', function() {
+                $('#laporanSummary').css('z-index', 1055);
+                $(this).css('z-index', '');
+                $('.modal-backdrop').css('z-index', 1040);
+            }).modal('show');
         });
 
         // ==========================================

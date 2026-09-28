@@ -74,7 +74,19 @@ $t = new Grei\TanggalMerah();
                     <span class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i>Menunggu</span>
                     @endif
                 </td>
-                <td><img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{asset('signature/'.$data->signature)}}" alt=""></td>
+                <td>
+                    @if($data->qr_code)
+                        {{-- Laporan baru: tampilkan QR Code --}}
+                        <a href="{{ route('verifikasi.laporan', ['token' => $data->qr_token]) }}" target="_blank" title="Scan atau klik untuk verifikasi">
+                            <img style="width:100px; height:auto" class="img-fluid rounded" src="{{ asset('storage/qrcodes/' . $data->qr_code) }}" alt="QR Code Verifikasi">
+                        </a>
+                    @elseif($data->signature)
+                        {{-- Laporan lama: tampilkan gambar tanda tangan --}}
+                        <img style="width:150px; height:auto" class="img-fluid rounded mb-3 mb-md-0" src="{{ asset('signature/'.$data->signature) }}" alt="Tanda Tangan">
+                    @else
+                        <span class="text-muted small">—</span>
+                    @endif
+                </td>
 
                 <td>
                     <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd " data-jenis="1" data-bs-toggle="modal" data-bs-target="#igd">IGD</button>

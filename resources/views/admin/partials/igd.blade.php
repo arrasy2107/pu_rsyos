@@ -1,5 +1,4 @@
-<div class="row">
-    <!-- Cards IGD -->
+<!-- Ringkasan operasional IGD -->
     <?php
     $igdStats = [
         ['title' => 'Dirawat', 'val' => 'jumlah_pasien_rawat', 'icon' => 'pasien-dirawat.png', 'color' => 'primary', 'id' => '1'],
@@ -12,61 +11,89 @@
         ['title' => 'Sisrute Diterima', 'val' => 'jumlah_pasien_sisrute_diterima', 'icon' => 'sisrute-terima.png', 'color' => 'success', 'id' => '8'],
         ['title' => 'Sisrute Ditolak', 'val' => 'jumlah_pasien_sisrute_ditolak', 'icon' => 'sisrute-tolak.png', 'color' => 'danger', 'id' => '9'],
     ];
+
+    $igdGroups = [
+        ['title' => 'Kondisi IGD', 'description' => 'Situasi pasien saat ini', 'stats' => [$igdStats[0], $igdStats[2], $igdStats[3]]],
+        ['title' => 'Outcome Pasien', 'description' => 'Hasil pelayanan pasien', 'stats' => [$igdStats[1], $igdStats[4], $igdStats[5]]],
+        ['title' => 'Sisrute', 'description' => 'Status rujukan antar fasilitas', 'stats' => [$igdStats[6], $igdStats[7], $igdStats[8]]],
+    ];
     ?>
-    @foreach($igdStats as $stat)
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-{{ $stat['color'] }} shadow-sm h-100 py-2 icon-hover-container" data-icon-id="{{ $stat['id'] }}">
-            <div class="card-body">
-                <div class="row g-0 align-items-center">
-                    <div class="col me-2">
-                        <div class="text-xs fw-bold text-gray-500 text-uppercase mb-1">{{ $stat['title'] }}</div>
-                        <div class="h4 mb-0 fw-bold text-gray-800">{{ $igdStatsRaw ? $igdStatsRaw[$stat['val']] : 0 }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <img src="{{asset('sb-admin/icon/igd/'.$stat['icon'])}}" id="gbr_igd_{{ $stat['id'] }}" height="56px" width="56px">
+    @foreach($igdGroups as $group)
+    <section class="igd-stat-section">
+        <div class="igd-section-heading">
+            <div>
+                <h3 class="igd-section-title">{{ $group['title'] }}</h3>
+                <p class="igd-section-description">{{ $group['description'] }}</p>
+            </div>
+        </div>
+        <div class="row igd-stat-grid">
+            @foreach($group['stats'] as $stat)
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-left-{{ $stat['color'] }} shadow-sm h-100 igd-stat-card icon-hover-container" data-icon-id="{{ $stat['id'] }}">
+                    <div class="card-body p-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col me-2">
+                                <div class="text-xs fw-bold text-gray-500 text-uppercase mb-1">{{ $stat['title'] }}</div>
+                                <div class="h5 mb-0 fw-bold text-gray-800">{{ $igdStatsRaw ? $igdStatsRaw[$stat['val']] : 0 }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <img src="{{ asset('sb-admin/icon/igd/'.$stat['icon']) }}" id="gbr_igd_{{ $stat['id'] }}" alt="{{ $stat['title'] }}" height="40px" width="40px">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            @endforeach
         </div>
-    </div>
-    @endforeach
-</div>
+</section>
+@endforeach
 
-<div class="row mt-2">
-    <div class="col-lg-12">
-        <div class="mb-3">
-            <label>Alasan pasien tidak bisa dirawat</label>
-            <textarea class="form-control" rows="2" readonly>{{ $igdStatsRaw->alasan_tidak_bisa_rawat ?? '' }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label>Permasalahan</label>
-            <textarea class="form-control" rows="2" readonly>{{ $igdStatsRaw->permasalahan ?? '' }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label>Lain - lain</label>
-            <textarea class="form-control" rows="2" readonly>{{ $igdStatsRaw->lain_lain ?? '' }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Dokter Jaga IGD</label>
-            @if($igdStatsRaw && $igdStatsRaw->id_dokter)
-                @php
-                    $idDokterArr = array_filter(array_map('trim', explode(',', $igdStatsRaw->id_dokter)));
-                    $dokterJaga  = \App\Models\Dokter::whereIn('id', $idDokterArr)->get();
-                @endphp
-                @if($dokterJaga->isNotEmpty())
-                    <div class="d-flex flex-wrap gap-2 mt-1">
-                        @foreach($dokterJaga as $dk)
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6 fw-normal rounded-pill">
-                                <i class="fas fa-user-md me-1"></i>{{ $dk->nama_dokter }}
-                            </span>
-                        @endforeach
-                    </div>
+<div class="row g-3 mt-2">
+    <div class="col-lg-8">
+        <section class="igd-detail-panel h-100">
+            <div class="igd-detail-heading">
+                <div>
+                    <h3 class="igd-section-title">Catatan IGD</h3>
+                    <p class="igd-section-description">Informasi tambahan dari laporan jaga</p>
+                </div>
+                <i class="fas fa-notes-medical igd-detail-icon" aria-hidden="true"></i>
+            </div>
+            <div class="igd-info-list">
+            <div class="igd-info-item">
+                <div class="igd-info-label">Alasan pasien tidak bisa dirawat</div>
+                <div class="igd-info-value">{{ $igdStatsRaw->alasan_tidak_bisa_rawat ?? '-' }}</div>
+            </div>
+            <div class="igd-info-item">
+                <div class="igd-info-label">Permasalahan</div>
+                <div class="igd-info-value">{{ $igdStatsRaw->permasalahan ?? '-' }}</div>
+            </div>
+            <div class="igd-info-item">
+                <div class="igd-info-label">Lain - lain</div>
+                <div class="igd-info-value">{{ $igdStatsRaw->lain_lain ?? '-' }}</div>
+            </div>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <section class="igd-detail-panel h-100">
+            <div class="igd-detail-heading">
+                <div>
+                    <h3 class="igd-section-title">Dokter Jaga</h3>
+                    <p class="igd-section-description">Petugas medis IGD</p>
+                </div>
+                <i class="fas fa-user-md igd-detail-icon" aria-hidden="true"></i>
+            </div>
+            <div class="igd-doctor-value">
+                @if($igdStatsRaw && $igdStatsRaw->id_dokter)
+                    @php
+                        $idDokterArr = array_filter(array_map('trim', explode(',', $igdStatsRaw->id_dokter)));
+                        $dokterJaga  = \App\Models\Dokter::whereIn('id', $idDokterArr)->get();
+                    @endphp
+                    {{ $dokterJaga->isNotEmpty() ? $dokterJaga->pluck('nama_dokter')->join(', ') : 'Data dokter tidak ditemukan.' }}
                 @else
-                    <p class="text-muted fst-italic mb-0 mt-1">Data dokter tidak ditemukan.</p>
+                    Belum ada dokter yang ditugaskan.
                 @endif
-            @else
-                <p class="text-muted fst-italic mb-0 mt-1">Belum ada dokter yang ditugaskan.</p>
-            @endif
-        </div>
+            </div>
+        </section>
     </div>
 </div>

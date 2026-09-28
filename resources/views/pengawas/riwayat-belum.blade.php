@@ -48,12 +48,12 @@ $hariini = date('Y-m-d');
             <thead class="thead-light">
                 <tr>
                     <th width="7%">No</th>
-                    <th width="15%">Tanggal</th>
-                    <th width="10%">Jam</th>
+                    <th width="18%">Waktu Laporan</th>
                     <th>Dinas</th>
                     <th>Pengawas Umum</th>
-                    <th width="20%">Tanda Tangan</th>
-                    <th width="20%">Laporan</th>
+                    <th width="13%">Verifikasi Keperawatan</th>
+                    <th width="13%">Verifikasi Direktur</th>
+                    <th width="10%">Lihat Detail</th>
 
                 </tr>
             </thead>
@@ -70,8 +70,7 @@ $hariini = date('Y-m-d');
                 ?>
                 <tr>
                     <td>{{$no++}}</td>
-                    <td>{{$data->created_at->isoFormat('dddd, D MMMM Y') }}</td>
-                    <td>{{ date('H:i:s', strtotime($data->created_at)) }}</td>
+                    <td><div class="fw-bold">{{$data->created_at->isoFormat('dddd, D MMMM Y') }}</div><div class="text-muted small">{{ date('H:i:s', strtotime($data->created_at)) }}</div></td>
 
                     <td class="align-middle">
                         {{ strtoupper($data->dinas->dinas ?? '') }}
@@ -85,27 +84,21 @@ $hariini = date('Y-m-d');
                         </div>
                     </td>
                     <td class="text-center align-middle">
-                        <img class="signature-img shadow-sm" src="{{asset('signature/'.$data->signature)}}" alt="Tanda Tangan">
+                        @if($data->verified_bidang)
+                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Terverifikasi</span>
+                        @else
+                        <span class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i>Menunggu</span>
+                        @endif
                     </td>
-
-                    <td class="align-middle">
-                        <div class="btn-action-group">
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-danger btn-igd shadow-sm" data-jenis="1" data-bs-toggle="modal" data-bs-target="#igd">
-                                <i class="fas fa-ambulance me-1"></i> IGD
-                            </button>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-success btn-umum shadow-sm" data-jenis="2" data-bs-toggle="modal" data-bs-target="#umum">
-                                <i class="fas fa-procedures me-1"></i> Umum
-                            </button>
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-warning btn-ibs shadow-sm text-dark" data-jenis="4" data-bs-toggle="modal" data-bs-target="#ibs">
-                                <i class="fas fa-syringe me-1"></i> IBS
-                            </button>
-
-                            @if($data->id_dinas != 3 && $t->check() != true)
-                            <button value="{{ $data->id }}" class="btn btn-sm btn-primary btn-irj shadow-sm" data-jenis="3" data-bs-toggle="modal" data-bs-target="#irj">
-                                <i class="fas fa-stethoscope me-1"></i> IRJ
-                            </button>
-                            @endif
-                        </div>
+                    <td class="text-center align-middle">
+                        @if($data->verified)
+                        <span class="badge bg-success"><i class="fas fa-check-double me-1"></i>Terverifikasi Final</span>
+                        @else
+                        <span class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i>Menunggu</span>
+                        @endif
+                    </td>
+                    <td class="align-middle text-center">
+                        <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-outline-primary btn-summary" data-bs-toggle="modal" data-bs-target="#laporanSummary" title="Lihat detail laporan" aria-label="Lihat detail laporan"><i class="fas fa-eye"></i></button>
                     </td>
 
                 </tr>
@@ -119,6 +112,13 @@ $hariini = date('Y-m-d');
 {{-- ========================================== --}}
 {{-- MODAL DETAIL LAPORAN --}}
 {{-- ========================================== --}}
+
+<div id="laporanSummary" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+        <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2"></i> Ringkasan Laporan Terpilih</h5><button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body bg-light p-4">@livewire('dashboard.laporan-summary-modal', key('laporan-summary-pengawas-belum'))</div>
+    </div></div>
+</div>
 
 <!-- Modal IGD -->
 <div id="igd" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -257,47 +257,25 @@ $hariini = date('Y-m-d');
 
 
 
-    // Samakan mekanisme pemuatan detail dengan halaman riwayat PU.
-    // `relatedTarget` adalah tombol IGD/Umum/IRJ/IBS yang membuka modal.
-    function loadLaporanDetail(type, event, selector, endpoint) {
-        const idlaporan = $(event.relatedTarget).val();
-
-        if (!idlaporan) {
-            return;
-        }
-
-        if (window.Livewire) {
-            Livewire.dispatch('openLaporanDetailModal', {
-                type: type,
-                idlaporan: idlaporan
-            });
-            return;
-        }
-
-        $(selector).html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat data...</p></div>');
-        $.ajax({
-            type: 'get',
-            url: endpoint + idlaporan,
-            data: {
-                idlaporan: idlaporan
-            },
-            success: function(data) {
-                $(selector).html(data);
-            }
-        });
-    }
-
-    $('#igd').on('show.bs.modal', function(event) {
-        loadLaporanDetail('igd', event, '.tableigd', 'refresh-detail-laporan-igd/');
+    $('#dataTable').on('click', '.btn-summary', function() {
+        Livewire.dispatch('openLaporanSummary', { idlaporan: $(this).val() });
     });
-    $('#umum').on('show.bs.modal', function(event) {
-        loadLaporanDetail('umum', event, '.tableumum', 'refresh-detail-laporan-umum/');
-    });
-    $('#irj').on('show.bs.modal', function(event) {
-        loadLaporanDetail('irj', event, '.tableirj', 'refresh-detail-laporan-irj/');
-    });
-    $('#ibs').on('show.bs.modal', function(event) {
-        loadLaporanDetail('ibs', event, '.tableibs', 'refresh-detail-laporan-ibs/');
+
+    $(document).on('click', '.btn-summary-detail', function() {
+        const type = $(this).data('type');
+        const modal = { igd: '#igd', umum: '#umum', ibs: '#ibs', irj: '#irj' }[type];
+        Livewire.dispatch('openLaporanDetailModal', { type: type, idlaporan: $(this).data('id') });
+        $(modal).off('shown.bs.modal.summaryStack').on('shown.bs.modal.summaryStack', function() {
+            const summary = document.getElementById('laporanSummary');
+            const detail = document.getElementById(modal.substring(1));
+            $(summary).css('z-index', 1050);
+            $(detail).css('z-index', 1060);
+            $('.modal-backdrop').last().css('z-index', 1055);
+        }).off('hidden.bs.modal.summaryStack').on('hidden.bs.modal.summaryStack', function() {
+            $('#laporanSummary').css('z-index', 1055);
+            $(this).css('z-index', '');
+            $('.modal-backdrop').css('z-index', 1040);
+        }).modal('show');
     });
 
 

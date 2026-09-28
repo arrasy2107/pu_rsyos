@@ -17,21 +17,23 @@ class Pengawas
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check()) // I included this check because you have it, but it really should be part of your 'auth' middleware, most likely added as part of a route group.
-        return redirect('login');
+        if (!Auth::check()) {
+            return redirect('login');
+        }
 
         $user = Auth::user();
 
-        if($user->id_role == 2)
-        return $next($request);
-        
-    
-            if($user->id_role == 1 || $user->id_role == 3)
-            {
-                return redirect('dashboard');
-            }
-            else if($user->id_role == 2){
-                return redirect('laporan');
-            }
+        // Hanya role 2 (pengawas) yang boleh akses
+        if ((int) $user->id_role === 2) {
+            return $next($request);
+        }
+
+        // Role lain diarahkan ke halaman sesuai role mereka
+        if (in_array((int) $user->id_role, [0, 1, 3])) {
+            return redirect('dashboard');
+        }
+
+        // Fallback untuk role yang tidak dikenal
+        return redirect('login');
     }
 }

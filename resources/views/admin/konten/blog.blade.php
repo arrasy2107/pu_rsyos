@@ -78,9 +78,14 @@
                                     data-bs-toggle="modal" data-bs-target="#edit" title="Edit Artikel">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <a href="{{ route('deleteblog',$data->id) }}" class="btn btn-sm btn-danger btn-delete shadow-sm" title="Hapus Artikel">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+                                <form action="{{ route('deleteblog', $data->id) }}" method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Yakin ingin menghapus artikel ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Hapus Artikel">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -288,12 +293,6 @@
             }, 100);
         });
 
-        $("#dataTable").on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            const url = this.href;
-            PUAlert.confirm({ text: 'Apakah Anda yakin ingin menghapus artikel blog ini?', confirmButtonText: 'Ya, hapus' })
-                .then(function(confirmed) { if (confirmed) window.location.href = url; });
-        });
     });
 </script>
 @stop

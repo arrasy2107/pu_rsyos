@@ -526,28 +526,9 @@
 
 
 @push('scripts')
-        {{-- Signature depends on jQuery and jQuery UI, both of which must load before this plugin. --}}
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-        <script src="{{ asset('sb-admin/js/jquery.ui.touch-punch.min.js') }}"></script>
-        <script src="{{ asset('sb-admin/js/signature.js') }}"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-        <script>
-            // Signature Pad Initialization
-            var sig;
-            if ($("#sig").length > 0) {
-                sig = $("#sig").signature({
-                    syncField: "#signature64",
-                    syncFormat: "PNG"
-                });
-                $('#clear').click(function(e) {
-                    e.preventDefault();
-                    sig.signature('clear');
-                    $("#signature64").val('');
-                });
-            }
 
             $(function() {
                 // Modal Select2 Fixes
@@ -654,8 +635,8 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
 
             $("#bataligd").on('click', function(e) {
                 e.preventDefault();
-                const href = this.href;
-                PUAlert.confirmAction({ text: 'Apakah Anda yakin membatalkan (hapus) laporan IGD ini?', confirmButtonText: 'Ya, batalkan' }, function() { location.href = href; });
+                const form = document.getElementById('bataligd-form');
+                PUAlert.confirmAction({ text: 'Apakah Anda yakin membatalkan (hapus) laporan IGD ini?', confirmButtonText: 'Ya, batalkan' }, function() { form.submit(); });
             });
 
             $(document).on('click', "#simpanigd", function(e) {
@@ -702,24 +683,12 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                 });
             });
 
-            $(document).on('click', "#editpasienlama", function(e) {
-                document.getElementById("inap_pasien_lama").readOnly = false;
-            });
-
             // Helper functions for rawat inap icons
             function ranapIcon(id, file, state) {
                 let prefix = state === 'a' ? '/warna/ranap/' : '/ranap/';
                 if (id === "gbr_inap_pasien_lama") prefix = state === 'a' ? '/warna/general/' : '/general/';
                 if (id === "gbr_inap_pasien_pulang") prefix = state === 'a' ? '/warna/igd/' : '/igd/';
                 if (document.getElementById(id)) document.getElementById(id).setAttribute('src', ASSET_BASE + prefix + file);
-            }
-
-            function ranap1a() {
-                ranapIcon("gbr_inap_pasien_lama", "pasien.png", 'a');
-            }
-
-            function ranap1b() {
-                ranapIcon("gbr_inap_pasien_lama", "pasien.png", 'b');
             }
 
             function ranap2a() {
@@ -835,8 +804,8 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
 
             $("#batalibs").on('click', function(e) {
                 e.preventDefault();
-                const href = this.href;
-                PUAlert.confirmAction({ text: 'Yakin batalkan (hapus) laporan IBS ini?', confirmButtonText: 'Ya, batalkan' }, function() { location.href = href; });
+                const form = document.getElementById('batalibs-form');
+                PUAlert.confirmAction({ text: 'Yakin batalkan (hapus) laporan IBS ini?', confirmButtonText: 'Ya, batalkan' }, function() { form.submit(); });
             });
 
             $(document).on('click', "#simpanibs", function(e) {
@@ -867,8 +836,8 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
 
             $("#batalirj").on('click', function(e) {
                 e.preventDefault();
-                const href = this.href;
-                PUAlert.confirmAction({ text: 'Yakin batalkan (hapus) laporan IRJ ini?', confirmButtonText: 'Ya, batalkan' }, function() { location.href = href; });
+                const form = document.getElementById('batalirj-form');
+                PUAlert.confirmAction({ text: 'Yakin batalkan (hapus) laporan IRJ ini?', confirmButtonText: 'Ya, batalkan' }, function() { form.submit(); });
             });
 
             $(document).on('click', "#simpanirj", function(e) {
@@ -904,9 +873,10 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                     $("#hitungketerangan").val(count);
                     $.ajax({
                         url: 'deleteirjdetail',
-                        method: 'GET',
+                        method: 'DELETE',
                         data: {
-                            id: del_id
+                            id: del_id,
+                            _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
                             if (response.success) {
@@ -1009,9 +979,10 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
         }, function() {
             $.ajax({
                 url: 'deleteibsdetail',
-                method: 'GET',
+                method: 'DELETE',
                 data: {
-                    id: del_id
+                    id: del_id,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if (response.success) {
@@ -1051,6 +1022,9 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                     alert(response.message);
                     refreshIBS();
                 } else alert(response.message);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Gagal menyimpan data IBS.');
             }
         });
     });
@@ -1250,7 +1224,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                             refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
                         } else alert(response.message);
                     },
-                    error: function(error) { console.log(error); }
+                    error: function(xhr) { alert(xhr.responseJSON?.message || 'Gagal menyimpan catatan pasien.'); }
                 });
             });
 
@@ -1268,7 +1242,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                             refreshCatatanIstimewa(form.find('input[name=ruangan]').val());
                         } else alert(response.message);
                     },
-                    error: function(error) { console.log(error); }
+                    error: function(xhr) { alert(xhr.responseJSON?.message || 'Gagal mengubah catatan pasien.'); }
                 });
             });
 
@@ -1289,7 +1263,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                             refreshCatatanBaru(form.find('input[name=ruangan]').val());
                         } else alert(response.message);
                     },
-                    error: function(error) { console.log(error); }
+                    error: function(xhr) { alert(xhr.responseJSON?.message || 'Gagal menyimpan catatan pasien.'); }
                 });
             });
 
@@ -1307,7 +1281,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                             refreshCatatanBaru(form.find('input[name=ruangan]').val());
                         } else alert(response.message);
                     },
-                    error: function(error) { console.log(error); }
+                    error: function(xhr) { alert(xhr.responseJSON?.message || 'Gagal mengubah catatan pasien.'); }
                 });
             });
 
@@ -1321,8 +1295,8 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                 PUAlert.confirmAction({ text: 'Apakah Anda yakin ingin menghapus data ini?', confirmButtonText: 'Ya, hapus' }, function() {
                     $.ajax({
                         url: 'deletecatatanpasien',
-                        method: 'GET',
-                        data: { id: id },
+                        method: 'DELETE',
+                        data: { id: id, _token: '{{ csrf_token() }}' },
                         success: function(response) {
                             if (response.success) {
                                 alert(response.message);
@@ -1333,7 +1307,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                                 }
                             } else alert("Error");
                         },
-                        error: function(error) { console.log(error); }
+                        error: function(xhr) { alert(xhr.responseJSON?.message || 'Gagal menghapus catatan pasien.'); }
                     });
                 });
             });

@@ -16,12 +16,12 @@
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
 
-                <div class="card-body" onmouseover="ranap1a();" onmouseout="ranap1b();">
+                <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col-md-10">
                             <div class="text-xs fw-bold  text-uppercase mb-1"> Jumlah Pasien lama <span><a data-bs-toggle="tooltip" data-bs-placement="right" title="Jumlah Pasien Lama Otomatis dari Inputan Dinas Sebelumnya"><i class="fa  fa-exclamation-circle"></i></a></span></div>
                             <div class="h5 mb-0 me-3 fw-bold text-gray-800">
-                                <input type="number" class="form-control" name="inap_pasien_lama" id="inap_pasien_lama" autocomplete="off" value="{{\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('jumlah_pasien_lama')->first()}}" readonly />
+                                <input type="number" class="form-control" name="inap_pasien_lama" id="inap_pasien_lama" autocomplete="off" value="{{ $pasienLama ?? 0 }}" readonly aria-readonly="true" tabindex="-1" />
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -346,9 +346,13 @@
 
         @if(\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first())
         <div class="form-group">
-            <a href="{{ route('deleteDraftlaporanUmum',\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalumum" style="float:right;" class="btn btn-sm btn-danger my-3 ms-2">Batalkan Laporan</a>
+            <form method="POST" action="{{ route('deleteDraftlaporanUmum',\App\Models\Laporanumum::where('status',0)->where('id_ruangan',$ruangan)->where('id_pengawas',\Auth::user()->id)->pluck('id')->first()) }}" id="batalumum-form" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" id="batalumum" style="float:right;" class="btn btn-sm btn-danger my-3 ms-2">Batalkan Laporan</button>
+            </form>
             <button type="button" style="float:right" class="btn btn-sm btn-success my-3" id="editumum">Ubah Laporan</button>
-            
+
             <span id="umum-edit-actions" style="float:right"></span>
             <template id="umum-edit-actions-template">
                 <button type="button" id="batalperubahanumum" class="btn btn-sm btn-danger my-3 ms-2">Batal Ubah</button>
@@ -391,12 +395,12 @@
 
     $(document).on('click', "#batalumum", function(e) {
         e.preventDefault();
-        var href = this.href;
+        var form = document.getElementById('batalumum-form');
         PUAlert.confirmAction({
             text: 'Apakah Anda yakin ingin membatalkan laporan Umum Ruangan ini?',
             confirmButtonText: 'Ya, batalkan'
         }, function() {
-            location.href = href;
+            form.submit();
         });
     });
 
@@ -405,7 +409,6 @@
         document.getElementById('umum-edit-actions').innerHTML = document.getElementById('umum-edit-actions-template').innerHTML;
         document.getElementById('batalumum').style.display = 'none';
         $(this).hide();
-        document.getElementById("inap_pasien_lama").readOnly = false;
         document.getElementById("inap_pasien_baru").readOnly = false;
         document.getElementById("inap_pasien_pindah").readOnly = false;
         document.getElementById("inap_pasien_pindahan").readOnly = false;
@@ -449,4 +452,4 @@
             location.reload();
         });
     });
-</script>
+</script>

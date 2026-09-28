@@ -76,14 +76,58 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
 
 {{-- Summary Stats --}}
 <div class="row mb-4 animate-fade-in-up">
-    <div class="col-md-4">
-        <x-stat-card title="Total Log (7 Hari)" value="{{ $totalLog }}" icon="fas fa-scroll" color="primary" />
+    <!-- Card Total Log -->
+    <div class="col-md-4 mb-3 mb-md-0">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); border-radius: 1rem;">
+            <div class="card-body position-relative p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Total Log</div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);">
+                        <i class="fas fa-scroll text-white fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="display-5 fw-bolder text-white mb-0">{{ number_format($totalLog) }}</h2>
+                <div class="mt-2 text-white-50 small">Aktivitas dalam 7 hari terakhir</div>
+                <!-- Decorative Element -->
+                <div class="position-absolute rounded-circle bg-white" style="width: 150px; height: 150px; opacity: 0.05; top: -40px; right: -40px;"></div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <x-stat-card title="Pengguna Aktif" value="{{ $uniqueUsers }}" icon="fas fa-users" color="success" />
+    
+    <!-- Card Pengguna Aktif -->
+    <div class="col-md-4 mb-3 mb-md-0">
+        <div class="card border-0 shadow-sm h-100 overflow-hidden" style="background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); border-radius: 1rem;">
+            <div class="card-body position-relative p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Pengguna Aktif</div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);">
+                        <i class="fas fa-users text-white fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="display-5 fw-bolder text-white mb-0">{{ number_format($uniqueUsers) }}</h2>
+                <div class="mt-2 text-white-50 small">User yang melakukan aktivitas</div>
+                <!-- Decorative Element -->
+                <div class="position-absolute rounded-circle bg-white" style="width: 150px; height: 150px; opacity: 0.05; top: -40px; right: -40px;"></div>
+            </div>
+        </div>
     </div>
+    
+    <!-- Card Periode -->
     <div class="col-md-4">
-        <x-stat-card title="Periode" value="7 Hari Terakhir" icon="fas fa-history" color="warning" />
+        <div class="card border-0 shadow-sm h-100 overflow-hidden" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); border-radius: 1rem;">
+            <div class="card-body position-relative p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 1px;">Periode</div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);">
+                        <i class="fas fa-history text-white fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bolder text-white mb-0" style="font-size: 2.5rem;">7 Hari</h2>
+                <div class="mt-2 text-white-50 small">Rentang waktu riwayat data</div>
+                <!-- Decorative Element -->
+                <div class="position-absolute rounded-circle bg-white" style="width: 150px; height: 150px; opacity: 0.05; top: -40px; right: -40px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,9 +138,6 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
             <div class="form-group mb-0">
                 <label class="fw-bold text-dark small text-uppercase">Tanggal Mulai</label>
                 <div class="input-group date-range-input">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar-alt text-primary"></i></span>
-                    </div>
                     <input type="date" id="tanggal" class="form-control" name="tglmulai" value="{{ $weekAgo }}" />
                 </div>
             </div>
@@ -105,9 +146,6 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
             <div class="form-group mb-0">
                 <label class="fw-bold text-dark small text-uppercase">Tanggal Selesai</label>
                 <div class="input-group date-range-input">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar-check text-success"></i></span>
-                    </div>
                     <input type="date" id="tanggal2" class="form-control" name="tglselesai" value="{{ date('Y-m-d') }}" />
                 </div>
             </div>
@@ -116,9 +154,6 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
             <div class="form-group mb-0">
                 <label class="fw-bold text-dark small text-uppercase">Jenis Log</label>
                 <div class="input-group date-range-input">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-tag text-info"></i></span>
-                    </div>
                     <select id="jenis" name="jenis" class="form-control select2">
                         <option value="0">Semua Jenis</option>
                         @foreach(\App\Models\Logjenis::all() as $slk)
@@ -129,9 +164,12 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
             </div>
         </div>
         <div class="col-md-3">
-            <button type="button" id="lihat" class="btn btn-primary w-100 shadow-sm">
-                <i class="fas fa-search me-2"></i> Cari Log
-            </button>
+            <div class="form-group mb-0">
+                <label class="fw-bold d-none d-md-block">&nbsp;</label>
+                <button type="button" id="lihat" class="btn btn-primary w-100 shadow-sm">
+                    <i class="fas fa-search me-2"></i> Cari Log
+                </button>
+            </div>
         </div>
     </div>
 </x-data-card>
@@ -146,11 +184,11 @@ $uniqueUsers = $logData->pluck('id_user')->unique()->count();
             <table class="table table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                 <thead class="thead-light">
                     <tr>
-                        <th width="16%">Tanggal</th>
+                        <th width="8%">Tanggal</th>
                         <th width="8%">Jam</th>
                         <th width="14%">Pengguna</th>
-                        <th width="16%">Jenis Log</th>
-                        <th>Keterangan</th>
+                        <th width="14%">Jenis Log</th>
+                        <th width="56%">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>

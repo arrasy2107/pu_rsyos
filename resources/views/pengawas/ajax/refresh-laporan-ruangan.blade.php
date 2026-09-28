@@ -59,8 +59,7 @@
                     <div class="col-md-10 jumlahpasienlama">
                         <div class="text-xs fw-bold  text-uppercase mb-1"> Jumlah Pasien lama <span><a data-bs-toggle="tooltip" data-bs-placement="right" title="Jumlah Pasien Lama Otomatis dari Inputan Dinas Sebelumnya"><i class="fa  fa-exclamation-circle"></i></a></span></div>
                         <div class="h5 mb-0 me-3 fw-bold text-gray-800">
-                            <input type="number" class="form-control" id="inap_pasien_lama" name="inap_pasien_lama" onfocus="ranap1a();" onfocusout="ranap1b();" autocomplete="off" readonly />
-                            <!-- <a href="#" id="editpasienlama" class="fa fa-edit" style="font-size:16px">Ubah</a> -->
+                            <input type="number" class="form-control" id="inap_pasien_lama" name="inap_pasien_lama" value="{{ $pasienLama ?? 0 }}" autocomplete="off" readonly aria-readonly="true" tabindex="-1" required />
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -191,7 +190,6 @@
                         </div>
                     </div>
                     <br>
-
                     @livewire('pengawas.catatan-pasien-istimewa', ['ruangan' => $ruangan])
                 </div>
 
@@ -209,7 +207,6 @@
                         </div>
                     </div>
                     <br>
-
                     @livewire('pengawas.catatan-pasien-baru', ['ruangan' => $ruangan])
                 </div>
             </div>
@@ -219,7 +216,6 @@
 </div>
 <div class="row mt-3">
     <!-- Pending Requests Card Example -->
-
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-4 col-md-6 mb-4">

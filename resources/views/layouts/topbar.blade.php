@@ -27,7 +27,7 @@ $userName = $user->nama ?? $user->name ?? 'U';
             </button>
 
             <div class="pu-topbar-dropdown" id="topbar-user-dropdown" role="menu" aria-label="Profil menu">
-                <a href="{{ route('ganti-password') }}" class="pu-topbar-dropdown-item" role="menuitem"><i class="fas fa-key"></i>Ganti Password</a>
+                <a href="{{ route('ganti-password') }}" class="pu-topbar-dropdown-item js-change-password" role="menuitem"><i class="fas fa-key"></i>Ganti Password</a>
                 <a href="{{ route('logout') }}" class="pu-topbar-dropdown-item js-logout" role="menuitem"><i class="fas fa-sign-out-alt"></i>Keluar</a>
             </div>
         </div>
@@ -72,6 +72,22 @@ $userName = $user->nama ?? $user->name ?? 'U';
                     confirmButtonText: 'Ya, keluar'
                 }).then(function(confirmed) {
                     if (confirmed) window.location.href = logoutUrl;
+                });
+            });
+        });
+
+        document.querySelectorAll('.js-change-password').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                var changePasswordUrl = this.href;
+
+                window.PUAlert.confirm({
+                    title: 'Ganti password akun?',
+                    text: 'Anda akan diarahkan ke halaman untuk memperbarui password akun aktif.',
+                    icon: 'question',
+                    confirmButtonText: 'Ya, lanjutkan'
+                }).then(function(confirmed) {
+                    if (confirmed) window.location.href = changePasswordUrl;
                 });
             });
         });
