@@ -50,8 +50,7 @@
                                 <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('deletejenissdmk', $data->id) }}" method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                class="d-inline form-delete-jenissdmk">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" title="Hapus Data">
                                     <i class="fas fa-trash-alt"></i>
@@ -174,11 +173,18 @@
             $(".txt-nama").val(nama);
             $(".txt-subrumpun").val(subrumpun);
         });
-
-
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
+        // Konfirmasi hapus jenis SDMK via SweetAlert
+        $(document).on('submit', '.form-delete-jenissdmk', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Hapus Jenis SDMK?',
+                text: 'Data jenis SDMK ini akan dihapus dari sistem.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
     });
 </script>
 @stop

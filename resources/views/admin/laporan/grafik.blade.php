@@ -276,6 +276,5 @@ $newDateTime = Carbon::now()->subYears(5);
         loadGrafik(tahun, bulan);
     });
 
-    setTimeout(function() { $(".alert-call, .alert-call2, .alert-call3, .alert-call4").fadeOut(500); }, 3500);
 </script>
 @stop

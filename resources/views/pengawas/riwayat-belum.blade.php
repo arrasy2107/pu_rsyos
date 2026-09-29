@@ -359,15 +359,6 @@ $hariini = date('Y-m-d');
             });
         }
 
-    });
-
-
-    (function($) {
-        $(".alert-call").fadeOut(2500);
-        $(".alert-call2").fadeOut(2500);
-        $(".alert-call3").fadeOut(2500);
-        $(".alert-call4").fadeOut(2500);
-    })(jQuery);
 </script>
 
 @stop

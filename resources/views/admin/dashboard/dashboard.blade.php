@@ -192,7 +192,7 @@
     }
 
     @keyframes kpi-selected-pulse {
-        0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, .62), var(--shadow-xl, 0 20px 25px rgba(15,38,87,.1)); }
+        0% { box-shadow: 0 0 0 0000000000000000000000000000000000000000000000000000000 rgba(37, 99, 235, .62), var(--shadow-xl, 0 20px 25px rgba(15,38,87,.1)); }
         100% { box-shadow: 0 0 0 3px rgba(37, 99, 235, .28), var(--shadow-xl, 0 20px 25px rgba(15,38,87,.1)); }
     }
 

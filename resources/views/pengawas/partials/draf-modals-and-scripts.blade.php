@@ -1,9 +1,4 @@
-@push('modals')
-{{-- ========================================== --}}
-{{-- MODALS SECTION --}}
-{{-- ========================================== --}}
-
-@section ('custom_style')
+@push('custom_style')
 <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
@@ -46,8 +41,12 @@
         overflow-y: auto !important;
     }
 </style>
-@stop
+@endpush
 
+@push('modals')
+{{-- ========================================== --}}
+{{-- MODALS SECTION --}}
+{{-- ========================================== --}}
 
         <!-- Modal Tambah IBS -->
         <div id="tambahibs" class="modal fade" role="dialog" aria-hidden="true">
@@ -315,7 +314,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="tambahcatatanpasien" id="formTambahIstimewa" role="form" autocomplete="off">
+                        <form method="post" action="{{ route('tambahcatatanpasien') }}" id="formTambahIstimewa" role="form" autocomplete="off">
                             {{ csrf_field() }}
                             <input type="hidden" name="jenis_pasien" value="1">
                             <input type="hidden" name="ruangan" value="">
@@ -368,7 +367,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="editcatatanpasien" id="formEditIstimewa" role="form" autocomplete="off">
+                        <form method="post" action="{{ route('editcatatanpasien') }}" id="formEditIstimewa" role="form" autocomplete="off">
                             {{ csrf_field() }}
                             {{ method_field('PUT') }}
                             <input type="hidden" class="txtidistimewa" name="id">
@@ -423,7 +422,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="tambahcatatanpasien" id="formTambahBaru" role="form" autocomplete="off">
+                        <form method="post" action="{{ route('tambahcatatanpasien') }}" id="formTambahBaru" role="form" autocomplete="off">
                             {{ csrf_field() }}
                             <input type="hidden" name="jenis_pasien" value="2">
                             <input type="hidden" name="ruangan" value="">
@@ -476,7 +475,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="editcatatanpasien" id="formEditBaru" role="form" autocomplete="off">
+                        <form method="post" action="{{ route('editcatatanpasien') }}" id="formEditBaru" role="form" autocomplete="off">
                             {{ csrf_field() }}
                             {{ method_field('PUT') }}
                             <input type="hidden" class="txtidbaru" name="id">
@@ -529,9 +528,9 @@
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+        <script>
             $(function() {
-                // Modal Select2 Fixes
+                /*-- Modal Select2 Fixes --*/
                 $('.select2').each(function() {
                     var $this = $(this);
                     var parent = $this.closest('.modal').length ? $this.closest('.modal') : $('body');
@@ -551,11 +550,6 @@
                         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
                     }
                 });
-
-                setTimeout(function() {
-                    $(".alert-call").fadeOut(500);
-                }, 3500);
-            });
 
             // ==========================================
             // IGD LOGIC
@@ -606,7 +600,21 @@
                 setImg("gbr_igd_pasien_doa", "/igd/pasien-doa.png");
             }
 
+            function igd6a() {
+                setImg("gbr_igd_pasien_sisrute", "/warna/igd/sisrute.png");
+            }
 
+            function igd6b() {
+                setImg("gbr_igd_pasien_sisrute", "/igd/sisrute.png");
+            }
+
+            function igd7a() {
+                setImg("gbr_igd_pasien_sisrute_diterima", "/warna/igd/sisrute-terima.png");
+            }
+
+            function igd7b() {
+                setImg("gbr_igd_pasien_sisrute_diterima", "/igd/sisrute-terima.png");
+            }
 
             $("#editigd").on('click', function(e) {
                 e.preventDefault();
@@ -1312,6 +1320,7 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                 });
             });
 
+        }); // end $(function()
 
 </script>
         @endpush

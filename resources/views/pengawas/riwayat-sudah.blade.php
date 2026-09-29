@@ -311,9 +311,6 @@
                 }]
             });
 
-            setTimeout(function() {
-                $(".alert-call, .alert-call2, .alert-call3, .alert-call4").fadeOut(500);
-            }, 3500);
         });
 
         $.ajaxSetup({

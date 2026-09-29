@@ -41,8 +41,7 @@
                         <td>
                             <div class="d-flex gap-2">
                                 <form action="{{ route('resetpassword', $data->id) }}" method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin mereset password pengguna ini ke default?')">
+                                    class="d-inline form-reset-password">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-warning"
                                         title="Reset Password"
@@ -68,8 +67,7 @@
                                     <i class="fas fa-sliders-h"></i>
                                 </button>
                                 <form action="{{ route('deletepengguna', $data->id) }}" method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin menghapus pengguna ini?')">
+                                    class="d-inline form-delete-pengguna">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger"
                                         title="Hapus"
@@ -312,10 +310,31 @@
 
 
 
-        // Auto-hide alerts
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
+        // Konfirmasi reset password via SweetAlert
+        $(document).on('submit', '.form-reset-password', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Reset Password?',
+                text: 'Password pengguna ini akan direset ke default (12345678).',
+                icon: 'warning',
+                confirmButtonText: 'Ya, reset',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
+
+        // Konfirmasi hapus pengguna via SweetAlert
+        $(document).on('submit', '.form-delete-pengguna', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Hapus Pengguna?',
+                text: 'Data pengguna ini akan dihapus dari sistem.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
 
         // --- Atur Akses Menu Modal ---
         $("#dataTable").on('click', '.btn-akses', function() {

@@ -268,11 +268,6 @@ $laporans = $laporanQuery->orderBy('created_at', 'DESC')->get();
             pageLength: 10
         });
 
-        // Auto-hide alerts
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
-
         // ==========================================
         // Handle Verification
         // ==========================================

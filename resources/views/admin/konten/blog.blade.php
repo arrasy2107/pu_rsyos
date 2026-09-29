@@ -79,8 +79,7 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <form action="{{ route('deleteblog', $data->id) }}" method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin menghapus artikel ini?')">
+                                    class="d-inline form-delete-blog">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Hapus Artikel">
                                         <i class="fas fa-trash-alt"></i>
@@ -239,10 +238,18 @@
             $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
 
-        // Auto-hide alerts
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
+        // Konfirmasi hapus artikel via SweetAlert
+        $(document).on('submit', '.form-delete-blog', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Hapus Artikel?',
+                text: 'Artikel ini akan dihapus secara permanen.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
 
         // Initialize CKEditor
         CKEDITOR.replace('editor1', {

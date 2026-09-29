@@ -89,8 +89,7 @@
                                 <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('deletedokter', $data->id) }}" method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Yakin ingin menghapus dokter ini?')">
+                                class="d-inline form-delete-dokter">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" title="Hapus Dokter">
                                     <i class="fas fa-trash-alt"></i>
@@ -224,11 +223,18 @@
             $(".txt-jenis").val(jenis).trigger('change');
         });
 
-
-
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
+        // Konfirmasi hapus dokter via SweetAlert
+        $(document).on('submit', '.form-delete-dokter', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Hapus Dokter?',
+                text: 'Data dokter ini akan dihapus dari sistem.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
     });
 </script>
 @stop

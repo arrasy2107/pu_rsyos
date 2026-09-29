@@ -298,11 +298,6 @@ $t = new Grei\TanggalMerah();
             pageLength: 10
         });
 
-        // Auto-hide alerts
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
-
         // ==========================================
         // Handle Filter AJAX
         // ==========================================

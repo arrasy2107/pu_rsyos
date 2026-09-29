@@ -46,8 +46,7 @@
                                 <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('deletepengguna', $data->id) }}" method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Yakin ingin menghapus pengawas ini?')">
+                                class="d-inline form-delete-pengawas">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" title="Hapus Data">
                                     <i class="fas fa-trash-alt"></i>
@@ -172,11 +171,18 @@
             $(".txt-username").val(username);
         });
 
-
-
-        setTimeout(function() {
-            $(".alert-call").fadeOut(500);
-        }, 3500);
+        // Konfirmasi hapus pengawas via SweetAlert
+        $(document).on('submit', '.form-delete-pengawas', function(e) {
+            e.preventDefault();
+            const form = this;
+            PUAlert.confirmAction({
+                title: 'Hapus Pengawas?',
+                text: 'Data pengawas ini akan dihapus dari sistem.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }, function() { form.submit(); });
+        });
     });
 </script>
 @stop
