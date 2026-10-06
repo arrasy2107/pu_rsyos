@@ -4,10 +4,15 @@ namespace App\Http\Livewire\Pengawas;
 
 use App\Models\Laporanirjdetail;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class IrjDetail extends Component
 {
-    protected $listeners = ['refreshIrjDetail' => '$refresh'];
+    #[On('refreshIrjDetail')]
+    public function refresh(): void
+    {
+        // Livewire v4: re-render is triggered automatically after this method runs
+    }
 
     public function render()
     {

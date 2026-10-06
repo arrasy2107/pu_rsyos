@@ -249,7 +249,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="fw-bold text-info">Jumlah Pasien Lama (RM Lama)</label>
+                        <label class="fw-bold">Jumlah Pasien Lama (RM Lama)</label>
                         <div class="input-group">
                             <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-user-clock"></i></span></div>
                             <input type="number" class="form-control" name="pasien_lama" min="0" required />

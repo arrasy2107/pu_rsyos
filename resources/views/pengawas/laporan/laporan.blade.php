@@ -198,12 +198,80 @@
         <x-slot name="actions">
             <div class="bg-white rounded px-4 py-2 border shadow-sm text-center">
                 <span class="text-xs text-muted fw-bold d-block text-uppercase">Tanggal</span>
-                <span class="text-primary fw-bold"><i class="fas fa-calendar-day me-2"></i>{{ $today }}</span>
+                <span class="text-dark fw-bold"><i class="fas fa-calendar-day me-2"></i>{{ $today }}</span>
             </div>
         </x-slot>
     </x-page-header>
 
+    @if($laporanHariIni)
+    {{-- ── Panel: Laporan sudah disubmit hari ini ── --}}
+    <div class="card border-0 shadow-sm" style="border-radius:1rem;overflow:hidden;">
+        <div class="card-body p-0">
+            <div class="d-flex flex-column align-items-center justify-content-center text-center py-5 px-4" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+                <div class="mb-3 d-flex align-items-center justify-content-center rounded-circle bg-success" style="width:72px;height:72px;">
+                    <i class="fas fa-check-double text-white" style="font-size:2rem;"></i>
+                </div>
+                <h4 class="fw-bold text-success mb-1">Laporan Berhasil Disubmit!</h4>
+                <p class="text-muted mb-3" style="max-width:480px;">
+                    Laporan Pengawas Umum untuk dinas hari ini telah berhasil dikirimkan pada
+                    <strong>{{ \Carbon\Carbon::parse($laporanHariIni->created_at)->locale('id')->isoFormat('dddd, D MMMM Y [pukul] HH:mm') }}</strong>.
+                    Laporan sedang menunggu verifikasi dari Bidang Keperawatan dan Direktur.
+                </p>
+                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                    @php
+                        $vBidang   = $laporanHariIni->verified_bidang ?? 0;
+                        $vDirektur = $laporanHariIni->verified ?? 0;
+                    @endphp
+                    <span class="badge px-3 py-2 fs-6 {{ $vBidang ? 'bg-success' : 'bg-warning text-dark' }}">
+                        <i class="fas {{ $vBidang ? 'fa-check-circle' : 'fa-clock' }} me-1"></i>
+                        Bidang Keperawatan: {{ $vBidang ? 'Terverifikasi' : 'Menunggu' }}
+                    </span>
+                    <span class="badge px-3 py-2 fs-6 {{ $vDirektur ? 'bg-success' : 'bg-warning text-dark' }}">
+                        <i class="fas {{ $vDirektur ? 'fa-check-double' : 'fa-clock' }} me-1"></i>
+                        Direktur: {{ $vDirektur ? 'Terverifikasi' : 'Menunggu' }}
+                    </span>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ route('riwayat-laporan-belum') }}" class="btn btn-outline-success me-2">
+                        <i class="fas fa-history me-1"></i> Lihat Riwayat Laporan
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-1"></i> Kembali ke Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @elseif(!$piketHariIni && !$piketTerlambat)
+    {{-- ── Panel: Jadwal Belum Tersedia ── --}}
+    <div class="card border-0 shadow-sm" style="border-radius:1rem;overflow:hidden;">
+        <div class="card-body p-0">
+            <div class="d-flex flex-column align-items-center justify-content-center text-center py-5 px-4" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
+                <div class="mb-3 d-flex align-items-center justify-content-center rounded-circle bg-danger" style="width:72px;height:72px;">
+                    <i class="fas fa-calendar-times text-white" style="font-size:2rem;"></i>
+                </div>
+                <h4 class="fw-bold text-danger mb-1">Akses Ditolak: Di Luar Jam Dinas!</h4>
+                <p class="text-muted mb-3" style="max-width:480px;">
+                    Saat ini Anda tidak berada dalam rentang waktu dinas yang aktif (<strong>{{ $today }}</strong>).
+                    Pembuatan atau pengubahan laporan hanya dapat dilakukan ketika jam dinas Anda sedang berlangsung.
+                </p>
+                <div class="mt-2">
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-1"></i> Kembali ke Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @else
     <div class="pu-stagger">
+        @if($piketTerlambat)
+        <div class="alert alert-warning mb-4 animate-fade-in-up">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Perhatian:</strong> Waktu dinas {{ strtoupper($piketTerlambat->dinas->dinas ?? 'Anda') }} telah habis.
+            Anda tetap dapat mengisi laporan dan menyimpannya ke draf. Setelah seluruh laporan lengkap, kirim melalui halaman Draf Laporan sebagai laporan terlambat.
+        </div>
+        @endif
         <div class="accordion mb-4" id="pengawasAccordion">
             @include('pengawas.laporan.partials.igd')
             @include('pengawas.laporan.partials.ruangan')
@@ -217,6 +285,7 @@
     {{-- ========================================== --}}
 
     @include('pengawas.partials.modals-and-scripts')
+    @endif
 
 </div>
 

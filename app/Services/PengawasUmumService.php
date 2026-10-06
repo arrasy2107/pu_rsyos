@@ -54,6 +54,13 @@ class PengawasUmumService
         $sup->jumlah_pasien_keterbatasan_bahasa = $data['inap_pasien_bahasa'] ?? null;
         $sup->jumlah_pasien_difabel = $data['inap_pasien_difabel'] ?? null;
         $sup->permasalahan_umum = $data['inap_permasalahan'] ?? null;
+        // Data Petugas
+        $sup->jumlah_petugas = $data['inap_jumlah_petugas'] ?? 0;
+        $sup->jumlah_petugas_perbantuan_masuk = $data['inap_perbantuan_masuk'] ?? 0;
+        $sup->id_ruangan_perbantuan_masuk = $data['inap_asal_perbantuan'] ?: null;
+        $sup->jumlah_petugas_perbantuan_keluar = $data['inap_perbantuan_keluar'] ?? 0;
+        $sup->id_ruangan_perbantuan_keluar = $data['inap_tujuan_perbantuan'] ?: null;
+        $sup->catatan_petugas = $data['inap_catatan_petugas'] ?? null;
         
         $sup->jumlah_total_pasien = $total;
         
@@ -131,6 +138,13 @@ class PengawasUmumService
         $sup->jumlah_pasien_keterbatasan_bahasa = $data['inap_pasien_bahasa'] ?? null;
         $sup->jumlah_pasien_difabel = $data['inap_pasien_difabel'] ?? null;
         $sup->permasalahan_umum = $data['inap_permasalahan'] ?? null;
+        // Data Petugas
+        $sup->jumlah_petugas = $data['inap_jumlah_petugas'] ?? 0;
+        $sup->jumlah_petugas_perbantuan_masuk = $data['inap_perbantuan_masuk'] ?? 0;
+        $sup->id_ruangan_perbantuan_masuk = $data['inap_asal_perbantuan'] ?: null;
+        $sup->jumlah_petugas_perbantuan_keluar = $data['inap_perbantuan_keluar'] ?? 0;
+        $sup->id_ruangan_perbantuan_keluar = $data['inap_tujuan_perbantuan'] ?: null;
+        $sup->catatan_petugas = $data['inap_catatan_petugas'] ?? null;
         
         $sup->jumlah_total_pasien = $total;
         

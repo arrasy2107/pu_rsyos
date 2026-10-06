@@ -32,7 +32,7 @@ class LoginController extends Controller
       // Coba login sekali untuk verifikasi identitas
       if (\Auth::attempt(['username' => $r->username, 'password' => $r->password, 'status' => 1])) {
         \Auth::logout();
-        return redirect()->to('/ganti-password');
+        return redirect()->to('/ganti-password')->with('force_username', $r->username);
       }
       return redirect()->back()->withErrors(['Username dan password tidak cocok']);
     }

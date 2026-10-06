@@ -29,16 +29,16 @@ class UserController extends Controller
     $lok = \App\Models\User::where('username', $r->username)->where('status',1)->first();
   
     if (!$lok) {
-        return redirect()->back()->withErrors(['Username tidak ditemukan atau tidak aktif']);
+        return redirect()->back()->withErrors(['Username tidak ditemukan atau tidak aktif'])->withInput($r->only('username'));
     }
 
     if (!Hash::check($r->passlama, $lok->password)) {
-      return redirect()->back()->withErrors(['Password sebelumnya tidak sesuai']);
+      return redirect()->back()->withErrors(['Password sebelumnya tidak sesuai'])->withInput($r->only('username'));
     } else {
       $lok->password = bcrypt($r->password);
       $lok->save();
     
-      return redirect()->back()->with('success-change', 'Password berhasil diubah');
+      return redirect('/')->with('success-change', 'Password berhasil diubah, silakan login');
     }
   }
 

@@ -128,14 +128,7 @@
             printWindow.print();
         });
 
-        $('#dataTableRuangan').DataTable({
-            scrollX: true,
-            ordering: false,
-            paging: false,
-            searching: false,
-            info: false,
-            autoWidth: false
-        });
+        // #dataTableRuangan sudah diganti dengan card grid \u2014 tidak perlu DataTable init
 
         function selectKpi(target) {
             $('.pu-kpi-card[data-kpi-target]').each(function() {
@@ -178,31 +171,17 @@
         const activeDashboardTab = document.querySelector('#dashboardTabs .nav-link.active');
         selectKpi(activeDashboardTab ? activeDashboardTab.getAttribute('data-bs-target') : '#panel-igd');
 
-        // Load Laporan Ruangan (Livewire if available, fallback to AJAX)
+        // Filter Ruangan — client-side: tampilkan/sembunyikan card sesuai pilihan
         $("#inap_ruangan").on('change', function() {
-            let val = $(this).val();
-            if (window.Livewire) {
-                window.Livewire.dispatch('ruanganChanged', { id: val });
-            } else {
-                document.addEventListener('livewire:init', function() {
-                    window.Livewire.dispatch('ruanganChanged', { id: val });
-                }, { once: true });
-                $(".tablelaporan").html('<div class="text-center py-4 text-primary"><i class="fas fa-circle-notch fa-spin fa-2x mb-2"></i><p>Memuat data ruangan...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: 'refresh-laporan-umum-pu/' + val,
-                    data: {
-                        ruangan: val
-                    },
-                    success: function(data) {
-                        $(".tablelaporan").html(data);
-                    }
-                });
-            }
+            const val = $(this).val();
+            $('#ruanganCardGrid .ruangan-card').each(function() {
+                const ruanganId = String($(this).data('ruangan-id') || '');
+                $(this).toggle(!val || ruanganId === String(val));
+            });
         });
 
-        // AJAX Modals
-        $("#dataTableRuangan").on('click', '.btn-istimewa', function() {
+        // Modal Istimewa — delegasi event ke #ruanganCardGrid (card grid baru)
+        $(document).on('click', '#ruanganCardGrid .btn-istimewa', function() {
             let idlaporan = $(this).data('id');
             let ruangan = $(this).data('ruangan');
             if (window.Livewire) {
@@ -228,7 +207,8 @@
             }
         });
 
-        $("#dataTableRuangan").on('click', '.btn-baru', function() {
+        // Modal Pasien Baru — delegasi event ke document (card grid baru)
+        $(document).on('click', '#ruanganCardGrid .btn-baru', function() {
             let idlaporan = $(this).data('id');
             let ruangan = $(this).data('ruangan');
             if (window.Livewire) {
@@ -254,7 +234,8 @@
             }
         });
 
-        $("#dataTableRuangan").on('click', '.btn-permasalahan', function() {
+        // Modal Permasalahan — delegasi event ke document (card grid baru)
+        $(document).on('click', '#ruanganCardGrid .btn-permasalahan', function() {
             let idlaporan = $(this).data('id');
             let ruangan = $(this).data('ruangan');
             if (window.Livewire) {

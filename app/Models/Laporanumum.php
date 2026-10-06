@@ -32,4 +32,15 @@ class Laporanumum extends Model
     {
         return $this->belongsTo(Ruangan::class, 'id_ruangan', 'id');
     }
+
+    public function ruanganPerbantuanMasuk()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan_perbantuan_masuk', 'id');
+    }
+
+    public function ruanganPerbantuanKeluar()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan_perbantuan_keluar', 'id');
+    }
 }
+

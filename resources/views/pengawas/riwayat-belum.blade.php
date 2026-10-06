@@ -334,7 +334,7 @@ $hariini = date('Y-m-d');
 
     });
 
-    $("#dataTableRuangan").on('click', '.btn-permasalahan', function() {
+        $("#dataTableRuangan").on('click', '.btn-permasalahan', function() {
         idlaporan = $(this).data('id');
         ruangan = $(this).data('ruangan');
         if (window.Livewire) {
@@ -359,6 +359,7 @@ $hariini = date('Y-m-d');
             });
         }
 
+    });
 </script>
 
 @stop

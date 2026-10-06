@@ -11,7 +11,7 @@ $userName = $user->nama ?? $user->name ?? 'U';
 
     {{-- Page Title --}}
     <div class="pu-topbar-title">
-        <h1>@yield('page_title', config('app.name', 'PU RSYOS'))</h1>
+        <!-- <h1>@yield('page_title', config('app.name', 'PU RSYS'))</h1> -->
     </div>
 
     {{-- Actions --}}

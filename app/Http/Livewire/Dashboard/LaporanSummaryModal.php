@@ -4,14 +4,14 @@ namespace App\Http\Livewire\Dashboard;
 
 use App\Models\Laporan;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class LaporanSummaryModal extends Component
 {
     public $idlaporan = null;
     public $laporan = null;
 
-    protected $listeners = ['openLaporanSummary' => 'open'];
-
+    #[On('openLaporanSummary')]
     public function open($idlaporan = null): void
     {
         $this->idlaporan = $idlaporan;

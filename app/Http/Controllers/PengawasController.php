@@ -12,6 +12,79 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PengawasController extends Controller
 {
+    private function getPiketAktif()
+    {
+        $userId = \Auth::id();
+        $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+        // Coba cari piket hari ini
+        $piketHariIni = \App\Models\Piket::with('dinas')->where('tanggal', $now->toDateString())->where('id_pengawas', $userId)->get();
+        foreach ($piketHariIni as $piket) {
+            $dinas = $piket->dinas;
+            if (!$dinas) continue;
+
+            $start = \Carbon\Carbon::parse($now->toDateString() . ' ' . $dinas->jam_masuk, 'Asia/Jakarta');
+            if ($piket->id_dinas == 3) {
+                $end = \Carbon\Carbon::parse($now->toDateString() . ' ' . $dinas->jam_pulang, 'Asia/Jakarta')->addDay();
+            } else {
+                $end = \Carbon\Carbon::parse($now->toDateString() . ' ' . $dinas->jam_pulang, 'Asia/Jakarta');
+            }
+
+            if ($now->between($start, $end)) {
+                return $piket;
+            }
+        }
+
+        // Coba cari piket malam H-1
+        $kemarin = $now->copy()->subDay();
+        $piketKemarin = \App\Models\Piket::with('dinas')->where('tanggal', $kemarin->toDateString())->where('id_pengawas', $userId)->where('id_dinas', 3)->first();
+        if ($piketKemarin && $piketKemarin->dinas) {
+            $start = \Carbon\Carbon::parse($kemarin->toDateString() . ' ' . $piketKemarin->dinas->jam_masuk, 'Asia/Jakarta');
+            $end = \Carbon\Carbon::parse($kemarin->toDateString() . ' ' . $piketKemarin->dinas->jam_pulang, 'Asia/Jakarta')->addDay();
+
+            if ($now->between($start, $end)) {
+                return $piketKemarin;
+            }
+        }
+
+        return null;
+    }
+
+    private function getPiketTerlambat()
+    {
+        $userId = \Auth::id();
+        $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+        if ($this->getPiketAktif()) return null;
+
+        // Cari piket yang SUDAH LEWAT batas waktunya (hari ini atau kemarin)
+        $piketList = \App\Models\Piket::with('dinas')
+            ->where('id_pengawas', $userId)
+            ->whereIn('tanggal', [$now->toDateString(), $now->copy()->subDay()->toDateString()])
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('id_dinas', 'desc')
+            ->get();
+
+        foreach ($piketList as $piket) {
+            $dinas = $piket->dinas;
+            if (!$dinas) continue;
+
+            $tanggalStr = \Carbon\Carbon::parse($piket->tanggal)->toDateString();
+            $start = \Carbon\Carbon::parse($tanggalStr . ' ' . $dinas->jam_masuk, 'Asia/Jakarta');
+            if ($piket->id_dinas == 3) {
+                $end = \Carbon\Carbon::parse($tanggalStr . ' ' . $dinas->jam_pulang, 'Asia/Jakarta')->addDay();
+            } else {
+                $end = \Carbon\Carbon::parse($tanggalStr . ' ' . $dinas->jam_pulang, 'Asia/Jakarta');
+            }
+
+            // Jika jadwal sudah lewat
+            if ($now->greaterThan($end)) {
+                return $piket;
+            }
+        }
+
+        return null;
+    }
     private function _getTimeRange()
     {
         date_default_timezone_set('Asia/Jakarta');
@@ -65,6 +138,17 @@ class PengawasController extends Controller
         $timeVars = $this->_getTimeRange();
         extract($timeVars);
 
+        // Cek apakah pengawas sudah submit laporan hari ini
+        $piketHariIni = $this->getPiketAktif();
+        $piketTerlambat = $this->getPiketTerlambat();
+        $activePiket = $piketHariIni ?? $piketTerlambat;
+        $tanggalPencarian = $activePiket ? \Carbon\Carbon::parse($activePiket->tanggal)->toDateString() : now('Asia/Jakarta')->toDateString();
+
+        $laporanHariIni = \App\Models\Laporan::where('id_pengawas', \Auth::id())
+            ->whereDate('tanggal_dinas', $tanggalPencarian)
+            ->where('id_dinas', $activePiket ? $activePiket->id_dinas : 0)
+            ->first();
+
         $igdLaporan = \App\Models\Laporanigd::where('status', 0)->where('id_pengawas', \Auth::user()->id)->first();
         $dokters = \App\Models\Dokter::where('status', 1)
             ->where('id_sdmk_jenis', 1)
@@ -82,7 +166,8 @@ class PengawasController extends Controller
         return view('pengawas.laporan.laporan', compact(
             'today', 'hariini', 'nowTime', 'start', 'end', 't',
             'igdLaporan', 'dokters', 'visitedRooms', 'visitedRoomIds', 'totalRooms', 'allVisited', 'ruangans',
-            'ibsLaporan', 'ibsDetailCount', 'irjLaporan', 'irjDetailTotal'
+            'ibsLaporan', 'ibsDetailCount', 'irjLaporan', 'irjDetailTotal',
+            'laporanHariIni', 'piketHariIni', 'piketTerlambat'
         ));
     }
 
@@ -90,6 +175,17 @@ class PengawasController extends Controller
     {
         $timeVars = $this->_getTimeRange();
         extract($timeVars);
+
+        // Cek apakah pengawas sudah submit laporan hari ini
+        $piketHariIni = $this->getPiketAktif();
+        $piketTerlambat = $this->getPiketTerlambat();
+        $activePiket = $piketHariIni ?? $piketTerlambat;
+        $tanggalPencarian = $activePiket ? \Carbon\Carbon::parse($activePiket->tanggal)->toDateString() : now('Asia/Jakarta')->toDateString();
+
+        $laporanHariIni = \App\Models\Laporan::where('id_pengawas', \Auth::id())
+            ->whereDate('tanggal_dinas', $tanggalPencarian)
+            ->where('id_dinas', $activePiket ? $activePiket->id_dinas : 0)
+            ->first();
 
         $igdDraf = \App\Models\Laporanigd::where('id_pengawas', \Auth::user()->id)->where('status', 0)->first();
         $dokters = \App\Models\Dokter::where('status', 1)
@@ -122,7 +218,8 @@ class PengawasController extends Controller
             'igdDraf', 'dokters', 'visitedRoomsDraf', 'visitedRoomIdsDraf', 'totalRoomsDraf', 'totalPasienDraf', 'ruangans',
             'ibsDraf', 'ibsDrafDetailCount', 'ibsDrafDetails',
             'irjDraf', 'irjDrafDetails', 'irjDrafDetailTotal', 'irjDrafDetailCount',
-            'dinasList', 'visitedRoomsCount', 'totalRoomsCount', 'hasIgdReport'
+            'dinasList', 'visitedRoomsCount', 'totalRoomsCount', 'hasIgdReport',
+            'laporanHariIni', 'piketHariIni', 'piketTerlambat'
         ));
     }
 
@@ -207,12 +304,19 @@ class PengawasController extends Controller
             'inap_catatan_istimewa' => ['nullable', 'string', 'max:5000'],
             'inap_catatan_baru' => ['nullable', 'string', 'max:5000'],
             'inap_permasalahan' => ['nullable', 'string', 'max:5000'],
+            'inap_jumlah_petugas' => ['required', 'integer', 'min:0'],
+            'inap_perbantuan_masuk' => ['nullable', 'integer', 'min:0'],
+            'inap_asal_perbantuan' => ['nullable', 'integer', 'exists:ruangan,id'],
+            'inap_perbantuan_keluar' => ['nullable', 'integer', 'min:0'],
+            'inap_tujuan_perbantuan' => ['nullable', 'integer', 'exists:ruangan,id'],
+            'inap_catatan_petugas' => ['nullable', 'string', 'max:2000'],
         ], [
             'inap_pasien_baru.required' => 'Jumlah pasien baru wajib diisi.',
             'inap_pasien_pindah.required' => 'Jumlah pasien pindah wajib diisi.',
             'inap_pasien_pindahan.required' => 'Jumlah pasien pindahan wajib diisi.',
             'inap_pasien_meninggal.required' => 'Jumlah pasien meninggal wajib diisi.',
             'inap_pasien_pulang.required' => 'Jumlah pasien pulang wajib diisi.',
+            'inap_jumlah_petugas.required' => 'Jumlah petugas dinas wajib diisi.',
         ]);
 
         $result = $umumService->createDraft($validated);
@@ -244,12 +348,19 @@ class PengawasController extends Controller
             'inap_catatan_istimewa' => ['nullable', 'string', 'max:5000'],
             'inap_catatan_baru' => ['nullable', 'string', 'max:5000'],
             'inap_permasalahan' => ['nullable', 'string', 'max:5000'],
+            'inap_jumlah_petugas' => ['required', 'integer', 'min:0'],
+            'inap_perbantuan_masuk' => ['nullable', 'integer', 'min:0'],
+            'inap_asal_perbantuan' => ['nullable', 'integer', 'exists:ruangan,id'],
+            'inap_perbantuan_keluar' => ['nullable', 'integer', 'min:0'],
+            'inap_tujuan_perbantuan' => ['nullable', 'integer', 'exists:ruangan,id'],
+            'inap_catatan_petugas' => ['nullable', 'string', 'max:2000'],
         ], [
             'inap_pasien_baru.required' => 'Jumlah pasien baru wajib diisi.',
             'inap_pasien_pindah.required' => 'Jumlah pasien pindah wajib diisi.',
             'inap_pasien_pindahan.required' => 'Jumlah pasien pindahan wajib diisi.',
             'inap_pasien_meninggal.required' => 'Jumlah pasien meninggal wajib diisi.',
             'inap_pasien_pulang.required' => 'Jumlah pasien pulang wajib diisi.',
+            'inap_jumlah_petugas.required' => 'Jumlah petugas dinas wajib diisi.',
         ]);
 
         $result = $umumService->updateDraft($validated);
@@ -679,13 +790,17 @@ class PengawasController extends Controller
 
     public function kirimLaporan(Request $r)
     {
-        $validator = Validator::make($r->all(), [
-            'dinas' => ['required', 'integer', 'exists:dinas,id'],
-        ]);
+        $piketAktif = $this->getPiketAktif();
+        $piketTerlambat = $piketAktif ? null : $this->getPiketTerlambat();
+        $piket = $piketAktif ?? $piketTerlambat;
 
-        if ($validator->fails()) {
-            return redirect()->back()->with('fail-add', $validator->errors()->first());
+        if (!$piket) {
+            return redirect()->back()->with('fail-add', 'Tidak ada jadwal dinas aktif atau jadwal yang dapat dikirim terlambat.');
         }
+
+        $dinasId = (int) $piket->id_dinas;
+        $tanggalDinas = \Carbon\Carbon::parse($piket->tanggal)->toDateString();
+        $isTerlambat = $piketAktif === null;
 
         $userId = \Auth::id();
         $igd = \App\Models\Laporanigd::where('status', 0)->where('id_pengawas', $userId)->first();
@@ -700,14 +815,16 @@ class PengawasController extends Controller
             return redirect()->back()->with('fail-add', 'Laporan belum dapat dikirim. Lengkapi laporan IGD dan seluruh Ruangan (Rawat Inap) aktif terlebih dahulu.');
         }
 
-        DB::transaction(function () use ($r, $userId, $igd) {
+        DB::transaction(function () use ($userId, $igd, $dinasId, $tanggalDinas, $isTerlambat) {
             date_default_timezone_set('Asia/Jakarta');
             $now = date('Y-m-d H:i:s');
 
             // Simpan laporan utama
             $sup = new \App\Models\Laporan;
             $sup->id_pengawas = $userId;
-            $sup->id_dinas    = $r->dinas;
+            $sup->id_dinas    = $dinasId;
+            $sup->tanggal_dinas = $tanggalDinas;
+            $sup->is_terlambat = $isTerlambat ? 1 : 0;
             $sup->created_at  = $now;
             $sup->updated_at  = $now;
             $sup->save();

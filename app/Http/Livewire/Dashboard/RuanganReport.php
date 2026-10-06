@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Laporan;
 use App\Models\Laporanumum;
 
@@ -10,13 +11,12 @@ class RuanganReport extends Component
 {
     public $ruangan = null;
 
-    protected $listeners = ['ruanganChanged' => 'setRuangan'];
-
     public function mount($ruangan = null)
     {
         $this->ruangan = $ruangan;
     }
 
+    #[On('ruanganChanged')]
     public function setRuangan($id = null)
     {
         $this->ruangan = $id;
@@ -28,7 +28,8 @@ class RuanganReport extends Component
 
         $data = null;
         if ($this->ruangan && $lastIDLaporan) {
-            $data = Laporanumum::where('id_laporan', $lastIDLaporan)
+            $data = Laporanumum::with(['ruangan', 'ruanganPerbantuanMasuk', 'ruanganPerbantuanKeluar'])
+                ->where('id_laporan', $lastIDLaporan)
                 ->where('id_ruangan', $this->ruangan)
                 ->first();
         }

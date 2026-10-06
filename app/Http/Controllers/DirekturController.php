@@ -37,31 +37,69 @@ class DirekturController extends Controller
       ->get();
     $kasurStatusSummary = $kasursDashboard->groupBy('status_operasional')->map->count();
 
-    $lastIDLaporan = \App\Models\Laporan::pluck('id')->last();
-    $laporanDate = \App\Models\Laporan::pluck('created_at')->last();
-    $laporanStatus = $lastIDLaporan ? \App\Models\Laporan::find($lastIDLaporan) : null;
-    $dinasId = \App\Models\Laporan::pluck('id_dinas')->last();
-    $dinasName = \App\Models\Dinas::where('id', $dinasId)->pluck('dinas')->first() ?? '-';
-    $pengawasId = \App\Models\Laporan::where('id', $lastIDLaporan)->pluck('id_pengawas')->first();
-    $pengawasName = \App\Models\User::where('id', $pengawasId)->pluck('nama')->first() ?? '-';
+    // Hanya tampilkan data dari laporan yang sudah TERVERIFIKASI penuh
+    // (verified_bidang = 1 oleh Bidang Keperawatan, DAN verified = 1 oleh Direktur)
+    $laporanTerverifikasi = \App\Models\Laporan::where('verified', 1)
+      ->where('verified_bidang', 1)
+      ->where('status', 1)
+      ->orderBy('tanggal_dinas', 'desc')
+      ->orderBy('id_dinas', 'desc')
+      ->first();
 
-    // Top-level stats
-    $totalIGD = \App\Models\Laporanigd::where('id_laporan', $lastIDLaporan)->pluck('jumlah_pasien')->first() ?? 0;
-    $totalUmum = \App\Models\Laporanumum::where('id_laporan', $lastIDLaporan)->pluck('jumlah_total_pasien')->sum() ?? 0;
-    $getIDibs = \App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('id')->first();
-    $totalIBS = $getIDibs ? \App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('total_pasien')->first() : 0;
-    $getIDirj = \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('id')->first();
-    $totalIRJ = $getIDirj ? \App\Models\Laporanirjdetail::where('id_laporan_irj', $getIDirj)->pluck('pasien_total')->sum() : 0;
+    $lastIDLaporan  = $laporanTerverifikasi?->id;
+    $laporanDate    = $laporanTerverifikasi?->created_at;
+    $laporanStatus  = $laporanTerverifikasi;
+    $dinasId        = $laporanTerverifikasi?->id_dinas;
+    $dinasName      = $dinasId
+      ? (\App\Models\Dinas::where('id', $dinasId)->pluck('dinas')->first() ?? '-')
+      : '-';
+    $pengawasId     = $laporanTerverifikasi?->id_pengawas;
+    $pengawasName   = $pengawasId
+      ? (\App\Models\User::where('id', $pengawasId)->pluck('nama')->first() ?? '-')
+      : '-';
 
-    // Detail Data for view rendering to avoid doing queries in blade as much as possible
-    $igdStatsRaw = \App\Models\Laporanigd::where('id_laporan', $lastIDLaporan)->first();
-    $laporanUmum = \App\Models\Laporanumum::with('ruangan')->where('id_laporan', $lastIDLaporan)->get();
-    $laporanIbsDetail = $getIDibs ? \App\Models\Laporanibsdetail::with(['dokter', 'dokterAnestesi', 'ruangan'])->where('id_laporan_ibs', $getIDibs)->get() : collect();
-    $catatanIbs = \App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('catatan')->first();
-    $laporanIrjDetail = $getIDirj ? \App\Models\Laporanirjdetail::with('dokter.jenisSdmk')->where('status', 1)->where('id_laporan_irj', $getIDirj)->get() : collect();
+    // Top-level stats — hanya dari laporan yang terverifikasi
+    $totalIGD  = $lastIDLaporan
+      ? (\App\Models\Laporanigd::where('id_laporan', $lastIDLaporan)->pluck('jumlah_pasien')->first() ?? 0)
+      : 0;
+    $totalUmum = $lastIDLaporan
+      ? (\App\Models\Laporanumum::where('id_laporan', $lastIDLaporan)->sum('jumlah_total_pasien') ?? 0)
+      : 0;
+    $getIDibs  = $lastIDLaporan
+      ? \App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('id')->first()
+      : null;
+    $totalIBS  = $getIDibs
+      ? (\App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('total_pasien')->first() ?? 0)
+      : 0;
+    $getIDirj  = $lastIDLaporan
+      ? \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('id')->first()
+      : null;
+    $totalIRJ  = $getIDirj
+      ? \App\Models\Laporanirjdetail::where('id_laporan_irj', $getIDirj)->sum('pasien_total')
+      : 0;
 
-    $masalahIrj = \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('masalah')->first();
-    $langkahIrj = \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('langkah_atasi_masalah')->first();
+    // Detail data untuk rendering view
+    $igdStatsRaw      = $lastIDLaporan
+      ? \App\Models\Laporanigd::where('id_laporan', $lastIDLaporan)->first()
+      : null;
+    $laporanUmum      = $lastIDLaporan
+      ? \App\Models\Laporanumum::with('ruangan')->where('id_laporan', $lastIDLaporan)->get()
+      : collect();
+    $laporanIbsDetail = $getIDibs
+      ? \App\Models\Laporanibsdetail::with(['dokter', 'dokterAnestesi', 'ruangan'])->where('id_laporan_ibs', $getIDibs)->get()
+      : collect();
+    $catatanIbs       = $lastIDLaporan
+      ? \App\Models\Laporanibs::where('id_laporan', $lastIDLaporan)->pluck('catatan')->first()
+      : null;
+    $laporanIrjDetail = $getIDirj
+      ? \App\Models\Laporanirjdetail::with('dokter.jenisSdmk')->where('status', 1)->where('id_laporan_irj', $getIDirj)->get()
+      : collect();
+    $masalahIrj       = $lastIDLaporan
+      ? \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('masalah')->first()
+      : null;
+    $langkahIrj       = $lastIDLaporan
+      ? \App\Models\Laporanirj::where('id_laporan', $lastIDLaporan)->pluck('langkah_atasi_masalah')->first()
+      : null;
 
     return view('admin.dashboard.dashboard', compact(
       'lastIDLaporan',
@@ -88,6 +126,7 @@ class DirekturController extends Controller
       'kasurStatusSummary'
     ));
   }
+
 
   //PENGGUNA
   public function tambahpengguna(Request $r)
@@ -861,11 +900,11 @@ class DirekturController extends Controller
     $laporanQuery = \App\Models\Laporan::with(['dinas', 'pengawas'])->where('status', 1);
 
     if ($request->filled('tanggal_mulai')) {
-      $laporanQuery->whereDate('created_at', '>=', $request->date('tanggal_mulai'));
+      $laporanQuery->whereDate('tanggal_dinas', '>=', $request->date('tanggal_mulai'));
     }
 
     if ($request->filled('tanggal_selesai')) {
-      $laporanQuery->whereDate('created_at', '<=', $request->date('tanggal_selesai'));
+      $laporanQuery->whereDate('tanggal_dinas', '<=', $request->date('tanggal_selesai'));
     }
 
     if ($request->filled('status_verifikasi')) {
@@ -878,7 +917,7 @@ class DirekturController extends Controller
       }
     }
 
-    $laporans = $laporanQuery->latest('created_at')->paginate(20)->withQueryString();
+    $laporans = $laporanQuery->orderBy('tanggal_dinas', 'desc')->orderBy('id_dinas', 'desc')->paginate(20)->withQueryString();
 
     return view('admin.laporan.administrasi', compact('laporans'));
   }

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Catatanpasien;
 
 class CatatanPasienIstimewaModal extends Component
@@ -11,8 +12,7 @@ class CatatanPasienIstimewaModal extends Component
     public $idruangan = null;
     public $items = [];
 
-    protected $listeners = ['openIstimewaModal' => 'open'];
-
+    #[On('openIstimewaModal')]
     public function open($idlaporan = null, $idruangan = null)
     {
         $this->idlaporan = $idlaporan;

@@ -220,46 +220,6 @@
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
-
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col-md-10">
-                        <div class="text-xs fw-bold  text-uppercase mb-1"> Jumlah Pasien Covid19</div>
-                        <div class="h5 mb-0 me-3 fw-bold text-gray-800">
-                            <input type="number" class="form-control" name="inap_pasien_covid" autocomplete="off" onfocus="ranap6a();" onfocusout="ranap6b();" min="0" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <img src="{{asset('sb-admin/icon/ranap/pasien-covid.png')}}" id="gbr_inap_pasien_covid" height="64px" width="64px">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col-md-10">
-                        <div class="text-xs fw-bold  text-uppercase mb-1">jumlah Pasien Suspect Covid19</div>
-                        <div class="h5 mb-0 me-3  fw-bold text-gray-800">
-                            <input type="number" class="form-control" name="inap_pasien_suspect" autocomplete="off" onfocus="ranap7a();" onfocusout="ranap7b();" min="0" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <img src="{{asset('sb-admin/icon/ranap/pasien-suspect-covid.png')}}" id="gbr_inap_pasien_suspek_covid" height="64px" width="64px">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col-md-10">
@@ -370,13 +330,113 @@
             <label for="exampleFormControlTextarea1" style="color:#000;font-weight:600">Permasalahan Umum</label>
             <textarea class="form-control" name="inap_permasalahan" rows="3" placeholder="Tulis disini..."></textarea>
         </div>
+    </div>
+</div>
 
-        <div class="form-group">
-            <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3"><i class="fas fa-save me-2"></i>Simpan ke Draf Laporan</button>
+{{-- ══════════════════════════════════════════════════════ --}}
+{{-- SECTION: DATA PETUGAS                                 --}}
+{{-- ══════════════════════════════════════════════════════ --}}
+<div class="card border-0 shadow-sm mt-3 mb-4" style="border-radius:1rem;overflow:hidden;">
+    <div class="card-header py-3" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f);">
+        <h6 class="m-0 fw-bold text-white">
+            <i class="fas fa-user-nurse me-2"></i>Data Petugas Dinas
+        </h6>
+    </div>
+    <div class="card-body p-4">
 
+        {{-- Preview Rasio --}}
+        <div class="rasio-preview-box d-flex align-items-center gap-3 mb-4 p-3 rounded-3" id="rasioPreviewBox"
+             style="background:#f0f7ff;border:1.5px solid #bfdbfe;">
+            <div class="text-center" style="min-width:80px;">
+                <div class="fw-bold" style="font-size:1.5rem;line-height:1;" id="rasioValue">—</div>
+                <div class="text-xs text-muted mt-1">Rasio P:Petugas</div>
+            </div>
+            <div class="vr"></div>
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill px-3 py-2" id="rasioLabel" style="font-size:.8rem;background:#6b7280;">Belum Dihitung</span>
+                    <small class="text-muted" id="rasioKeterangan">Masukkan jumlah petugas untuk melihat rasio.</small>
+                </div>
+            </div>
+            <div>
+                <span class="fw-semibold text-muted" style="font-size:.8rem;">Petugas Efektif:</span>
+                <span class="fw-bold ms-1" id="petugasEfektif">0</span>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {{-- Jumlah Petugas Dinas --}}
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">
+                    <i class="fas fa-users me-1 text-primary"></i>Jumlah Petugas Dinas
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user-check"></i></span>
+                    <input type="number" class="form-control" name="inap_jumlah_petugas" id="inap_jumlah_petugas"
+                           min="0" value="0" required autocomplete="off" placeholder="0">
+                </div>
+                <div class="form-text">Wajib diisi. Min: 0.</div>
+            </div>
+
+            {{-- Perbantuan Masuk --}}
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">
+                    <i class="fas fa-sign-in-alt me-1 text-success"></i>Perbantuan Masuk
+                </label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text bg-success text-dark"><i class="fas fa-plus"></i></span>
+                    <input type="number" class="form-control" name="inap_perbantuan_masuk" id="inap_perbantuan_masuk"
+                           min="0" value="0" autocomplete="off" placeholder="0">
+                </div>
+                <select class="form-select form-select-sm" name="inap_asal_perbantuan" id="inap_asal_perbantuan">
+                    <option value="">— Asal Unit (opsional) —</option>
+                    @foreach($ruangans->where('id', '!=', $ruangan) as $r)
+                        <option value="{{ $r->id }}">{{ $r->nama_ruangan }}</option>
+                    @endforeach
+                </select>
+                <div class="form-text text-success">Petugas yang datang dari unit lain.</div>
+            </div>
+
+            {{-- Perbantuan Keluar --}}
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">
+                    <i class="fas fa-sign-out-alt me-1 text-danger"></i>Perbantuan Keluar
+                </label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text bg-danger text-dark"><i class="fas fa-minus"></i></span>
+                    <input type="number" class="form-control" name="inap_perbantuan_keluar" id="inap_perbantuan_keluar"
+                           min="0" value="0" autocomplete="off" placeholder="0">
+                </div>
+                <select class="form-select form-select-sm" name="inap_tujuan_perbantuan" id="inap_tujuan_perbantuan">
+                    <option value="">— Tujuan Unit (opsional) —</option>
+                    @foreach($ruangans->where('id', '!=', $ruangan) as $r)
+                        <option value="{{ $r->id }}">{{ $r->nama_ruangan }}</option>
+                    @endforeach
+                </select>
+                <div class="form-text text-danger">Petugas yang dikirim ke unit lain.</div>
+            </div>
+
+            {{-- Catatan Petugas --}}
+            <div class="col-12">
+                <label class="form-label fw-semibold text-dark">
+                    <i class="fas fa-sticky-note me-1 text-warning"></i>Catatan Kondisi SDM
+                </label>
+                <textarea class="form-control" name="inap_catatan_petugas" rows="2"
+                          placeholder="Contoh: 1 petugas dari Laruffa diperbantukan karena lonjakan pasien..."></textarea>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group">
+            <button type="submit" style="float:right" class="btn btn-sm btn-igd btn-primary my-3"><i class="fas fa-save me-2"></i>Simpan ke Draf Laporan</button>
+        </div>
+    </div>
+</div>
+
 
 @section('scripts')
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -403,7 +463,66 @@
     });
     // In your Javascript (external .js resource or <script> tag)
     $(document).ready(function() {
-        $('.select2').select2();
+        $('.select2').each(function() {
+            var $this = $(this);
+            var parent = $this.closest('.modal').length ? $this.closest('.modal') : $('body');
+            $this.select2({
+                dropdownParent: parent
+            });
+        });
     });
+
+    // ── Rasio Petugas Real-time Calculator ──
+    function hitungRasio() {
+        var totalPasien = parseInt($('#inap_total_pasien').val()) || 0;
+        // total pasien dari field tersembunyi atau dihitung live
+        var pasienLama   = parseInt($('[name="inap_pasien_lama"]').val()) || 0;
+        var pasienBaru   = parseInt($('[name="inap_pasien_baru"]').val()) || 0;
+        var pasienPindah = parseInt($('[name="inap_pasien_pindah"]').val()) || 0;
+        var pasienPindahan = parseInt($('[name="inap_pasien_pindahan"]').val()) || 0;
+        var pasienPulang = parseInt($('[name="inap_pasien_pulang"]').val()) || 0;
+        var pasienMeninggal = parseInt($('[name="inap_pasien_meninggal"]').val()) || 0;
+        var totalPasienCalc = (pasienLama + pasienBaru + pasienPindahan) - (pasienPindah + pasienPulang + pasienMeninggal);
+        if (totalPasienCalc < 0) totalPasienCalc = 0;
+
+        var petugas       = parseInt($('#inap_jumlah_petugas').val()) || 0;
+        var perbantuanMasuk  = parseInt($('#inap_perbantuan_masuk').val()) || 0;
+        var perbantuanKeluar = parseInt($('#inap_perbantuan_keluar').val()) || 0;
+        var efektif = petugas + perbantuanMasuk - perbantuanKeluar;
+        if (efektif < 0) efektif = 0;
+
+        $('#petugasEfektif').text(efektif);
+
+        if (efektif === 0) {
+            $('#rasioValue').text('—');
+            $('#rasioLabel').text('Belum Dihitung').css('background','#6b7280');
+            $('#rasioKeterangan').text('Masukkan jumlah petugas untuk melihat rasio.');
+            $('#rasioPreviewBox').css({'background':'#f0f7ff','border-color':'#bfdbfe'});
+            return;
+        }
+
+        var rasio = totalPasienCalc / efektif;
+        $('#rasioValue').text('1 : ' + rasio.toFixed(1));
+
+        if (rasio <= 4) {
+            $('#rasioLabel').text('🟢 Optimal').css('background','#16a34a');
+            $('#rasioKeterangan').text('Jumlah petugas mencukupi untuk ' + totalPasienCalc + ' pasien.');
+            $('#rasioPreviewBox').css({'background':'#f0fdf4','border-color':'#86efac'});
+        } else if (rasio <= 7) {
+            $('#rasioLabel').text('🟡 Perlu Perhatian').css('background','#d97706');
+            $('#rasioKeterangan').text('Pertimbangkan perbantuan — ' + totalPasienCalc + ' pasien, ' + efektif + ' petugas efektif.');
+            $('#rasioPreviewBox').css({'background':'#fffbeb','border-color':'#fcd34d'});
+        } else {
+            $('#rasioLabel').text('🔴 Kritis!').css('background','#dc2626');
+            $('#rasioKeterangan').text('Perbantuan wajib dikoordinasikan! ' + totalPasienCalc + ' pasien, hanya ' + efektif + ' petugas efektif.');
+            $('#rasioPreviewBox').css({'background':'#fef2f2','border-color':'#fca5a5'});
+        }
+    }
+
+    $(document).on('input change', '#inap_jumlah_petugas, #inap_perbantuan_masuk, #inap_perbantuan_keluar, [name="inap_pasien_baru"], [name="inap_pasien_pindah"], [name="inap_pasien_pindahan"], [name="inap_pasien_pulang"], [name="inap_pasien_meninggal"]', function() {
+        hitungRasio();
+    });
+    // Hitung awal
+    hitungRasio();
 </script>
 @endsection

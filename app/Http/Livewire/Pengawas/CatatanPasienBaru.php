@@ -4,16 +4,21 @@ namespace App\Http\Livewire\Pengawas;
 
 use App\Models\Catatanpasien;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class CatatanPasienBaru extends Component
 {
     public $ruangan;
 
-    protected $listeners = ['refreshCatatanBaru' => '$refresh'];
-
     public function mount($ruangan = null)
     {
         $this->ruangan = $ruangan;
+    }
+
+    #[On('refreshCatatanBaru')]
+    public function refresh(): void
+    {
+        // Livewire v4: re-render is triggered automatically after this method runs
     }
 
     public function render()

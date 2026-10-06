@@ -69,14 +69,16 @@ Route::group(['middleware' => ['auth', 'pengawas']], function () {
     Route::get('/draf-laporan', [PengawasController::class, 'drafLaporan'])->name('draf-laporan');
     Route::get('/refresh-laporan-ruangan/{ruangan}', function ($ruangan) {
         $pasienLama = Laporanumum::saldoPasienLama((int) $ruangan);
+        $ruangans   = \App\Models\Ruangan::where('status', 1)->get();
 
-        return view('pengawas.ajax.refresh-laporan-ruangan', compact('ruangan', 'pasienLama'));
+        return view('pengawas.ajax.refresh-laporan-ruangan', compact('ruangan', 'pasienLama', 'ruangans'));
     });
     Route::get('/refresh-laporan-ruangan-draf/{ruangan}', function ($ruangan) {
         $pasienLama = Laporanumum::saldoPasienLama((int) $ruangan);
+        $ruangans   = \App\Models\Ruangan::where('status', 1)->get();
 
-        return view('pengawas.ajax.refresh-laporan-umum', compact('ruangan', 'pasienLama'));
-    });
+        return view('pengawas.ajax.refresh-laporan-umum', compact('ruangan', 'pasienLama', 'ruangans'));
+    })->name('draf-laporan.ruangan');
     Route::get('/refresh-catatan-pasien-istimewa/{ruangan2}', fn($ruangan2) => view('pengawas.ajax.refresh-catatan-pasien-istimewa', compact('ruangan2')));
     Route::get('/refresh-catatan-pasien-baru/{ruangan2}', fn($ruangan2) => view('pengawas.ajax.refresh-catatan-pasien-baru', compact('ruangan2')));
 

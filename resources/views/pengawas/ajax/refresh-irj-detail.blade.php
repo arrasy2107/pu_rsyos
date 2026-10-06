@@ -318,6 +318,12 @@
                   <script>
                       // In your Javascript (external .js resource or <script> tag)
                       $(document).ready(function() {
-                          $('.select2').select2();
+                          $('.select2').each(function() {
+                              var $this = $(this);
+                              var parent = $this.closest('.modal').length ? $this.closest('.modal') : $('body');
+                              $this.select2({
+                                  dropdownParent: parent
+                              });
+                          });
                       });
                   </script>

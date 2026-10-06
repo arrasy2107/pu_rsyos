@@ -549,11 +549,11 @@
         @endphp
         @if($vDirektur && $vBidang)
             <span class="pu-status-badge bg-success-subtle text-success border border-success-subtle">
-                <i class="fas fa-check-double"></i> Terverifikasi Direktur
+                <i class="fas fa-check-double"></i> Terverifikasi Final
             </span>
         @elseif($vBidang)
             <span class="pu-status-badge bg-info-subtle text-info border border-info-subtle">
-                <i class="fas fa-check"></i> Terverifikasi Keperawatan
+                <i class="fas fa-check"></i> Terverifikasi Bidang
             </span>
         @else
             <span class="pu-status-badge bg-warning-subtle text-dark border border-warning-subtle">

@@ -2,7 +2,7 @@
 
     {{-- Brand --}}
     <div class="pu-sidebar-brand">
-        <img src="{{ asset('images/logo_rsys.jpeg') }}" alt="RSYOS Logo" class="pu-sidebar-brand-logo" width="38" height="38">
+        <img src="{{ asset('images/logo_rsys.png') }}" alt="RSYOS Logo" class="pu-sidebar-brand-logo" width="38" height="38">
         <div class="pu-sidebar-brand-text">
             <span class="title">Sistem Informasi</span>
             <span class="subtitle">Laporan Pengawas Umum</span>

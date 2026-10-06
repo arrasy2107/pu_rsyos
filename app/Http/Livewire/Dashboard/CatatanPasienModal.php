@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Catatanpasien;
 
 class CatatanPasienModal extends Component
@@ -12,11 +13,10 @@ class CatatanPasienModal extends Component
     public $idruangan = null;
     public $items = [];
 
-    protected $listeners = ['openCatatanModal' => 'open'];
-
+    #[On('openCatatanModal')]
     public function open($payload)
     {
-        $this->type = $payload['type'] ?? null;
+        $this->type      = $payload['type'] ?? null;
         $this->idlaporan = $payload['idlaporan'] ?? null;
         $this->idruangan = $payload['idruangan'] ?? null;
         $this->loadItems();
@@ -40,7 +40,6 @@ class CatatanPasienModal extends Component
                 ->where('id_jenis_pasien', 2)
                 ->get();
         } elseif ($this->type === 'permasalahan') {
-            // permasalahan is stored on Laporanumum->permasalahan_umum but existing ajax returned a list; we'll load related notes if any
             $this->items = Catatanpasien::where('id_laporan_umum', $this->idlaporan)
                 ->where('id_ruangan', $this->idruangan)
                 ->get();

@@ -63,6 +63,6 @@ $data = $data ?? null;
             @endif
         </div>
     @else
-        <div class="ruangan-report-empty text-muted">Pilih ruangan untuk melihat laporan.</div>
+        <div class="ruangan-report-empty text-muted"></div>
     @endif
 </div>

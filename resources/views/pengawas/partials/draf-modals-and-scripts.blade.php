@@ -529,8 +529,31 @@
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
+            $(document).on('change', '#inap_ruangan', function() {
+                const val = $(this).val();
+                if (!val) {
+                    $(".tablelaporan").html('<div class="text-center py-4 text-muted border border-dashed rounded bg-white"><i class="fas fa-hand-pointer fa-2x mb-3 text-gray-300"></i><p class="mb-0">Pilih ruangan dari dropdown di atas untuk melihat laporannya.</p></div>');
+                    return;
+                }
+
+                const urlTemplate = "{{ route('draf-laporan.ruangan', ['ruangan' => '__ROOM__']) }}";
+                $(".tablelaporan").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat form ruangan...</p></div>');
+                $.ajax({
+                    type: "get",
+                    url: urlTemplate.replace('__ROOM__', encodeURIComponent(val)),
+                    data: { ruangan: val },
+                    success: function(data) {
+                        $(".tablelaporan").html(data);
+                    },
+                    error: function(xhr) {
+                        const status = xhr.status ? ` (HTTP ${xhr.status})` : '';
+                        $(".tablelaporan").html(`<div class="alert alert-danger">Gagal memuat form ruangan${status}. Silakan pilih ruangan lain.</div>`);
+                    }
+                });
+            });
+
             $(function() {
-                /*-- Modal Select2 Fixes --*/
+                // Modal Select2 Fixes
                 $('.select2').each(function() {
                     var $this = $(this);
                     var parent = $this.closest('.modal').length ? $this.closest('.modal') : $('body');
@@ -662,32 +685,6 @@ $('#igd_dokterjaga_tambah').on('select2:opening select2:unselecting', function(e
                 } else {
                     $("#editdraftigd").submit();
                 }
-                });
-            });
-
-            // ==========================================
-            // RAWAT INAP LOGIC (Dynamic Load)
-            // ==========================================
-            $(document).on('change', '#inap_ruangan', function() {
-                const val = $(this).val();
-                if (!val) {
-                    $(".tablelaporan").html('<div class="text-center py-4 text-muted border border-dashed rounded bg-white"><i class="fas fa-hand-pointer fa-2x mb-3 text-gray-300"></i><p class="mb-0">Pilih ruangan dari dropdown di atas untuk melihat laporannya.</p></div>');
-                    return;
-                }
-
-                $(".tablelaporan").html('<div class="text-center py-5"><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p>Memuat form ruangan...</p></div>');
-                $.ajax({
-                    type: "get",
-                    url: '/refresh-laporan-ruangan-draf/' + val,
-                    data: {
-                        ruangan: val
-                    },
-                    success: function(data) {
-                        $(".tablelaporan").html(data);
-                    },
-                    error: function(xhr) {
-                        $(".tablelaporan").html('<div class="alert alert-danger">Gagal memuat form ruangan. Silakan pilih ruangan lain.</div>');
-                    }
                 });
             });
 

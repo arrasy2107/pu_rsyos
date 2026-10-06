@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Dashboard;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Laporan;
 use App\Models\Laporanigd;
 use App\Models\Laporanumum;
@@ -11,7 +12,6 @@ use App\Models\Laporanirjdetail;
 use App\Models\Laporanibs;
 use App\Models\Laporanibsdetail;
 use App\Models\Dokterirj;
-use App\Models\Dinas;
 
 class LaporanDetailModal extends Component
 {
@@ -21,13 +21,12 @@ class LaporanDetailModal extends Component
     public $rows = [];
     public $extra = [];
 
-    protected $listeners = ['openLaporanDetailModal' => 'open'];
-
     public function mount($modalType = null)
     {
         $this->modalType = $modalType;
     }
 
+    #[On('openLaporanDetailModal')]
     public function open($type = null, $idlaporan = null)
     {
         if ($type !== $this->modalType || !$idlaporan) {
@@ -54,7 +53,7 @@ class LaporanDetailModal extends Component
             $this->extra['permasalahan'] = Laporanigd::where('id_laporan', $this->idlaporan)->pluck('permasalahan')->first();
             $this->extra['lain_lain'] = Laporanigd::where('id_laporan', $this->idlaporan)->pluck('lain_lain')->first();
         } elseif ($this->modalType === 'umum') {
-            $this->rows = Laporanumum::with('ruangan')->where('id_laporan', $this->idlaporan)->get();
+            $this->rows = Laporanumum::with(['ruangan', 'ruanganPerbantuanMasuk', 'ruanganPerbantuanKeluar'])->where('id_laporan', $this->idlaporan)->get();
         } elseif ($this->modalType === 'irj') {
             $laporanIrj = Laporanirj::where('id_laporan', $this->idlaporan)->first();
             $this->rows = $laporanIrj

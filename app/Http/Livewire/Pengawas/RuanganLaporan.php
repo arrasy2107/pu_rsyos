@@ -4,18 +4,18 @@ namespace App\Http\Livewire\Pengawas;
 
 use App\Models\Laporanumum;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class RuanganLaporan extends Component
 {
     public $ruangan = null;
-
-    protected $listeners = ['setRuangan' => 'setRuangan'];
 
     public function mount($ruangan = null)
     {
         $this->ruangan = $ruangan;
     }
 
+    #[On('setRuangan')]
     public function setRuangan($ruangan)
     {
         if (is_array($ruangan) && array_key_exists('value', $ruangan)) {

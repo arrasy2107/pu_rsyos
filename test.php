@@ -1,0 +1,1 @@
+<?php Auth::loginUsingId(\App\Models\User::where('id_role', 2)->first()->id); try { echo view('pengawas.ajax.refresh-laporan-umum', ['ruangan' => 2, 'pasienLama' => 0, 'ruangans' => \App\Models\Ruangan::where('status', 1)->get()])->render(); } catch (\Exception \) { echo \->getMessage(); }

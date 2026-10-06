@@ -1,5 +1,5 @@
 {{-- 4. INSTALASI RAWAT JALAN (IRJ) --}}
-@if ((strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_sunday() != true) ||
+@if ($piketTerlambat || (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_sunday() != true) ||
     (strtotime($nowTime) > strtotime($start) && strtotime($nowTime) < strtotime($end) && $t->is_holiday() == true && \App\Models\Irjbuka::where('tanggal',$hariini)->first()))
 
 

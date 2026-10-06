@@ -41,12 +41,28 @@
                 <div class="bg-white p-4 border rounded shadow-sm">
                     <div class="form-group">
                         <label class="fw-bold text-dark">Shift Dinas saat ini:</label>
-                        <select class="form-control select2" name="dinas" id="dinas" required>
-                            <option value="" selected disabled hidden>Pilih Shift Dinas...</option>
-                            @foreach($dinasList as $dk)
-                            <option value="{{ $dk->id }}">{{ strtoupper($dk->dinas) }}</option>
-                            @endforeach
-                        </select>
+                        @php
+                            $activePiket = $piketHariIni ?? $piketTerlambat ?? null;
+                        @endphp
+                        @if($activePiket)
+                            <div class="d-flex align-items-center bg-light border rounded px-3 py-2">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <span class="fw-bold text-primary">{{ strtoupper($activePiket->dinas->dinas ?? 'TIDAK DIKETAHUI') }}</span>
+                                @if(isset($piketTerlambat) && $piketTerlambat)
+                                <span class="badge bg-danger ms-auto"><i class="fas fa-exclamation-circle me-1"></i> Terlambat</span>
+                                @endif
+                            </div>
+                            <input type="hidden" name="dinas" value="{{ $activePiket->id_dinas }}">
+                            <input type="hidden" name="tanggal_dinas" value="{{ \Carbon\Carbon::parse($activePiket->tanggal)->toDateString() }}">
+                            @if(isset($piketTerlambat) && $piketTerlambat)
+                            <input type="hidden" name="is_terlambat" value="1">
+                            @endif
+                        @else
+                            <div class="alert alert-danger py-2 px-3 mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i> Jadwal dinas Anda untuk hari ini belum diatur oleh Bidang Keperawatan.
+                            </div>
+                            <input type="hidden" name="dinas" value="">
+                        @endif
                     </div>
 
                     {{-- Informasi QR Code --}}
@@ -69,7 +85,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block btn-lg shadow-sm">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg shadow-sm" {{ isset($activePiket) && $activePiket ? '' : 'disabled' }}>
                         <i class="fas fa-paper-plane me-2"></i> Kirim Laporan Final
                     </button>
                 </div>

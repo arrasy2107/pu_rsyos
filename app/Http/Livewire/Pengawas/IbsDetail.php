@@ -4,10 +4,15 @@ namespace App\Http\Livewire\Pengawas;
 
 use App\Models\Laporanibsdetail;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class IbsDetail extends Component
 {
-    protected $listeners = ['refreshIbsDetail' => '$refresh'];
+    #[On('refreshIbsDetail')]
+    public function refresh(): void
+    {
+        // Livewire v4: re-render is triggered automatically after this method runs
+    }
 
     public function render()
     {

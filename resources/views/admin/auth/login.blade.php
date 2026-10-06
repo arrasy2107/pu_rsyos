@@ -13,9 +13,7 @@
 
             {{-- Header: Logo + Nama RS + Judul --}}
             <div class="pu-login-header text-center">
-                <div class="pu-login-logo-wrap">
-                    <img src="{{ asset('images/logo_rsys.jpeg') }}" alt="Logo RSYS" class="pu-login-logo" />
-                </div>
+                <img src="{{ asset('images/logo_rsys.png') }}" alt="Logo RS Yos Sudarso" class="pu-login-logo">
                 <p class="pu-login-rs-name">RS YOS SUDARSO PADANG</p>
                 <h2 class="pu-login-title">
                     <span class="title-white">Sistem Laporan Pengawas Umum</span>
@@ -143,25 +141,12 @@
         margin-bottom: 1.5rem;
     }
 
-    .pu-login-logo-wrap {
-        width: 86px;
-        height: 86px;
-        border-radius: 50%;
-        background: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.9);
-        border: 3px solid rgba(255, 255, 255, 0.25);
-        overflow: hidden;
-    }
-
     .pu-login-logo {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transform: scale(1.08); /* Zoom sedikit untuk memangkas whitespace bawaan gambar */
+        width: 90px;
+        height: auto;
+        display: block;
+        margin: 0 auto 1rem;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
     }
 
     .pu-login-rs-name {
